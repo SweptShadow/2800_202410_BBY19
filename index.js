@@ -151,6 +151,12 @@ app.post("/loginSubmit", async (req, res) => {
   }
 });
 
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.clearCookie("connect.sid", { path: "/" });
+  res.render("logout");
+});
+
 app.get("/main", (req, res) => {
     res.render("main");
 });
