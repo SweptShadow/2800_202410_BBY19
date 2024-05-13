@@ -1,11 +1,47 @@
+
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const PORT = process.env.PORT || 9001;
+const PORT = process.env.PORT || 8000;
 const url = require("url");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const bcrypt = require ("bcrypt");
+const saltRounds = 12;
+const sessionExpiry = 24 * 60 * 60 * 1000;
+const Joi = require("joi");
+
+const mongo_uri = process.env.MONGODB_URI;
+const mongo_secret = process.env.MONGODB_SESSION_SECRET;
+const node_secret = process.env.NODE_SESSION_SECRET;
+const mongo_database = process.env.MONGODB_DATABASE;
+const MongoClient = require("mongodb").MongoClient;
+const client = new MongoClient(mongo_uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const userCollection = client.db(mongo_database).collection("users");
+const sessionCollection = MongoStore.create({
+  mongoUrl: mongo_uri,
+  collectionName: "sessions",
+  crypto: {
+    secret: mongo_secret,
+  },
+});
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(session({
+  secret: node_secret,
+  store: sessionCollection,
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: sessionExpiry,
+  },
+})
+);
 
 const navLinks = [
   { name: "Home", link: "/" },
@@ -22,6 +58,45 @@ app.use("/", (req, res, next) => {
 
 app.get("/", (req, res) => {
   res.render("root");
+});
+
+app.get("/signup", (req, res) => {
+  res.render("signup");
+});
+
+app.post("signupSubmit", async (req, res) => {
+  var username = req.body.username;
+  var password = req.body.password;
+  var email = req.body.email;
+
+  const userSchema = Joi.object({
+    username: Joi.string().alphanum().max(25).required(),
+    password: Joi.string().max(25).required(),
+    email: Joi.string().email({
+      minDomainSegments: 2,
+    }),
+  });
+
+  const validateUser = userSchema.validate({ username, password, email });
+  if (validation.error != null) {
+    console.log(validation.error);
+    res.redirect("/signup");
+    return;
+  }
+
+  var hashedPass = await bcrypt.hash(password, saltRounds);
+
+  await userCollection.insertOne({
+    username: username,
+    password: hashedPass,
+    email: email,
+    type: type,
+  });
+
+  console.log(`User ${username} successfully added to database.`);
+  req.session.authenticated = true;
+  req.session.username = username;
+  res.redirect("/main");
 });
 
 app.get("/login", (req, res) => {
