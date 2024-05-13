@@ -103,6 +103,54 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
+app.post("/loginSubmit", async (req, res) => {
+  var inputEmail = req.body.email;
+  var inputPass = req.body.password;
+
+  const loginSchema = Joi.object({
+    email: Joi.string().email({
+      minDomainSegments: 2,
+    })
+    .required(),
+    password: Joi.string().max(25).required(),
+  });
+
+  const validateLogin = loginSchema.validate({
+    email: inputEmail,
+    password: inputPassword,
+  });
+
+  if (validateLogin.error != null) {
+    console.log(validateLogin.error);
+    res.redirect("/login");
+    return;
+  }
+
+  const user = await userCollection.findOne(
+    { email: inputEmail },
+    { projection: { username: 1, password: 1 }}
+  );
+
+  if (!user) {
+    console.log(`User ${username} not found.`);
+    /*should create a res.render to give an error page when this happens*/
+    res.redirect("/login");
+    return;
+  }
+
+  if (await bcrypt.compare(inputPassword, user.password)) {
+    console.log("Password is correct");
+    req.session.authenticated = true;
+    req.session.username = user.username;
+    res.redirect("/main");
+    return;
+  } else {
+    console.log("Password incorrect");
+    res.redirect("/login");
+    return;
+  }
+});
+
 app.get("/main", (req, res) => {
     res.render("main");
 });
@@ -113,7 +161,13 @@ app.get("/games", (req, res) => {
 
 app.get("/social", (req, res) => {
     res.render("social");
-})
+});
+
+app.get("*", (req, res) => {
+  res.status(404);
+  res.render("404");
+});
+
 app.listen(PORT, () => {
   console.log(`Golden Gaming is listening on port: ${PORT}`);
 });
