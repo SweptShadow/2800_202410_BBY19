@@ -64,7 +64,7 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-app.post("signupSubmit", async (req, res) => {
+app.post("/signupSubmit", async (req, res) => {
   var username = req.body.username;
   var password = req.body.password;
   var email = req.body.email;
@@ -78,7 +78,7 @@ app.post("signupSubmit", async (req, res) => {
   });
 
   const validateUser = userSchema.validate({ username, password, email });
-  if (validation.error != null) {
+  if (validateUser.error != null) {
     console.log(validation.error);
     res.redirect("/signup");
     return;
@@ -117,7 +117,7 @@ app.post("/loginSubmit", async (req, res) => {
 
   const validateLogin = loginSchema.validate({
     email: inputEmail,
-    password: inputPassword,
+    password: inputPass,
   });
 
   if (validateLogin.error != null) {
