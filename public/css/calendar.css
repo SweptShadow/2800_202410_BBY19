@@ -1,0 +1,104 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+#back {
+    background-color: #5a6100;
+    margin: 10px;
+}
+
+.nav {
+    display: flex;
+    padding: 5px 10px;
+    box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.2);
+}
+
+img {
+    border-radius: 50%;
+    width: 10vh;
+    height: 10vh;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+}
+
+span {
+    font-size: large;
+    font-weight: bold;
+}
+
+.profile-pic {
+    text-align: center;
+}
+
+#calendar {
+    font-family: Arial, sans-serif;
+    width: 95vw;
+    padding: 20px;
+    margin-right: 3px;
+    align-items: center;
+    border-top: 1px solid rgb(117, 101, 101);
+
+}
+
+.calendar-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.calendar-body .day-names {
+    display: flex;
+    background-color: #a19999;
+    padding: 10px 0;
+}
+
+.calendar-body .day-names div {
+    width: 14.28%;
+    text-align: center;
+}
+
+.calendar-body .dates {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.calendar-body .dates div {
+    width: 14.28%;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #eee; 
+    box-sizing: border-box; 
+    padding: 10px 0;
+    height: 15vh;
+    
+}
+
+.calendar-body .dates div:hover {
+    background-color: #f0f0f0;
+    border-color: #ddd;
+}
+
+.calendar-body .dates .today {
+    background-color: #ee7027;
+    color: white;
+    font-weight: bold;
+    
+}
+
+#logout {
+    display: flex;
+    width: 40vh;
+    padding: 10px;
+    margin: 10px;
+    background-color: #eeca84;
+    justify-content: center;
+    
+}
+
+p {
+    font-size: small;
+}
+  
+  
