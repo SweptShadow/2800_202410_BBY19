@@ -36,6 +36,13 @@ app.get("/games", (req, res) => {
     res.render("games");
 });
 
+app.get("/gamesSpecific", (req, res) => {
+  let gamename = req.query.game;
+
+  res.render("gamesSpecific", {gamename: gamename});
+
+})
+
 app.get("/social", (req, res) => {
     res.render("social");
 })

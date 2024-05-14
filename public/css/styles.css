@@ -47,10 +47,10 @@ body{
 
 .gamescontainer [id^="gameimg"] {
     background-color:grey;
-
     border-radius: 15px;
     border: 2px solid white;
     text-align: center;
+    overflow: hidden;
 }
 .gamescontainer > * > p {
     justify-self: center;
@@ -130,4 +130,61 @@ body{
         grid-template-rows: repeat(20, 5%);
     }
 }
+/* #endregion */
+
+/*#region gamesSpecific region */
+
+
+
+#gamesSpecificContent {
+    height: 850px;
+}
+
+.gameContainer {
+    margin: auto;
+    width: 80%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(10, 10%);
+    grid-template-rows: repeat(10, 10%);
+}
+#gamesSpecificContent > h1 {
+    text-align: center;
+    justify-self: center;
+    margin: auto;
+    margin-bottom: 20px;
+    width: 60%;
+    background-color: rgba(255, 255, 255, 0.468);
+    border-radius: 40px;
+    font-weight: 700;
+}
+
+.gameView {
+    grid-row: 1 /span 8;
+    grid-column: 1 /span 10;
+    background-color: grey;
+    border-radius: 15px 15px 0 0;
+}
+
+.gameDesc {
+    grid-row: 8 /span 9;
+    grid-column: 1 /span 10;
+    background-color: white;
+    border-radius: 0 0 15px 15px;
+    padding: 15px;
+    text-align: left;
+}
+.helpButton {
+    grid-row: 8;
+    grid-column: 10;
+    background-color: yellow;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    border: 1px solid black;
+
+}
+
 /* #endregion */
