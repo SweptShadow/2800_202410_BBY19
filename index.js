@@ -32,6 +32,7 @@ const sessionCollection = MongoStore.create({
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use("/js", express.static("./public/js"));
 app.use(session({
   secret: node_secret,
   store: sessionCollection,
@@ -167,6 +168,7 @@ app.get("/games", (req, res) => {
 
 app.get("/gamesSpecific", (req, res) => {
   let gamename = req.query.game;
+  gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
   res.render("gamesSpecific", {gamename: gamename});
 
