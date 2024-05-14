@@ -10,6 +10,10 @@ const bcrypt = require ("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
 const Joi = require("joi");
+const { createServer } = require('node:http');
+const { Server } = require('socket.io');
+const server = createServer(app);
+const io = new Server(server);
 
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
@@ -48,7 +52,19 @@ const navLinks = [
   { name: "Main", link: "/main" },
   { name: "Games", link: "/games" },
   { name: "Social", link: "/social" },
+  { name: "Chatroom", link: "/chat" },
 ];
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+  socket.on("chat message", (msg) => {
+      io.emit("chat message", msg);
+      console.log("message: " + msg);
+  });
+});
 
 app.use("/", (req, res, next) => {
   app.locals.navLinks = navLinks;
@@ -68,6 +84,7 @@ app.post("/signupSubmit", async (req, res) => {
   var username = req.body.username;
   var password = req.body.password;
   var email = req.body.email;
+  var type = "user";
 
   const userSchema = Joi.object({
     username: Joi.string().alphanum().max(25).required(),
@@ -169,11 +186,15 @@ app.get("/social", (req, res) => {
     res.render("social");
 });
 
+app.get("/chat", (req, res) => {
+  res.render('chatroom', { loadChatScript: true });
+});
+
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Golden Gaming is listening on port: ${PORT}`);
 });
