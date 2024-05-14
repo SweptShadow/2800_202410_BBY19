@@ -6,6 +6,7 @@ const url = require("url");
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use("/js", express.static("./public/js"));
 
 const navLinks = [
   { name: "Home", link: "/" },
@@ -38,6 +39,7 @@ app.get("/games", (req, res) => {
 
 app.get("/gamesSpecific", (req, res) => {
   let gamename = req.query.game;
+  gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
   res.render("gamesSpecific", {gamename: gamename});
 
