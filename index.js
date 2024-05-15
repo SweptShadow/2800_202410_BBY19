@@ -1,4 +1,3 @@
-
 const express = require("express");
 const app = express();
 require("dotenv").config();
@@ -6,26 +5,29 @@ const PORT = process.env.PORT || 8000;
 const url = require("url");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-const bcrypt = require ("bcrypt");
+const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
 const Joi = require("joi");
 const { createServer } = require('node:http');
-const { Server } = require('socket.io');
+const mongoose = require('mongoose');
+const initializeSocket = require('./socket');
 const server = createServer(app);
-const io = new Server(server);
 
 const mongo_uri = process.env.MONGODB_URI;
-const mongo_secret = process.env.MONGODB_SESSION_SECRET;
-const node_secret = process.env.NODE_SESSION_SECRET;
-const mongo_database = process.env.MONGODB_DATABASE;
-const MongoClient = require("mongodb").MongoClient;
-const client = new MongoClient(mongo_uri, {
+mongoose.connect(mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-const userCollection = client.db(mongo_database).collection("users");
+const User = require('./models/user');
+const ChatRoom = require('./models/chatRoom');
+const Message = require('./models/message');
+
+const mongo_secret = process.env.MONGODB_SESSION_SECRET;
+const node_secret = process.env.NODE_SESSION_SECRET;
+const mongo_database = process.env.MONGODB_DATABASE;
+
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
   collectionName: "sessions",
@@ -34,9 +36,7 @@ const sessionCollection = MongoStore.create({
   },
 });
 
-app.set("view engine", "ejs");
-app.use(express.static("public"));
-app.use(session({
+const sessionMiddleware = session({
   secret: node_secret,
   store: sessionCollection,
   saveUninitialized: false,
@@ -44,8 +44,14 @@ app.use(session({
   cookie: {
     maxAge: sessionExpiry,
   },
-})
-);
+});
+
+app.set("view engine", "ejs");
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
+app.use(sessionMiddleware);
+
+const io = initializeSocket(server, sessionMiddleware);
 
 const navLinks = [
   { name: "Home", link: "/" },
@@ -53,18 +59,9 @@ const navLinks = [
   { name: "Games", link: "/games" },
   { name: "Social", link: "/social" },
   { name: "Chatroom", link: "/chat" },
+  { name: "Login", link: "/login" },
+  { name: "Signup", link: "/signup" },
 ];
-
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-  socket.on("chat message", (msg) => {
-      io.emit("chat message", msg);
-      console.log("message: " + msg);
-  });
-});
 
 app.use("/", (req, res, next) => {
   app.locals.navLinks = navLinks;
@@ -96,7 +93,7 @@ app.post("/signupSubmit", async (req, res) => {
 
   const validateUser = userSchema.validate({ username, password, email });
   if (validateUser.error != null) {
-    console.log(validation.error);
+    console.log(validateUser.error);
     res.redirect("/signup");
     return;
   }
@@ -113,7 +110,7 @@ app.post("/signupSubmit", async (req, res) => {
   console.log(`User ${username} successfully added to database.`);
   req.session.authenticated = true;
   req.session.username = username;
-  res.redirect("/main");
+  res.redirect("/");
 });
 
 app.get("/login", (req, res) => {
@@ -155,7 +152,7 @@ app.post("/loginSubmit", async (req, res) => {
     return;
   }
 
-  if (await bcrypt.compare(inputPassword, user.password)) {
+  if (await bcrypt.compare(inputPass, user.password)) {
     console.log("Password is correct");
     req.session.authenticated = true;
     req.session.username = user.username;
