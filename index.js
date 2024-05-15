@@ -22,6 +22,8 @@ const client = new MongoClient(mongo_uri, {
 });
 
 const userCollection = client.db(mongo_database).collection("users");
+const gameCollection = client.db(mongo_database).collection("games");
+
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
   collectionName: "sessions",
@@ -166,11 +168,13 @@ app.get("/games", (req, res) => {
     res.render("games");
 });
 
-app.get("/gamesSpecific", (req, res) => {
+app.get("/gamesSpecific", async (req, res) => {
   let gamename = req.query.game;
   gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
-  res.render("gamesSpecific", {gamename: gamename});
+  const gameInfo = await gameCollection.find({name: gamename}).project({name: 1, desc: 1, _id: 1, link: 1, rules: 1}).toArray();
+
+  res.render("gamesSpecific", {gamename: gamename, desc: gameInfo[0].desc, link: gameInfo[0].link, rules: gameInfo[0].rules});
 
 })
 
