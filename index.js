@@ -10,7 +10,7 @@ const bcrypt = require ("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
 const Joi = require("joi");
-
+ 
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
@@ -20,6 +20,13 @@ const client = new MongoClient(mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+//for the video call server
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+const { v4: uuidV4 } = require('uuid')
+app.set('view engine', 'ejs')
+app.use(express.static('public'))
 
 const userCollection = client.db(mongo_database).collection("users");
 const sessionCollection = MongoStore.create({
@@ -177,6 +184,25 @@ app.get("/gamesSpecific", (req, res) => {
 app.get("/social", (req, res) => {
     res.render("social");
 });
+
+app.get("/videocall", (req,res) => {
+  res.redirect(`/${uuidV4()}`)
+});
+
+app.get('/:room', (req, res) => {
+  res.render('room', { roomId: req.params.room })
+})
+
+io.on('connection', socket => {
+  socket.on('join-room', (roomId, userId) => {
+      socket.join(roomId)
+      socket.to(roomId).emit('user-connected', userId)
+
+      socket.on('disconnect', () => {
+          socket.to(roomId).emit('user-disconnected', userId)
+      })
+  })
+})
 
 app.get("*", (req, res) => {
   res.status(404);
