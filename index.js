@@ -9,13 +9,12 @@ const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
 const Joi = require("joi");
-const { createServer } = require('node:http');
-const mongoose = require('mongoose');
-const initializeSocket = require('./socket');
+const { createServer } = require("node:http");
+const mongoose = require("mongoose");
+const initializeSocket = require("./socket");
 const server = createServer(app);
-const chatRoutes = require('./routes/chatRoutes');
+const chatRoutes = require("./routes/chatRoutes");
 const MongoClient = require("mongodb").MongoClient;
-
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
@@ -31,7 +30,7 @@ const client = new MongoClient(mongo_uri, {
   useUnifiedTopology: true,
 });
 
-client.connect(err => {
+client.connect((err) => {
   if (err) {
     console.error("Failed to connect to MongoDB", err);
     process.exit(1);
@@ -42,9 +41,9 @@ client.connect(err => {
 
 const userCollection = client.db(mongo_database).collection("users");
 
-const User = require('./models/user');
-const ChatRoom = require('./models/chatRoom');
-const Message = require('./models/message');
+const User = require("./models/user");
+const ChatRoom = require("./models/chatRoom");
+const Message = require("./models/message");
 
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
@@ -78,11 +77,9 @@ const navLinks = [
   { name: "Games", link: "/games" },
   { name: "Social", link: "/social" },
   { name: "Chatroom", link: "/chat" },
-  { name: "Login", link: "/login" },
-  { name: "Signup", link: "/signup" },
 ];
 
-app.use('/api/chat', chatRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.use("/", (req, res, next) => {
   app.locals.navLinks = navLinks;
@@ -135,7 +132,7 @@ app.post("/signupSubmit", async (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    res.render("login");
+  res.render("login");
 });
 
 app.post("/loginSubmit", async (req, res) => {
@@ -143,10 +140,11 @@ app.post("/loginSubmit", async (req, res) => {
   var inputPass = req.body.password;
 
   const loginSchema = Joi.object({
-    email: Joi.string().email({
-      minDomainSegments: 2,
-    })
-    .required(),
+    email: Joi.string()
+      .email({
+        minDomainSegments: 2,
+      })
+      .required(),
     password: Joi.string().max(25).required(),
   });
 
@@ -163,7 +161,7 @@ app.post("/loginSubmit", async (req, res) => {
 
   const user = await userCollection.findOne(
     { email: inputEmail },
-    { projection: { _id: 1, username: 1, password: 1 }}
+    { projection: { _id: 1, username: 1, password: 1 } }
   );
 
   if (!user) {
@@ -196,15 +194,15 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/main", (req, res) => {
-    res.render("main");
+  res.render("main");
 });
 
 app.get("/games", (req, res) => {
-    res.render("games");
+  res.render("games");
 });
 
 app.get("/social", (req, res) => {
-    res.render("social");
+  res.render("social");
 });
 
 app.get("/chat", async (req, res) => {
@@ -212,25 +210,23 @@ app.get("/chat", async (req, res) => {
     return res.redirect("/login");
   }
 
-  // hardcoded test user just to see if it works
-  const testUserId = "664522cb06aaf40f9dabda13";
-  const existingRoom = await ChatRoom.findOne({ type: "direct", participants: { $all: [req.session.userId, testUserId] } });
+  const userId = `${req.session.userId}`;
 
-  let chatRoom;
-  if (existingRoom) {
-    chatRoom = existingRoom;
-  } else {
+  let chatRoom = await ChatRoom.findOne({ participants: userId });
+
+  if (!chatRoom) {
     chatRoom = new ChatRoom({
-      type: "direct",
-      participants: [req.session.userId, testUserId],
-      createdAt: new Date()
+      participants: [userId],
+      createdAt: new Date(),
     });
     await chatRoom.save();
   }
 
-  res.render('chatroom', { loadChatScript: true, chatRoomId: chatRoom._id.toString() }); 
+  res.render("chatroom", {
+    loadChatScript: true,
+    chatRoomId: chatRoom._id.toString(),
+  });
 });
-
 
 app.get("*", (req, res) => {
   res.status(404);
