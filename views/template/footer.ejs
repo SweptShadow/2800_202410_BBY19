@@ -35,6 +35,15 @@
   </footer>
 </div>
 
+<!--only loads the socket chat messaging if the res.render is passed a loadChatScript boolean of true.
+will need to be modified to have chat across all pages with different conditional logic for direct messaging
+vs chat room-->
+<% if (typeof loadChatScript !== 'undefined' && loadChatScript) { %>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const chatRoomId = "<%= chatRoomId %>";
+  </script>
+  <script src="/js/chat.js"></script>
+<% } %>
 </body>
-
 </html>
