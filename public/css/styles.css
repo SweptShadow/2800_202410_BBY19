@@ -10,7 +10,10 @@ html, body {
     background-color: #87CEEB;
 }
 
-#container {
+/* login page css */
+/* #region loginRegion*/
+
+#login-container {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -117,3 +120,5 @@ html, body {
   box-shadow: #422800 2px 2px 0 0;
   transform: translate(2px, 2px);
 }
+
+/* #endregion */
