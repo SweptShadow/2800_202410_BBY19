@@ -1,0 +1,26 @@
+<%- include("template/header") %>
+
+<main>
+
+  <h1>Jigsaw Game</h1>
+
+  <!-- Placeholder for the game icon -->
+  <img src="/public/images/jigsawplaceholder.png" alt="Jigsaw Game Icon" id="jigsaw-icon">
+
+  <!-- Buttons for user actions -->
+  <button id="play-game">Play</button>
+  <button id="invite-friends">Invite</button>
+
+  <!-- SVG cog icon for game settings -->
+  <button id="game-settings">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+      <path d="M8 5a3 3 0 100 6 3 3 0 000-6zM2.93 6.34l1.57-.9a5.95 5.95 0 00-.72-1.7L2.5 5.36a.75.75 0 11-.98-1.14l1.75-1a.75.75 0 01.73 0l1.75 1a.75.75 0 11-.98 1.14l-1.57.9a5.97 5.97 0 00.72 1.7l1.57-.9a.75.75 0 11.98 1.14l-1.75 1a.75.75 0 01-.73 0l-1.75-1a.75.75 0 01.98-1.14zm10.14 0l1.57-.9a.75.75 0 01.98 1.14l-1.75 1a.75.75 0 01-.73 0l-1.75-1a.75.75 0 11.98-1.14l1.57.9a5.95 5.95 0 00-.72-1.7l1.57.9a.75.75 0 11.98-1.14l-1.75-1a.75.75 0 01-.73 0l-1.75 1a.75.75 0 01-.98-1.14 5.97 5.97 0 00.72 1.7l-1.57.9a.75.75 0 01-.98-1.14l1.75-1a.75.75 0 01.73 0l1.75 1a.75.75 0 01-.98 1.14z"></path>
+    </svg>
+  </button>
+
+</main>
+
+<!-- Link to JS file -->
+<script src="/public/js/checkersHubScript.js"></script> 
+
+<%- include("template/footer") %>
