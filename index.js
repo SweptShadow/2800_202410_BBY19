@@ -13,12 +13,31 @@ const { createServer } = require('node:http');
 const mongoose = require('mongoose');
 const initializeSocket = require('./socket');
 const server = createServer(app);
+const chatRoutes = require('./routes/chatRoutes');
+const MongoClient = require("mongodb").MongoClient;
 
 const mongo_uri = process.env.MONGODB_URI;
+const mongo_database = process.env.MONGODB_DATABASE;
 mongoose.connect(mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+const client = new MongoClient(mongo_uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+client.connect(err => {
+  if (err) {
+    console.error("Failed to connect to MongoDB", err);
+    process.exit(1);
+  } else {
+    console.log("Connected to MongoDB");
+  }
+});
+
+const userCollection = client.db(mongo_database).collection("users");
 
 const User = require('./models/user');
 const ChatRoom = require('./models/chatRoom');
@@ -26,7 +45,6 @@ const Message = require('./models/message');
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
-const mongo_database = process.env.MONGODB_DATABASE;
 
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
@@ -49,6 +67,7 @@ const sessionMiddleware = session({
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(sessionMiddleware);
 
 const io = initializeSocket(server, sessionMiddleware);
@@ -62,6 +81,8 @@ const navLinks = [
   { name: "Login", link: "/login" },
   { name: "Signup", link: "/signup" },
 ];
+
+app.use('/api/chat', chatRoutes);
 
 app.use("/", (req, res, next) => {
   app.locals.navLinks = navLinks;
