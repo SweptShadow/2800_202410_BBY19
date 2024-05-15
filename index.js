@@ -16,6 +16,9 @@ const server = createServer(app);
 const chatRoutes = require('./routes/chatRoutes');
 const MongoClient = require("mongodb").MongoClient;
 
+
+const mongo_secret = process.env.MONGODB_SESSION_SECRET;
+const node_secret = process.env.NODE_SESSION_SECRET;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
 mongoose.connect(mongo_uri, {
@@ -42,9 +45,6 @@ const userCollection = client.db(mongo_database).collection("users");
 const User = require('./models/user');
 const ChatRoom = require('./models/chatRoom');
 const Message = require('./models/message');
-
-const mongo_secret = process.env.MONGODB_SESSION_SECRET;
-const node_secret = process.env.NODE_SESSION_SECRET;
 
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
@@ -163,19 +163,22 @@ app.post("/loginSubmit", async (req, res) => {
 
   const user = await userCollection.findOne(
     { email: inputEmail },
-    { projection: { username: 1, password: 1 }}
+    { projection: { _id: 1, username: 1, password: 1 }}
   );
 
   if (!user) {
     console.log(`User ${username} not found.`);
-    /*should create a res.render to give an error page when this happens*/
+    //should create a res.render to give an error page when this happens
     res.redirect("/login");
     return;
   }
 
+  console.log("Fetched User:", user);
+
   if (await bcrypt.compare(inputPass, user.password)) {
     console.log("Password is correct");
     req.session.authenticated = true;
+    req.session.userId = user._id;
     req.session.username = user.username;
     res.redirect("/main");
     return;
@@ -204,9 +207,30 @@ app.get("/social", (req, res) => {
     res.render("social");
 });
 
-app.get("/chat", (req, res) => {
-  res.render('chatroom', { loadChatScript: true });
+app.get("/chat", async (req, res) => {
+  if (!req.session.userId) {
+    return res.redirect("/login");
+  }
+
+  // hardcoded test user just to see if it works
+  const testUserId = "664522cb06aaf40f9dabda13";
+  const existingRoom = await ChatRoom.findOne({ type: "direct", participants: { $all: [req.session.userId, testUserId] } });
+
+  let chatRoom;
+  if (existingRoom) {
+    chatRoom = existingRoom;
+  } else {
+    chatRoom = new ChatRoom({
+      type: "direct",
+      participants: [req.session.userId, testUserId],
+      createdAt: new Date()
+    });
+    await chatRoom.save();
+  }
+
+  res.render('chatroom', { loadChatScript: true, chatRoomId: chatRoom._id.toString() }); 
 });
+
 
 app.get("*", (req, res) => {
   res.status(404);

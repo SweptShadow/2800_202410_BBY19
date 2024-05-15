@@ -20,29 +20,29 @@ exports.createRoom = async (req, res) => {
     }
   };
 
-exports.sendMessage = async (req, res) => {
-  const { chatRoomId, senderId, message } = req.body;
-
-  try {
-    const newMessage = new Message({
-      chatRoomId,
-      senderId,
-      message,
-      timestamp: new Date(),
-    });
-    await newMessage.save();
-
-    await ChatRoom.findByIdAndUpdate(chatRoomId, {
-      lastMessage: message,
-      lastMessageTimestamp: new Date(),
-    });
-
-    res.status(201).json(newMessage);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to send a message." });
-  }
-};
+  exports.sendMessage = async (req, res) => {
+    const { chatRoomId, message } = req.body;
+    const senderId = req.session.userId;
+  
+    if (!senderId) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+  
+    try {
+      const newMessage = new Message({ chatRoomId, senderId, message, timestamp: new Date() });
+      await newMessage.save();
+      
+      await ChatRoom.findByIdAndUpdate(chatRoomId, {
+        lastMessage: message,
+        lastMessageTimestamp: new Date()
+      });
+  
+      res.status(201).json(newMessage);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      res.status(500).json({ error: 'Failed to send message' });
+    }
+  };
 
 exports.getChatHistory = async (req, res) => {
   const { roomId } = req.params;
