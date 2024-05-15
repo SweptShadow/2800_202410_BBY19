@@ -1,5 +1,10 @@
-html {
+/* Your existing styles */
+/* ... */
+
+html, body {
     background-color: #87CEEB;
+    height: 100%;
+    margin: 0;
 }
 
 #bottom-Navbar {
@@ -8,4 +13,74 @@ html {
 
 #header {
     background-color: #87CEEB;
+}
+
+#container {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Set the container height to 100% of the viewport height */
+    margin: 0;
+}
+
+.input-group {
+    margin-bottom: 2vh; /* Adjust margin for responsiveness */
+}
+
+.input-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 1vh; /* Adjust margin for responsiveness */
+}
+
+.input-group input[type="text"],
+.input-group input[type="password"] {
+    width: 100%;
+    padding: 4vh; /* Adjust padding for responsiveness */
+    border: 1px solid #ccc;
+    border-radius: 2vh; /* Adjust border radius for responsiveness */
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2vh; /* Adjust margin for responsiveness */
+}
+
+.remember-me input[type="checkbox"] {
+    margin-right: 1vh; /* Adjust margin for responsiveness */
+}
+
+.submit-button {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 2vh; /* Adjust border radius for responsiveness */
+    padding: 2vh 6vh; /* Adjust padding for responsiveness */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+.qr-code {
+    text-align: center;
+    margin-top: 2vh; /* Adjust margin for responsiveness */
+}
+
+.qr-code::before {
+    content: "";
+    display: block;
+    width: 10vh; /* Adjust width for responsiveness */
+    height: 10vh; /* Adjust height for responsiveness */
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    margin: 0 auto 1vh; /* Adjust margin for responsiveness */
+}
+
+.login-text {
+    font-weight: bold;
 }
