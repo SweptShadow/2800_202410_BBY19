@@ -1,10 +1,5 @@
-/* Your existing styles */
-/* ... */
-
 html, body {
     background-color: #87CEEB;
-    height: 100%;
-    margin: 0;
 }
 
 #bottom-Navbar {
@@ -20,67 +15,105 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Set the container height to 100% of the viewport height */
     margin: 0;
 }
 
 .input-group {
-    margin-bottom: 2vh; /* Adjust margin for responsiveness */
+    margin-bottom: 2vh;
 }
 
 .input-group label {
     display: block;
     font-weight: bold;
-    margin-bottom: 1vh; /* Adjust margin for responsiveness */
+    margin-bottom: 1vh;
 }
 
 .input-group input[type="text"],
 .input-group input[type="password"] {
     width: 100%;
-    padding: 4vh; /* Adjust padding for responsiveness */
+    padding: 1rem;
     border: 1px solid #ccc;
-    border-radius: 2vh; /* Adjust border radius for responsiveness */
+    border-radius: 20vh;
+    font-size: 5vw;
+    max-height: 100px;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);
 }
 
 .remember-me {
     display: flex;
     align-items: center;
-    margin-bottom: 2vh; /* Adjust margin for responsiveness */
+    margin-bottom: 1.5rem;
 }
 
 .remember-me input[type="checkbox"] {
-    margin-right: 1vh; /* Adjust margin for responsiveness */
+    transform: scale(4);
+    margin-right: 1vh;
+
 }
 
-.submit-button {
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    border-radius: 2vh; /* Adjust border radius for responsiveness */
-    padding: 2vh 6vh; /* Adjust padding for responsiveness */
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.submit-button:hover {
-    background-color: #0056b3;
+.checkbox-label {
+    margin-left: 1rem;
 }
 
 .qr-code {
     text-align: center;
-    margin-top: 2vh; /* Adjust margin for responsiveness */
+    margin-top: 2vh;
 }
 
-.qr-code::before {
+.qr-code::after {
     content: "";
     display: block;
-    width: 10vh; /* Adjust width for responsiveness */
-    height: 10vh; /* Adjust height for responsiveness */
+    width: 30vh;
+    height: 30vh;
     background-color: #ffffff;
     border: 1px solid #ccc;
-    margin: 0 auto 1vh; /* Adjust margin for responsiveness */
+    margin: 0 auto 1vh;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    margin: 0 auto;
 }
 
 .login-text {
+    font-size: 5vh;
     font-weight: bold;
+}
+
+.text-bg {
+    background-color: rgba(240, 240, 240, 0.8);
+    padding: 1rem;
+    border-radius: 2vh;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button {
+  background-color: #f7a54c;
+  border: 2px solid #422800;
+  border-radius: 30px;
+  box-shadow: #422800 4px 4px 0 0;
+  color: #422800;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 1rem 5rem;
+  line-height: 50px;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.submit-button:hover {
+  background-color: #fff;
+}
+
+.submit-button:active {
+  box-shadow: #422800 2px 2px 0 0;
+  transform: translate(2px, 2px);
 }
