@@ -45,5 +45,8 @@ vs chat room-->
   </script>
   <script src="/js/chat.js"></script>
 <% } %>
+<% if (typeof additionalScripts !== 'undefined' && additionalScripts) { %>
+  <%= additionalScripts %>
+<% } %>
 </body>
 </html>

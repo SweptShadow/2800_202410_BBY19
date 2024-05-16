@@ -242,6 +242,7 @@ app.get("/chat", async (req, res) => {
     await chatRoom.save();
   }
 
+
   res.render("chatroom", {
     loadChatScript: true,
     chatRoomId: chatRoom._id.toString(),
