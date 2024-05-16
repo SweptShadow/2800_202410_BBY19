@@ -12,7 +12,7 @@ const Joi = require("joi");
 const { createServer } = require("node:http");
 const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
-const server = createServer(app);
+//const server = createServer(app);
 const chatRoutes = require("./routes/chatRoutes");
 const MongoClient = require("mongodb").MongoClient;
 
@@ -31,9 +31,9 @@ const client = new MongoClient(mongo_uri, {
 });
 
 //for the video call server
-const server = require('http').Server(app)
-const io = require('socket.io')(server)
-const { v4: uuidV4 } = require('uuid')
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+const { v4: uuidV4 } = require('uuid');
 
 client.connect((err) => {
   if (err) {
@@ -60,8 +60,6 @@ const sessionCollection = MongoStore.create({
   },
 });
 
-app.set("view engine", "ejs");
-app.use(express.static("public"));
 app.use("/js", express.static("./public/js"));
 
 const sessionMiddleware = session({
@@ -80,7 +78,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(sessionMiddleware);
 
-const io = initializeSocket(server, sessionMiddleware);
+// const io = initializeSocket(server, sessionMiddleware);
 
 const navLinks = [
   { name: "Home", link: "/" },
@@ -88,6 +86,7 @@ const navLinks = [
   { name: "Games", link: "/games" },
   { name: "Social", link: "/social" },
   { name: "Chatroom", link: "/chat" },
+  { name: "Profile", link: "/profile"}
 ];
 
 app.use("/api/chat", chatRoutes);
@@ -212,6 +211,15 @@ app.get("/main", (req, res) => {
   res.render("main");
 });
 
+app.get("/profile", async (req, res) => {
+  let username = req.session.username;
+
+  const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1}).toArray();
+  console.log(userInfo);
+
+  res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame});
+});
+
 app.get("/games", (req, res) => {
   res.render("games");
 });
@@ -233,25 +241,6 @@ app.get("/gamesSpecific", async (req, res) => {
 app.get("/social", (req, res) => {
   res.render("social");
 });
-
-app.get("/videocall", (req,res) => {
-  res.redirect(`/${uuidV4()}`)
-});
-
-app.get('/:room', (req, res) => {
-  res.render('room', { roomId: req.params.room })
-})
-
-io.on('connection', socket => {
-  socket.on('join-room', (roomId, userId) => {
-      socket.join(roomId)
-      socket.to(roomId).emit('user-connected', userId)
-
-      socket.on('disconnect', () => {
-          socket.to(roomId).emit('user-disconnected', userId)
-      })
-  })
-})
 
 app.get("/chat", async (req, res) => {
   if (!req.session.userId) {
@@ -280,14 +269,28 @@ app.get("/gameCheckersHub", (req, res) => {
   res.render("gameJigsawHub");
 });
 
-app.get('/profile', async (req, res) => {
-  let username = req.session.username;
+app.get("/videocall", (req,res) => {
+  res.redirect(`/${uuidV4()}`)
+});
 
-  const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1}).toArray();
-  console.log(userInfo);
-
-  res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame});
+app.get('/:room', (req, res) => {
+  res.render('room', { roomId: req.params.room })
 })
+
+io.on('connection', socket => {
+  socket.on('join-room', (roomId, userId) => {
+      socket.join(roomId)
+      socket.to(roomId).emit('user-connected', userId)
+
+      socket.on('disconnect', () => {
+          socket.to(roomId).emit('user-disconnected', userId)
+      })
+  })
+})
+
+
+
+
 
 
 app.get("*", (req, res) => {
@@ -295,7 +298,7 @@ app.get("*", (req, res) => {
   res.render("404");
 });
 
-server.listen(PORT, () => {
+
 server.listen(PORT, () => {
   console.log(`Golden Gaming is listening on port: ${PORT}`);
 });
