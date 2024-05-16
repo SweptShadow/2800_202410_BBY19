@@ -1,0 +1,42 @@
+<%- include("template/header") %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Grid</title>
+    <script>
+        const ROOM_ID = "<%= roomId %>";
+    </script>
+    <script src="https://unpkg.com/peerjs@1.5.3/dist/peerjs.min.js" defer></script>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/js/script.js" defer></script>
+    <style>
+
+        
+        #video-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            max-width: 80%;
+        }
+
+        video {
+            width: 500px;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="video-grid"></div>
+</body>
+</html>
+
+<%- include("template/footer") %>

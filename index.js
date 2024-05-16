@@ -30,6 +30,11 @@ const client = new MongoClient(mongo_uri, {
   useUnifiedTopology: true,
 });
 
+//for the video call server
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+const { v4: uuidV4 } = require('uuid')
+
 client.connect((err) => {
   if (err) {
     console.error("Failed to connect to MongoDB", err);
@@ -229,6 +234,25 @@ app.get("/social", (req, res) => {
   res.render("social");
 });
 
+app.get("/videocall", (req,res) => {
+  res.redirect(`/${uuidV4()}`)
+});
+
+app.get('/:room', (req, res) => {
+  res.render('room', { roomId: req.params.room })
+})
+
+io.on('connection', socket => {
+  socket.on('join-room', (roomId, userId) => {
+      socket.join(roomId)
+      socket.to(roomId).emit('user-connected', userId)
+
+      socket.on('disconnect', () => {
+          socket.to(roomId).emit('user-disconnected', userId)
+      })
+  })
+})
+
 app.get("/chat", async (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
@@ -271,6 +295,7 @@ app.get("*", (req, res) => {
   res.render("404");
 });
 
+server.listen(PORT, () => {
 server.listen(PORT, () => {
   console.log(`Golden Gaming is listening on port: ${PORT}`);
 });
