@@ -1,0 +1,22 @@
+<%- include("template/header") %>
+<div class="profileContent">
+    <div class="profileContainer">
+        <h2><%= username %></h2>
+        <button class="btn btn-primary" id="changeName">Change Name</button>
+        <h3><%= email %></h3>
+        <button class="btn btn-primary" id="changeEmail">Change Email</button>
+        <div class="profilePic">
+            <img src="https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg">
+        </div>
+        <button class="btn btn-primary" id="changePic">Change Picture</button>
+
+        <div class="profileInfo"><h1>Profile</h1></div>
+        <div class="favGame"> 
+            <p><i class="bi bi-star"></i> Favourite Game: <%= favGame %></p>
+        </div>
+        <div class="bio">Bio
+            <p>Add bio here...</p>
+        </div>
+    </div>
+</div>
+<%- include("template/footer") %>

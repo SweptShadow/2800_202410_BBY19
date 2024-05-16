@@ -248,6 +248,16 @@ app.get("/chat", async (req, res) => {
   });
 });
 
+app.get('/profile', async (req, res) => {
+  let username = "user1";
+
+  const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1}).toArray();
+  console.log(userInfo);
+
+  res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame});
+})
+
+
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
