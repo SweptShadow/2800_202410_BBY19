@@ -1,0 +1,22 @@
+<%- include("template/header") %> <!-- Include the header template -->
+
+<main>
+  <h1>Jigsaw Puzzle Game</h1>
+  <!-- Container for the completed jigsaw image -->
+  <div id="jigsaw-complete">
+    <img src="/public/images/jigsaw/trial1.png" alt="Completed Jigsaw Image">
+  </div>
+
+  <!-- Container for the jigsaw puzzle pieces -->
+  <div id="jigsaw-puzzle">
+    <% for(let i = 0; i < 3; i++) { %>
+      <% for(let j = 0; j < 3; j++) { %>
+        <div class="puzzle-piece piece-<%= i %>-<%= j %>" data-position="<%= i %>-<%= j %>"></div>
+      <% } %>
+    <% } %>
+  </div>
+</main>
+
+<script src="/path/to/jigsawGameScript.js"></script> <!-- Link to the external JavaScript file -->
+
+<%- include("template/footer") %>
