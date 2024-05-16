@@ -248,6 +248,10 @@ app.get("/chat", async (req, res) => {
   });
 });
 
+app.get("/gameCheckersHub", (req, res) => {
+  res.render("gameJigsawHub");
+});
+
 app.get('/profile', async (req, res) => {
   let username = "user1";
 
