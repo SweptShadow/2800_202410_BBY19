@@ -257,7 +257,7 @@ app.get("/gameCheckersHub", (req, res) => {
 });
 
 app.get('/profile', async (req, res) => {
-  let username = "user1";
+  let username = req.session.username;
 
   const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1}).toArray();
   console.log(userInfo);
