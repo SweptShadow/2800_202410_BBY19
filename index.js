@@ -166,6 +166,10 @@ app.get("/games", (req, res) => {
     res.render("games");
 });
 
+app.get("/gameJigsawHub", (req, res) => {
+  res.render("gameJigsawHub");
+});
+
 app.get("/gamesSpecific", (req, res) => {
   let gamename = req.query.game;
   gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
