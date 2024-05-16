@@ -3,17 +3,20 @@
         <h1><%= gamename %></h1>
         <div class="gameContainer">
             <div class="gameView">
-                <div id="chessTestGame"><script src="https://cdn.htmlgames.com/embed.js?game=Chess&amp;bgcolor=white"></script></div>
+                <!-- <div id="gameSquare"><script src="<%= link %>"></script></div> -->
+                <script src="https://www.twoplayergames.org/embed/soccer-physics"></script>
             </div>
-            <div class="gameDesc">Chess is a timeless board game that dates back centuries and is enjoyed by
-                 millions worldwide. It's a game of strategy, tactics, and foresight, played between two opponents on
-                  a checkered board divided into 64 squares of alternating colors, typically black and white. Each player s
-                  tarts with 16 pieces: one king, one queen, two rooks, two knights, two bishops, and eight pawns.The objective of
-                   chess is to checkmate your opponent's king, putting it in a position where it is under attack and unable to escap
-                   e capture. However, the game can also end in a draw through various means, such as stalemate, insufficient material
-                    to checkmate, or the fifty-move rule.
-            </div>
+            <div class="gameDesc"><p><%= desc %></p></div>
             <div class="helpButton">Help</div>
         </div>
     </div>
+
+    <div id="helpOverlay" class="overlay">
+        <div class="overlay-content">
+            <span class="close" onclick="closeHelpOverlay()">&times;</span>
+            <p><%- include("gameRules/" + rules) %></p>
+        </div>
+    </div>
+
+<script src="/js/gamesSpecific.js"></script>
 <%- include("template/footer") %>
