@@ -25,8 +25,6 @@ const client = new MongoClient(mongo_uri, {
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
 const { v4: uuidV4 } = require('uuid')
-app.set('view engine', 'ejs')
-app.use(express.static('public'))
 
 const userCollection = client.db(mongo_database).collection("users");
 const sessionCollection = MongoStore.create({
@@ -209,6 +207,6 @@ app.get("*", (req, res) => {
   res.render("404");
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Golden Gaming is listening on port: ${PORT}`);
 });
