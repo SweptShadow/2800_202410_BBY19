@@ -248,6 +248,10 @@ app.get("/chat", async (req, res) => {
   });
 });
 
+app.get("/gameCheckersHub", (req, res) => {
+  res.render("gameJigsawHub");
+});
+
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
