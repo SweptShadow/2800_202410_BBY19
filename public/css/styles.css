@@ -10,8 +10,8 @@ html, body {
     background-color: #87CEEB;
 }
 
-/* login page css */
-/* #region loginRegion*/
+/* login/signup page css */
+/* #region loginSignupRegion*/
 
 #login-container {
     font-family: Arial, sans-serif;
@@ -120,12 +120,5 @@ html, body {
   box-shadow: #422800 2px 2px 0 0;
   transform: translate(2px, 2px);
 }
-
-/* #endregion */
-
-/* signup page css */
-/* #region signupRegion*/
-
-
 
 /* #endregion */

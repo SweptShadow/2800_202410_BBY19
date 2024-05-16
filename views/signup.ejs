@@ -1,5 +1,20 @@
 <%- include("template/header") %>
-<div id="signup-container">
-    
+<div id="login-container">
+    <form class="login-form">
+        <div class="input-group">
+            <label for="email-phone" class="login-text"><h1 class="login-text text-bg">Email/Phone</h1></label>
+            <input type="text" id="email-phone" name="email-phone" placeholder="Enter your email/phone">
+        </div>
+        <div class="input-group">
+            <label for="username" class="login-text"><h1 class="login-text text-bg">Username</h1></label>
+            <input type="text" id="username" name="username" placeholder="Enter your username">
+        </div>
+        <div class="input-group">
+            <label for="password" class="login-text"><h1 class="login-text text-bg">Password</h1></label>
+            <input type="password" id="password" name="password" placeholder="Enter your password">
+        </div>
+        <button class="submit-button" type="submit"><h1 class="login-text">Sign Up</h1></button>
+        <br>
+    </form>
 </div>
 <%- include("template/footer") %>
