@@ -1,0 +1,77 @@
+<%- include("template/header") %>
+
+<main>
+  <!-- Page title -->
+  <h1>Group Management</h1>
+
+  <!-- Buttons for user actions -->
+  <button id="view-groups">View All Groups</button>
+  <button id="create-group">Create New Group</button>
+
+  <!-- Container for displaying groups; hidden by default -->
+  <div id="groups-container" style="display:none;">
+
+    <!-- Check if there are any groups -->
+    <% if(groups && groups.length > 0) { %>
+    <ul>
+      <% groups.forEach(function(group) { %>
+
+        <!-- List each group -->
+        <li><%= group.name %></li>
+
+      <% }) %>
+    </ul>
+    <% } else { %>
+      
+      <!-- Message if no groups are available -->
+      <p>You are not part of any groups yet.</p>
+    <% } %>
+  </div>
+
+  <!-- Container for creating a new group; hidden by default -->
+  <div id="create-group-container" style="display:none;">
+
+    <!-- Form for creating a new group -->
+    <form action="/create-group" method="POST">
+      <label for="group-name">Group Name:</label>
+
+      <!-- Field for group name -->
+      <input type="text" id="group-name" name="group_name" required>
+
+      <!-- Section to add users to the group -->
+      <label>Add Users:</label>
+
+      <!-- Check if there are any friends to add -->
+      <% if(friends && friends.length > 0) { %>
+      
+      <!-- List each friend with add/remove buttons -->
+      <% friends.forEach(function(friend) { %>
+      <div>
+        <!-- Display friend's username -->
+        <span><%= friend.username %></span>
+        <!-- Add button, hidden after clicked -->
+        <button type="button" class="add-user" data-user-id="<%= friend.id %>">Add</button>
+        <!-- Remove button, shown after adding a user -->
+        <button type="button" class="remove-user" data-user-id="<%= friend.id %>" style="display:none;">Remove</button>
+      </div>
+      <% }) %>
+      <% } else { %>
+      
+      <!-- Message if no friends are available -->
+      <p>You have no friends to add.</p>
+      <% } %>
+
+      <!-- Hidden field to store added users -->
+      <input type="hidden" name="users" id="users-to-add" value="">
+      
+      <button type="submit">Submit</button>
+    </form>
+
+  </div>
+
+</main>
+
+<!-- Link to the JS file -->
+<script src="/public/js/groupScript.js"></script>
+
+<%- include("template/footer") %>

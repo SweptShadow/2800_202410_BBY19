@@ -1,0 +1,37 @@
+/* Jigsaw puzzle game style */
+#jigsaw-complete {
+  margin-bottom: 20px;
+}
+
+#jigsaw-complete img {
+  width: 300px;
+  height: 300px;
+  border: 1px solid #000;
+}
+
+#jigsaw-puzzle {
+  width: 300px;
+  height: 300px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 2px;
+}
+
+.puzzle-piece {
+  width: 100px;
+  height: 100px;
+  background-size: 300px 300px;
+  border: 1px solid #000;
+  cursor: grab;
+}
+
+/* Background positions for each puzzle piece */
+.piece-0-0 { background-position: 0 0; }
+.piece-0-1 { background-position: -100px 0; }
+.piece-0-2 { background-position: -200px 0; }
+.piece-1-0 { background-position: 0 -100px; }
+.piece-1-1 { background-position: -100px -100px; }
+.piece-1-2 { background-position: -200px -100px; }
+.piece-2-0 { background-position: 0 -200px; }
+.piece-2-1 { background-position: -100px -200px; }
+.piece-2-2 { background-position: -200px -200px; }
