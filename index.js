@@ -197,6 +197,10 @@ app.get("/logout", (req, res) => {
   res.render("logout");
 });
 
+app.get("/signup", (req, res) => {
+  res.render("signup");
+});
+
 app.get("/main", (req, res) => {
   res.render("main");
 });
