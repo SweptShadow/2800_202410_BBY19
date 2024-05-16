@@ -1,25 +1,32 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const PORT = process.env.PORT || 8000;
 const url = require("url");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
-const sessionExpiry = 24 * 60 * 60 * 1000;
 const Joi = require("joi");
 const { createServer } = require("node:http");
 const mongoose = require("mongoose");
-const initializeSocket = require("./socket");
-const server = createServer(app);
-const chatRoutes = require("./routes/chatRoutes");
 const MongoClient = require("mongodb").MongoClient;
 
+const passResetRoutes = require("./routes/resetRoutes");
+const initializeSocket = require("./socket");
+const chatRoutes = require("./routes/chatRoutes");
+const User = require("./models/user");
+const ChatRoom = require("./models/chatRoom");
+const Message = require("./models/message");
+
+// config declarations (will probably go into a module)
+const PORT = process.env.PORT || 8000;
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
+const sessionExpiry = 24 * 60 * 60 * 1000;
+
+// mongodb stuff (all mongo setup will likely go into a separate module)
 mongoose.connect(mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -41,11 +48,7 @@ client.connect((err) => {
 
 const userCollection = client.db(mongo_database).collection("users");
 
-const User = require("./models/user");
-const ChatRoom = require("./models/chatRoom");
-const Message = require("./models/message");
-
-const sessionCollection = MongoStore.create({
+const sessionStore = MongoStore.create({
   mongoUrl: mongo_uri,
   collectionName: "sessions",
   crypto: {
@@ -53,13 +56,16 @@ const sessionCollection = MongoStore.create({
   },
 });
 
+// middleware
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use("/js", express.static("./public/js"));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 const sessionMiddleware = session({
   secret: node_secret,
-  store: sessionCollection,
+  store: sessionStore,
   saveUninitialized: false,
   resave: false,
   cookie: {
@@ -67,23 +73,25 @@ const sessionMiddleware = session({
   },
 });
 
-app.set("view engine", "ejs");
-app.use(express.static("public"));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(sessionMiddleware);
 
+// socket.io setup (will likely go into a socket module)
+const server = createServer(app);
 const io = initializeSocket(server, sessionMiddleware);
 
+// links for navbar
 const navLinks = [
   { name: "Home", link: "/" },
   { name: "Main", link: "/main" },
   { name: "Games", link: "/games" },
   { name: "Social", link: "/social" },
   { name: "Chatroom", link: "/chat" },
+  { name: "Login", link: "/login" },
+  { name: "Signup", link: "/signup" },
 ];
 
 app.use("/api/chat", chatRoutes);
+app.use("/api/password", passResetRoutes);
 
 app.use("/", (req, res, next) => {
   app.locals.navLinks = navLinks;
