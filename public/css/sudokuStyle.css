@@ -34,3 +34,7 @@ body {
   display: grid;
   place-items: center; /* Center both horizontally and vertically */
 }
+
+#sudoku-img {
+  border: 4px solid orange;
+}
