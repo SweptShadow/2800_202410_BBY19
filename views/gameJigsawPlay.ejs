@@ -1,19 +1,23 @@
-<%- include("template/header") %> <!-- Include the header template -->
+<%- include("template/header") %>
+<!-- Include the header template -->
 
 <main>
-  <h1>Jigsaw Puzzle Game</h1>
-  <!-- Container for the completed jigsaw image -->
-  <div id="jigsaw-complete">
-    <img src="/images/jigsaw/trial1.png" alt="Completed Jigsaw Image">
-  </div>
+  <h1 style="text-align: center;">Jigsaw Puzzle Game</h1>
 
-  <!-- Container for the jigsaw puzzle pieces -->
-  <div id="jigsaw-puzzle">
-    <% for(let i = 0; i < 3; i++) { %>
+  <div class="Hub-box">
+    <!-- Container for the completed jigsaw image -->
+    <div id="jigsaw-complete">
+      <img src="/images/jigsaw/trial1.png" alt="Completed Jigsaw Image">
+    </div>
+    <br>
+    <!-- Container for the jigsaw puzzle pieces -->
+    <div id="jigsaw-puzzle">
+      <% for(let i = 0; i < 3; i++) { %>
       <% for(let j = 0; j < 3; j++) { %>
-        <div class="puzzle-piece piece-<%= i %>-<%= j %>" data-position="<%= i %>-<%= j %>"></div>
+      <div class="puzzle-piece piece-<%= i %>-<%= j %>" data-position="<%= i %>-<%= j %>"></div>
       <% } %>
-    <% } %>
+      <% } %>
+    </div>
   </div>
 </main>
 
@@ -21,6 +25,6 @@
 <link rel="stylesheet" href="/css/jigsawStyle.css">
 
 <!-- Link to JS file -->
-<script src="/js/jigsawGameScript.js"></script> 
+<script src="/js/jigsawGameScript.js"></script>
 
 <%- include("template/footer") %>
