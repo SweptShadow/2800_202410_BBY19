@@ -1,5 +1,6 @@
 body {
   justify-content: center;
+  text-align: center;
 }
 
 .submit-button {
@@ -37,4 +38,52 @@ body {
 
 #sudoku-img {
   border: 4px solid orange;
+}
+
+hr {
+  width: 500px;
+}
+
+#errors {
+  color: coral;
+}
+
+.tile {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #f7a54c;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#board {
+  width: 450px;
+  height: 450px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #f7a54c;
+}
+
+#digits {
+  width: 450px;
+  height: 50px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #f7a54c;
+}
+
+.number {
+  width: 48px;
+  height: 48px;
+  border: 1px solid black;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
