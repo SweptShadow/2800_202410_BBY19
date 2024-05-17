@@ -19,7 +19,6 @@ html, body {
     text-align: center;
     overflow: hidden;
 }
-
 body{margin-top:20px;
     background:#eee;
     }
@@ -270,3 +269,40 @@ body{margin-top:20px;
 }
 
 /* #endregion */
+
+/* gamhubs */
+.hub-image {
+    height: 40vh;
+    justify-self: center;
+}
+
+.Hub-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+/* #end */
+
+.container#bottom-Navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 80%;
+
+    margin-left: auto;
+    margin-right: auto;
+    /* Adjust the spacing from the bottom */
+    margin-bottom: 10px;
+    /* Ensure it stays above other content */
+    z-index: 1000;
+    border-radius: 10px;
+  }
+
+  /* the tradmark footer*/
+  .container#footert {
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+  }

@@ -37,3 +37,10 @@
 .black {
   background-color: black;
 }
+
+.game-play-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}

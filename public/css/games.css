@@ -6,12 +6,12 @@ body{
 
 .height{
 
-    height: 100vh;
+    min-height: 100vh;
 }
+
 .content {
     display: grid;
-    grid-template-columns: repeat(10, 10%);
-    grid-template-rows: repeat(10, 10%);
+    align-content: start;
 }
  #searchbarcontainer {
     grid-row: 1;
@@ -25,9 +25,14 @@ body{
     grid-column: 1 / span 10;
 
     display: grid;
-    grid-template-rows: repeat(3, 33.33%);
-    grid-template-columns: repeat(4, 25%);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-gap: 10px;
+    justify-content: center;
+    align-items: start;
     padding: 20px;
+    width: 100%;
+    grid-template-rows: repeat(auto-fill,auto);
+    align-content: start;
 }
 .gamescontainer > * {
     margin: 10px;
@@ -48,6 +53,17 @@ body{
 .gamescontainer [id^="gameimg"] > img {
     width: 100%;
 }
+
+.gamescontainer > [id^="game"] {
+    margin: 10px;
+    display: grid;
+    grid-template-rows: 80% 20%;
+    grid-template-columns: 100%;
+    cursor: pointer;
+    height: 150px;
+    box-sizing: border-box;
+}
+
 .gamescontainer > * > p{
     justify-self: center;
     grid-row: 2;
@@ -56,9 +72,13 @@ body{
     font-size: 24px;
     margin: 5px;
     width: 80%;
+    max-width: 100%;
+    min-height: 40px;
     background-color: white;
     border-radius: 15px;
+    box-sizing: border-box;
 }
+
 .form{
 
     position: relative;
@@ -107,7 +127,7 @@ body{
 
 @media only screen and (max-width: 700px) {
     .height {
-        height: 300vh;
+        height: auto;
     }
     .gamescontainer {
         grid-template-rows: repeat(8, 20%);

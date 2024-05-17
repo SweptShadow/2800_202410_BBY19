@@ -1,4 +1,8 @@
+console.log("chat.js script loaded");
+
 document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM fully loaded and parsed"); 
+
   const socket = io();
 
   let chatRoomId;
@@ -8,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const messages = document.getElementById("messages");
 
   const loadChatRoom = async () => {
+    console.log("Loading chat room"); 
     const response = await fetch("/api/chat/create-room", {
       method: "POST",
       headers: {
@@ -19,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const result = await response.json();
     chatRoomId = result.chatRoomId;
 
-    socket.emit("joinRoom", chatRoomId);
+    socket.emit("joinChatRoom", chatRoomId);
 
     messages.innerHTML = "";
 
@@ -28,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    console.log("Form submitted"); 
     if (input.value) {
       const message = input.value;
       const response = await fetch("/api/chat/send-message", {
@@ -47,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   socket.on("chat message", (msg) => {
+    console.log("Received message:", msg); 
     appendMessage(msg);
   });
 
@@ -58,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function appendMessage(message) {
+    console.log("Appending message:", message);
     const item = document.createElement("li");
     item.textContent = message.message;
     messages.appendChild(item);
@@ -65,3 +73,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
   loadChatRoom();
 });
+
+

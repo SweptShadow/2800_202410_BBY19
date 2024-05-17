@@ -8,15 +8,15 @@ const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
-const Joi = require("joi");
+const Joi = require("joi"); 
 const { createServer } = require("node:http");
 const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
-//const server = createServer(app);
+const passResetRoutes = require("./routes/resetRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const MongoClient = require("mongodb").MongoClient;
 
-const mongo_secret = process.env.MONGODB_SESSION_SECRET;
+const mongo_secret = process.env.MONGODB_SESSION_SECRET; 
 const node_secret = process.env.NODE_SESSION_SECRET;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
@@ -32,7 +32,6 @@ const client = new MongoClient(mongo_uri, {
 
 //for the video call server
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
 const { v4: uuidV4 } = require('uuid');
 
 client.connect((err) => {
@@ -47,14 +46,14 @@ client.connect((err) => {
 const userCollection = client.db(mongo_database).collection("users");
 const gameCollection = client.db(mongo_database).collection("games");
 
-
+ 
 const User = require("./models/user");
 const ChatRoom = require("./models/chatRoom");
 const Message = require("./models/message");
 
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
-  collectionName: "sessions",
+  collectionName: "sessions", 
   crypto: {
     secret: mongo_secret,
   },
@@ -62,7 +61,7 @@ const sessionCollection = MongoStore.create({
 
 app.use("/js", express.static("./public/js"));
 
-const sessionMiddleware = session({
+const sessionMiddleware = session({ 
   secret: node_secret,
   store: sessionCollection,
   saveUninitialized: false,
@@ -78,27 +77,37 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(sessionMiddleware);
 
-// const io = initializeSocket(server, sessionMiddleware);
+const io = initializeSocket(server, sessionMiddleware);
 
 const navLinks = [
   { name: "Home", link: "/" },
-  { name: "Main", link: "/main" },
   { name: "Games", link: "/games" },
   { name: "Social", link: "/social" },
   { name: "Chatroom", link: "/chat" },
-  { name: "Profile", link: "/profile"}
+  { name: "Profile", link: "/profile"},
+  { name: "Video Call", link: "/videocall/:room" },
+  { name: "Logout", link: "/logout" },
 ];
 
-app.use("/api/chat", chatRoutes);
+app.locals.navLinks = navLinks;
 
-app.use("/", (req, res, next) => {
-  app.locals.navLinks = navLinks;
+app.use((req, res, next) => {
+  console.log(`Received request for ${req.url}`);
   app.locals.currentUrl = url.parse(req.url).pathname;
   next();
 });
 
+app.use("/api/chat", chatRoutes);
+app.use("/api/password", passResetRoutes);
+
 app.get("/", (req, res) => {
-  res.render("root");
+  res.render("root", { session: req.session });
+});
+
+app.get("/resetPassword", (req, res) => {
+  const token = req.query.token;
+  console.log(`Rendering resetPassword with token: ${token}`);
+  res.render("resetPassword", { token });
 });
 
 app.get("/signup", (req, res) => {
@@ -188,7 +197,7 @@ app.post("/loginSubmit", async (req, res) => {
     req.session.authenticated = true;
     req.session.userId = user._id;
     req.session.username = user.username;
-    res.redirect("/main");
+    res.redirect("/");
     return;
   } else {
     console.log("Password incorrect");
@@ -212,12 +221,16 @@ app.get("/main", (req, res) => {
 });
 
 app.get("/profile", async (req, res) => {
+if (req.session.authenticated) {
   let username = req.session.username;
 
   const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1}).toArray();
   console.log(userInfo);
 
   res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame});
+} else {
+  res.redirect("/login");
+}
 });
 
 app.get("/games", (req, res) => {
@@ -246,7 +259,7 @@ app.get("/chat", async (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
   }
-
+ 
   const userId = `${req.session.userId}`;
 
   let chatRoom = await ChatRoom.findOne({ participants: userId });
@@ -266,38 +279,40 @@ app.get("/chat", async (req, res) => {
 });
 
 app.get("/gameCheckersHub", (req, res) => {
-  res.render("gameJigsawHub");
+  res.render("gameCheckersHub");
 });
 
-app.get("/videocall", (req,res) => {
-  res.redirect(`/${uuidV4()}`)
+app.get("/gameBingoHub", (req, res) => {
+  res.render("gameBingoHub");
 });
 
-app.get('/:room', (req, res) => {
-  res.render('room', { roomId: req.params.room })
-})
+app.get("/gameJigsawPlay", (req, res) => {
+  res.render("gameJigsawPlay");
+});
 
-io.on('connection', socket => {
-  socket.on('join-room', (roomId, userId) => {
-      socket.join(roomId)
-      socket.to(roomId).emit('user-connected', userId)
+app.get("/gameCheckersPlay", (req, res) => {
+  res.render("gameCheckersPlay");
+});
 
-      socket.on('disconnect', () => {
-          socket.to(roomId).emit('user-disconnected', userId)
-      })
-  })
-})
+app.get("/gameBingoPlay", (req, res) => {
+  res.render("gameBingoPlay");
+});
 
+app.get("/videocall", (req, res) => {
+  const roomId = uuidV4();
+  console.log(`Redirecting to /videocall/${roomId}`);
+  res.redirect(`/videocall/${roomId}`);
+});
 
-
-
-
+app.get('/videocall/:room', (req, res) => {
+  console.log(`Rendering room with ID: ${req.params.room}`);
+  res.render('room', { roomId: req.params.room });
+});
 
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
 });
-
 
 server.listen(PORT, () => {
   console.log(`Golden Gaming is listening on port: ${PORT}`);
