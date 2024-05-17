@@ -85,6 +85,7 @@ const navLinks = [
   { name: "Chatroom", link: "/chat" },
   { name: "Profile", link: "/profile"},
   { name: "Video Call", link: "/videocall/:room" },
+  { name: "Logout", link: "/logout" },
 ];
 
 app.locals.navLinks = navLinks;
@@ -99,7 +100,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/password", passResetRoutes);
 
 app.get("/", (req, res) => {
-  res.render("root");
+  res.render("root", { session: req.session });
 });
 
 app.get("/resetPassword", (req, res) => {
@@ -195,7 +196,7 @@ app.post("/loginSubmit", async (req, res) => {
     req.session.authenticated = true;
     req.session.userId = user._id;
     req.session.username = user.username;
-    res.redirect("/main");
+    res.redirect("/");
     return;
   } else {
     console.log("Password incorrect");
