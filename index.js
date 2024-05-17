@@ -273,7 +273,15 @@ app.get("/chat", async (req, res) => {
 });
 
 app.get("/gameCheckersHub", (req, res) => {
-  res.render("gameJigsawHub");
+  res.render("gameCheckersHub");
+});
+
+app.get("/gameJigsawPlay", (req, res) => {
+  res.render("gameJigsawPlay");
+});
+
+app.get("/gameCheckersPlay", (req, res) => {
+  res.render("gameCheckersPlay");
 });
 
 app.get("/videocall", (req, res) => {
