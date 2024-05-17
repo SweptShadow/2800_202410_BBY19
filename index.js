@@ -8,7 +8,7 @@ const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
-const Joi = require("joi");
+const Joi = require("joi"); 
 const { createServer } = require("node:http");
 const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
@@ -16,7 +16,7 @@ const initializeSocket = require("./socket");
 const chatRoutes = require("./routes/chatRoutes");
 const MongoClient = require("mongodb").MongoClient;
 
-const mongo_secret = process.env.MONGODB_SESSION_SECRET;
+const mongo_secret = process.env.MONGODB_SESSION_SECRET; 
 const node_secret = process.env.NODE_SESSION_SECRET;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
@@ -47,14 +47,14 @@ client.connect((err) => {
 const userCollection = client.db(mongo_database).collection("users");
 const gameCollection = client.db(mongo_database).collection("games");
 
-
+ 
 const User = require("./models/user");
 const ChatRoom = require("./models/chatRoom");
 const Message = require("./models/message");
 
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
-  collectionName: "sessions",
+  collectionName: "sessions", 
   crypto: {
     secret: mongo_secret,
   },
@@ -62,7 +62,7 @@ const sessionCollection = MongoStore.create({
 
 app.use("/js", express.static("./public/js"));
 
-const sessionMiddleware = session({
+const sessionMiddleware = session({ 
   secret: node_secret,
   store: sessionCollection,
   saveUninitialized: false,
@@ -267,6 +267,10 @@ app.get("/chat", async (req, res) => {
 
 app.get("/gameCheckersHub", (req, res) => {
   res.render("gameJigsawHub");
+});
+
+app.get("/gameBingosHub", (req, res) => {
+  res.render("gameBingoHub");
 });
 
 app.get("/videocall", (req,res) => {
