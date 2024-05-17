@@ -26,3 +26,17 @@ var solution = [
     "675832941",
     "812945763"
 ];
+
+window.onload = function() {
+    setGame();
+}
+
+function setGame() {
+    // Digits 1-9
+    for (let i = 1; i <= 9; i++) {
+        // <div id="1">1</div>
+        let number = document.createElement("div");
+        number.id = i;
+        number.innerText = i;
+    }
+}
