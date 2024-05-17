@@ -217,6 +217,10 @@ app.get("/gameSudokuHub", (req, res) => {
   res.render("gameSudokuHub");
 });
 
+app.get("/gameSudokuPlay", (req, res) => {
+  res.render("gameSudokuPlay");
+});
+
 app.get("/gamesSpecific", (req, res) => {
   let gamename = req.query.game;
   gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
