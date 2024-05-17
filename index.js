@@ -9,11 +9,9 @@ const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
 const Joi = require("joi");
-const { createServer } = require("node:http");
 const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
 const passResetRoutes = require("./routes/resetRoutes");
-//const server = createServer(app);
 const chatRoutes = require("./routes/chatRoutes");
 const MongoClient = require("mongodb").MongoClient;
 
@@ -33,7 +31,6 @@ const client = new MongoClient(mongo_uri, {
 
 //for the video call server
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
 const { v4: uuidV4 } = require('uuid');
 
 client.connect((err) => {
@@ -79,15 +76,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(sessionMiddleware);
 
-// const io = initializeSocket(server, sessionMiddleware);
+const io = initializeSocket(server, sessionMiddleware);
 
 const navLinks = [
   { name: "Home", link: "/" },
-  { name: "Main", link: "/main" },
   { name: "Games", link: "/games" },
   { name: "Social", link: "/social" },
   { name: "Chatroom", link: "/chat" },
-  { name: "Profile", link: "/profile"}
+  { name: "Profile", link: "/profile"},
+  { name: "Video Call", link: "/videocall/:room" },
 ];
 
 app.locals.navLinks = navLinks;
@@ -288,19 +285,6 @@ app.get("/videocall", (req, res) => {
 app.get('/videocall/:room', (req, res) => {
   console.log(`Rendering room with ID: ${req.params.room}`);
   res.render('room', { roomId: req.params.room });
-});
-
-io.on("connection", (socket) => {
-  socket.on("join-room", (roomId, userId) => {
-    socket.join(roomId);
-    console.log(`User ${userId} joined room ${roomId}`);
-    socket.to(roomId).emit("user-connected", userId);
-
-    socket.on("disconnect", () => {
-      console.log(`User ${userId} disconnected from room ${roomId}`);
-      socket.to(roomId).emit("user-disconnected", userId);
-    });
-  });
 });
 
 app.get("*", (req, res) => {
