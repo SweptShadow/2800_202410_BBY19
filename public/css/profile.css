@@ -99,13 +99,13 @@ body{
 #changePic {
     z-index: 100;
     grid-row: 10 / 11;
-    grid-column: 3 / 5;
+    grid-column: 2 / 6;
 }
 #changeName {
     grid-row: 14;
-    grid-column: 3 / 5;
+    grid-column: 2 / 6;
 }
 #changeEmail {
     grid-row: 18;
-    grid-column: 3 / 5;
+    grid-column: 2 / 6;
 }
