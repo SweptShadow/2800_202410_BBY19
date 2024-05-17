@@ -8,14 +8,15 @@ const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
-const Joi = require("joi");
+const Joi = require("joi"); 
+const { createServer } = require("node:http");
 const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
 const passResetRoutes = require("./routes/resetRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const MongoClient = require("mongodb").MongoClient;
 
-const mongo_secret = process.env.MONGODB_SESSION_SECRET;
+const mongo_secret = process.env.MONGODB_SESSION_SECRET; 
 const node_secret = process.env.NODE_SESSION_SECRET;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
@@ -45,14 +46,14 @@ client.connect((err) => {
 const userCollection = client.db(mongo_database).collection("users");
 const gameCollection = client.db(mongo_database).collection("games");
 
-
+ 
 const User = require("./models/user");
 const ChatRoom = require("./models/chatRoom");
 const Message = require("./models/message");
 
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
-  collectionName: "sessions",
+  collectionName: "sessions", 
   crypto: {
     secret: mongo_secret,
   },
@@ -60,7 +61,7 @@ const sessionCollection = MongoStore.create({
 
 app.use("/js", express.static("./public/js"));
 
-const sessionMiddleware = session({
+const sessionMiddleware = session({ 
   secret: node_secret,
   store: sessionCollection,
   saveUninitialized: false,
@@ -220,12 +221,16 @@ app.get("/main", (req, res) => {
 });
 
 app.get("/profile", async (req, res) => {
+if (req.session.authenticated) {
   let username = req.session.username;
 
   const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1}).toArray();
   console.log(userInfo);
 
   res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame});
+} else {
+  res.redirect("/login");
+}
 });
 
 app.get("/games", (req, res) => {
@@ -254,7 +259,7 @@ app.get("/chat", async (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
   }
-
+ 
   const userId = `${req.session.userId}`;
 
   let chatRoom = await ChatRoom.findOne({ participants: userId });
@@ -277,12 +282,24 @@ app.get("/gameCheckersHub", (req, res) => {
   res.render("gameCheckersHub");
 });
 
+app.get("/gameBingosHub", (req, res) => {
+  res.render("gameBingoHub");
+});
+
+app.get("/gameBingosHub", (req, res) => {
+  res.render("gameBingoHub");
+});
+
 app.get("/gameJigsawPlay", (req, res) => {
   res.render("gameJigsawPlay");
 });
 
 app.get("/gameCheckersPlay", (req, res) => {
   res.render("gameCheckersPlay");
+});
+
+app.get("/gameBingoPlay", (req, res) => {
+  res.render("gameBingoPlay");
 });
 
 app.get("/videocall", (req, res) => {
