@@ -92,8 +92,8 @@ const navLinks = [
 
 app.locals.navLinks = navLinks;
 
-app.use("/", (req, res, next) => {
-  
+app.use((req, res, next) => {
+  console.log(`Received request for ${req.url}`);
   app.locals.currentUrl = url.parse(req.url).pathname;
   next();
 });
@@ -103,6 +103,12 @@ app.use("/api/password", passResetRoutes);
 
 app.get("/", (req, res) => {
   res.render("root");
+});
+
+app.get("/resetPassword", (req, res) => {
+  const token = req.query.token;
+  console.log(`Rendering resetPassword with token: ${token}`);
+  res.render("resetPassword", { token });
 });
 
 app.get("/signup", (req, res) => {
