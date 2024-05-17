@@ -246,7 +246,7 @@ app.get("/chat", async (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
   }
-
+ 
   const userId = `${req.session.userId}`;
 
   let chatRoom = await ChatRoom.findOne({ participants: userId });

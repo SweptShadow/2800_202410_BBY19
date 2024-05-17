@@ -1,0 +1,32 @@
+<%- include("template/header") %>
+
+<div class="game-play-box">
+
+  <h1>Play Bingo</h1>
+
+  <!-- Checkerboard setup -->
+  <div id="checkerboard">
+    <% for(let i = 0; i < 8; i++) { %>
+    <div class="row">
+      <% for(let j = 0; j < 8; j++) { %>
+      <div class="cell <%= (i+j)%2 === 0 ? 'light' : 'dark' %>">
+        <% if(i < 3 && (i+j)%2 !== 0) { %>
+        <div class="piece red"></div>
+        <% } else if(i > 4 && (i+j)%2 !== 0) { %>
+        <div class="piece black"></div>
+        <% } %>
+      </div>
+      <% } %>
+    </div>
+    <% } %>
+  </div>
+
+</div>
+
+<!-- Link to CSS file -->
+<link rel="stylesheet" href="/public/css/checkersStyle.css">
+
+<!-- Link to game logic JS -->
+<script src="/public/js/checkersGameScript.js"></script>
+
+<%- include("template/footer") %>
