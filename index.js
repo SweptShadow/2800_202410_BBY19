@@ -273,35 +273,34 @@ app.get("/gameCheckersHub", (req, res) => {
   res.render("gameJigsawHub");
 });
 
-app.get("/videocall", (req,res) => {
-  res.redirect(`/${uuidV4()}`)
+app.get("/videocall", (req, res) => {
+  const roomId = uuidV4();
+  console.log(`Redirecting to /videocall/${roomId}`);
+  res.redirect(`/videocall/${roomId}`);
 });
 
-app.get('/:room', (req, res) => {
-  res.render('room', { roomId: req.params.room })
-})
+app.get('/videocall/:room', (req, res) => {
+  console.log(`Rendering room with ID: ${req.params.room}`);
+  res.render('room', { roomId: req.params.room });
+});
 
-io.on('connection', socket => {
-  socket.on('join-room', (roomId, userId) => {
-      socket.join(roomId)
-      socket.to(roomId).emit('user-connected', userId)
+io.on("connection", (socket) => {
+  socket.on("join-room", (roomId, userId) => {
+    socket.join(roomId);
+    console.log(`User ${userId} joined room ${roomId}`);
+    socket.to(roomId).emit("user-connected", userId);
 
-      socket.on('disconnect', () => {
-          socket.to(roomId).emit('user-disconnected', userId)
-      })
-  })
-})
-
-
-
-
-
+    socket.on("disconnect", () => {
+      console.log(`User ${userId} disconnected from room ${roomId}`);
+      socket.to(roomId).emit("user-disconnected", userId);
+    });
+  });
+});
 
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
 });
-
 
 server.listen(PORT, () => {
   console.log(`Golden Gaming is listening on port: ${PORT}`);
