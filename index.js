@@ -221,12 +221,16 @@ app.get("/main", (req, res) => {
 });
 
 app.get("/profile", async (req, res) => {
+if (req.session.authenticated) {
   let username = req.session.username;
 
   const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1}).toArray();
   console.log(userInfo);
 
   res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame});
+} else {
+  res.redirect("/login");
+}
 });
 
 app.get("/games", (req, res) => {
