@@ -286,10 +286,6 @@ app.get("/gameBingosHub", (req, res) => {
   res.render("gameBingoHub");
 });
 
-app.get("/gameBingosHub", (req, res) => {
-  res.render("gameBingoHub");
-});
-
 app.get("/gameJigsawPlay", (req, res) => {
   res.render("gameJigsawPlay");
 });
