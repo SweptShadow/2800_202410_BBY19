@@ -294,6 +294,10 @@ app.get("/gameCheckersPlay", (req, res) => {
   res.render("gameCheckersPlay");
 });
 
+app.get("/gameBingoPlay", (req, res) => {
+  res.render("gameBingoPlay");
+});
+
 app.get("/videocall", (req, res) => {
   const roomId = uuidV4();
   console.log(`Redirecting to /videocall/${roomId}`);
