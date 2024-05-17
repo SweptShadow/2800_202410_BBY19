@@ -49,9 +49,9 @@ hr {
 }
 
 .tile {
-  width: 48px;
-  height: 48px;
-  border: 1px solid #f7a54c;
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgb(54, 54, 54);
   font-size: 20px;
   font-weight: bold;
   display: flex;
@@ -65,7 +65,7 @@ hr {
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  background-color: #f7a54c;
+  background-color: #ffc383;
 }
 
 #digits {
@@ -74,16 +74,21 @@ hr {
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  background-color: #f7a54c;
 }
 
 .number {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   border: 1px solid black;
+  margin: 2px;
   font-size: 20px;
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #f7a54c;
+}
+
+.number-selected {
+  background-color: gray;
 }

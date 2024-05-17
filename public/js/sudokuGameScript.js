@@ -38,5 +38,33 @@ function setGame() {
         let number = document.createElement("div");
         number.id = i;
         number.innerText = i;
+        number.addEventListener("click", selectNumber);
+        number.classList.add("number");
+        document.getElementById("digits").appendChild(number);
+    }
+
+    // Board
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            let tile = document.createElement("div");
+            tile.id = r.toString() + "-" + c.toString();
+            tile.addEventListener("click", selectTile);
+            tile.classList.add("tile");
+            document.getElementById("board").appendChild(tile);
+        }
+    }
+}
+
+function selectNumber() {
+    if (numSelected != null) {
+        numSelected.classList.remove("number-selected");
+    }
+    numSelected = this;
+    numSelected.classList.add("number-selected");
+}
+
+function selectTile() {
+    if (numSelected) {
+        this.innerText = numSelected.id;
     }
 }
