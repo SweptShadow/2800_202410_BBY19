@@ -14,3 +14,8 @@ document.getElementById("game4").addEventListener('click', function() {
 
     window.location.href = "/gameBingoHub";
 })
+
+document.getElementById("game5").addEventListener('click', function() {
+
+    window.location.href = "/gameSudokuHub";
+})
