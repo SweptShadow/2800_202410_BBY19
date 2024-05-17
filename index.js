@@ -282,7 +282,7 @@ app.get("/gameCheckersHub", (req, res) => {
   res.render("gameCheckersHub");
 });
 
-app.get("/gameBingosHub", (req, res) => {
+app.get("/gameBingoHub", (req, res) => {
   res.render("gameBingoHub");
 });
 
