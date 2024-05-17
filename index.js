@@ -12,6 +12,7 @@ const Joi = require("joi");
 const { createServer } = require("node:http");
 const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
+const passResetRoutes = require("./routes/resetRoutes");
 //const server = createServer(app);
 const chatRoutes = require("./routes/chatRoutes");
 const MongoClient = require("mongodb").MongoClient;
@@ -89,13 +90,16 @@ const navLinks = [
   { name: "Profile", link: "/profile"}
 ];
 
-app.use("/api/chat", chatRoutes);
+app.locals.navLinks = navLinks;
 
 app.use("/", (req, res, next) => {
-  app.locals.navLinks = navLinks;
+  
   app.locals.currentUrl = url.parse(req.url).pathname;
   next();
 });
+
+app.use("/api/chat", chatRoutes);
+app.use("/api/password", passResetRoutes);
 
 app.get("/", (req, res) => {
   res.render("root");
