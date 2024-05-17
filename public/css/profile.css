@@ -1,0 +1,111 @@
+.profileContent {
+    padding: 20px;
+    height: 700px;
+}
+body{
+    background: #87CEEB;
+    background: radial-gradient(at center, #87CEEB, #FFFFFF);
+}
+
+.profileContainer {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(160, 160, 160, 0.47);
+    display: grid;
+    grid-template-rows: repeat(20, 5%);
+    grid-template-columns: repeat(20, 5%);
+    border: 2px solid white;
+    border-radius: 20px;
+    
+
+}
+
+.profileContainer h2 {
+    background-color: rgb(255, 255, 255);
+    border-radius: 28px;
+    grid-row: 12 / 14;
+    grid-column: 2 / 6;
+    align-items: center;
+    height: 100%;
+    font-size: 35px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.profileContainer h3 {
+    background-color: rgb(138, 138, 138);
+    grid-row: 16 / 18;
+    grid-column: 2 / 6;
+    border-radius: 28px;
+    align-items: center;
+    height: 100%;
+    font-size: 23px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    
+}
+
+.profileContainer .profilePic {
+    background-color: lightyellow;
+    grid-row: 2 / span 8;
+    grid-column: 2 /span 4;
+}
+
+.profileContainer .profilePic img {
+    width: 100%;
+    height: 100%;
+
+}
+
+.profileInfo {
+    background: #67b7d7;
+    background: radial-gradient(at center, #67b7d7, #cfdffe);
+    box-shadow: 0 0.25rem 1rem 0 rgba(33, 64, 165, 0.125);
+    grid-row: 2 / 19;
+    grid-column: 7 / 19;
+    text-align: center;
+    border-radius: 15px;
+}
+.profileContainer .bio {
+    background-color: white;
+    grid-row: 6 / 18;
+    grid-column: 8 / 18;
+    text-align: center;
+    font-size: 35px;
+    font-weight: 500;
+    padding: 15px;
+    border-radius: 20px;
+}
+
+.profileContainer .bio p {
+    background-color: white;
+    font-size: 24px;
+    height: 85%;
+    border: 1px solid black;
+    border-radius: 20px;
+    font-weight: 400;
+
+}
+
+.profileContainer .favGame {
+    background-color: rgb(255, 255, 255);
+    grid-row: 4;
+    grid-column: 8 / 18;
+    font-weight: 650;
+    padding-left: 10px;
+}
+#changePic {
+    z-index: 100;
+    grid-row: 10 / 11;
+    grid-column: 3 / 5;
+}
+#changeName {
+    grid-row: 14;
+    grid-column: 3 / 5;
+}
+#changeEmail {
+    grid-row: 18;
+    grid-column: 3 / 5;
+}

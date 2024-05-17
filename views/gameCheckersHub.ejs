@@ -2,23 +2,28 @@
 
 <main>
 
-  <h1>Checkers Game</h1>
+  <h1 style="text-align: center;">Checkers Game</h1>
 
-  <!-- Placeholder for the game icon -->
-  <img src="/images/checkers.jpg" alt="Game Icon" id="game-icon">
+  <div class="Hub-box">
+    <!-- Placeholder for the game icon -->
+    <img src="/images/checkers.jpeg" alt="Game Icon" class="hub-image" id="checkers-icon">
+    <br>
+    <!-- Buttons for user actions -->
+    <button id="play-game">Play</button>
+    <button id="invite-friends">Invite</button>
 
-  <!-- Buttons for user actions -->
-  <button id="play-game">Play</button>
-  <button id="invite-friends">Invite</button>
-
-  <!-- SVG cog icon for game settings -->
-  <button id="game-settings">
-    <img src="/images/jigsaw.jpg" alt="Jigsaw Game Icon" id="jigsaw-icon">
-  </button>
-
+    <!-- Icon for game settings -->
+    <button id="game-settings">
+      <i class="bi bi-gear-fill"></i>
+    </button>
+  </div>
+  <br>
 </main>
+<br>
+<br>
+<br>
 
 <!-- Link to JS file -->
-<script src="/public/js/checkersHubScript.js"></script> 
+<script src="/js/checkersHubScript.js"></script>
 
 <%- include("template/footer") %>

@@ -1,9 +1,9 @@
 <%- include("template/header") %>
 <div id="login-container">
-    <form class="login-form">
+    <form class="login-form" action="/signupSubmit" method="post">
         <div class="input-group">
             <label for="email-phone" class="login-text"><h1 class="login-text text-bg">Email/Phone</h1></label>
-            <input type="text" id="email-phone" name="email-phone" placeholder="Enter your email/phone">
+            <input type="text" id="email-phone" name="email" placeholder="Enter your email/phone">
         </div>
         <div class="input-group">
             <label for="username" class="login-text"><h1 class="login-text text-bg">Username</h1></label>
