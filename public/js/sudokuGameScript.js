@@ -42,12 +42,32 @@ function setGame() {
         number.classList.add("number");
         document.getElementById("digits").appendChild(number);
     }
+    let eraser = document.createElement("div");
+    eraser.id = "";
+    eraser.addEventListener("click", selectNumber);
+    eraser.classList.add("number");
+    let img = document.createElement("img");
+    img.src = "/images/eraser.png";
+    img.alt = "Eraser";
+    img.style.width = "100%";
+    eraser.appendChild(img);
+    document.getElementById("digits").appendChild(eraser);
 
     // Board
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
             let tile = document.createElement("div");
             tile.id = r.toString() + "-" + c.toString();
+            if (board[r][c] != "-") {
+                tile.innerText = board[r][c];
+                tile.classList.add("tile-start");
+            }
+            if (r == 2 || r == 5) {
+                tile.classList.add("horizontal-line");
+            }
+            if (c == 2 || c == 5) {
+                tile.classList.add("vertical-line");
+            }
             tile.addEventListener("click", selectTile);
             tile.classList.add("tile");
             document.getElementById("board").appendChild(tile);
@@ -63,8 +83,56 @@ function selectNumber() {
     numSelected.classList.add("number-selected");
 }
 
+
+
 function selectTile() {
     if (numSelected) {
-        this.innerText = numSelected.id;
+        if (this.classList.contains("tile-start")) {
+            return;
+        }
+        const coords = this.id.split("-");
+        const r = parseInt(coords[0]);
+        const c = parseInt(coords[1]);
+        const enteredNumber = numSelected.id;
+        const correctNumber = solution[r][c];
+
+        if (enteredNumber !== correctNumber) {
+            // Set the text color to red for incorrect numbers
+            this.style.color = "red";
+        } else {
+            // Reset the text color to black for correct numbers
+            this.style.color = "black";
+        }
+        this.innerText = enteredNumber;
+        if (current) {
+            let previous = current;
+        }
+        
     }
 }
+
+
+// let st1 = new Stack();
+// // returns false
+// console.log(stack.isEmpty()); 
+
+// // returns Underflow
+// console.log(stack.pop()); 
+
+// // Adding element to the stack
+// stack.push(10);
+// stack.push(20);
+// stack.push(30);
+
+// // Printing the stack element
+// // prints [10, 20, 30]
+// console.log(stack.printStack());
+
+// // returns 30
+// console.log(stack.peek());
+
+// // returns 30 and remove it from stack
+// console.log(stack.pop());
+
+// // returns [10, 20]
+// console.log(stack.printStack()); 
