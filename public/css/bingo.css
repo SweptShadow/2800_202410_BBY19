@@ -20,7 +20,10 @@ p a {
   border-collapse: collapse;
   background: white;
 }
-
+#lastNumbers{
+  color: red;
+  font-size: x-large;
+}
 th,
 td {
   font-family: Helvetica;

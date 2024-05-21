@@ -1,4 +1,5 @@
 var usedNums = new Array(55);
+var numbers = [];
 
 function newCard() {
     //Starting loop through each square card
@@ -26,9 +27,17 @@ function getNewNum() {
 }
 function getBingoNum(elementId) {
     var currNum = Math.floor(Math.random() * 50);
-    console.log("Random number:", currNum);
     // Update the HTML content of the specified element with the new number
     document.getElementById(elementId).innerHTML = currNum;
+    // Append the new number to the history array
+    numbers.push(currNum);
+    // Display the history of clicked numbers (optional)
+    displayClickedNumbersHistory();
+}
+
+// Function to display the history of clicked numbers
+function displayClickedNumbersHistory() {
+    document.getElementById("lastNumbers").textContent = numbers;
 }
 
 function anotherCard() {
@@ -45,7 +54,6 @@ function anotherCard() {
 function setupSquareClickHandlers() {
     for (var i = 0; i < 24; i++) {
         var currSquare = document.getElementById("square" + i);
-        console.log(document.getElementById("square" + i));
         currSquare.addEventListener("click", toggleHighlight);
     }
 }

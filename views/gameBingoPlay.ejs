@@ -60,9 +60,11 @@
 	
 <p><a href="#" onclick="anotherCard()">Click here</a> to create a new card</p>
 
-<h3>The current number is: <a href="#" onclick="getBingoNum('currentNumber')">Get New Number</a></h3>
+<h3>The current number: <a href="#" onclick="getBingoNum('currentNumber')">Drop Ball</a></h3>
 <h3><span id="currentNumber">&nbsp;</span></h3> <!-- Element to display the current number -->
 
-<%- include("template/footer") %>
+<h3>Previous Numbers:</h3>
+<div id="lastNumbers"></div> 
 
 <%- include("template/footer") %>
+  
