@@ -8,9 +8,7 @@
 
 <div class="game-play-box">
 
-  <h1>Play Bingo</h1>
-
-  <h1>Create a BINGO Card</h1>
+  <h1>BINGO</h1>
     </div>
 	<div id="content">
 		<table id="bingotable">
@@ -22,7 +20,8 @@
 				<th class="orange">O</th>
 			</tr>
 			<tr>
-				<td id="square0"> &nbsp;</td>
+				<!-- represents '' in unicode as a space holder -->
+				<td id="square0"> &nbsp;</td> 
 				<td id="square1"> &nbsp;</td>
 				<td id="square2"> &nbsp;</td>
 				<td id="square3"> &nbsp;</td>
@@ -60,5 +59,10 @@
 	</div>
 	
 <p><a href="#" onclick="anotherCard()">Click here</a> to create a new card</p>
+
+<h3>The current number is: <a href="#" onclick="getBingoNum('currentNumber')">Get New Number</a></h3>
+<h3><span id="currentNumber">&nbsp;</span></h3> <!-- Element to display the current number -->
+
+<%- include("template/footer") %>
 
 <%- include("template/footer") %>
