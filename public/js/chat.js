@@ -27,15 +27,18 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!chatRoomId) {
       return;
     }
+    messages.innerHTML = ''; 
     const response = await fetch(`/api/chat/chat-history/${chatRoomId}`);
-    const messages = await response.json();
-    messages.forEach(appendMessage);
+    const data = await response.json();
+    console.log("Fetched messages: ", data); 
+    data.forEach(appendMessage);
   }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (input.value) {
       const message = input.value;
+      console.log("Submitting message: ", message);
       const response = await fetch("/api/chat/send-message", {
         method: "POST",
         headers: {
@@ -47,18 +50,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }),
       });
       const newMessage = await response.json();
+      console.log("Message saved: ", newMessage);
       socket.emit("chat message", newMessage);
       input.value = "";
     }
   });
 
   socket.on("chat message", (msg) => {
+    console.log("Received chat message: ", msg);
     appendMessage(msg);
-  });
-
-  socket.on('chatHistory', (msgs) => {
-    messages.innerHTML = '';
-    msgs.forEach(appendMessage);
   });
 
   function appendMessage(message) {

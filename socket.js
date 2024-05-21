@@ -47,6 +47,8 @@ function initializeSocket(server, sessionMiddleware) {
           message: msg.message,
           timestamp: msg.timestamp,
         }));
+
+        console.log("Sending chat history: ", messagesWithUsernames.length, messagesWithUsernames);
         socket.emit('chatHistory', messagesWithUsernames);
       } catch (error) {
         console.error('Error fetching chat history:', error);
@@ -58,6 +60,8 @@ function initializeSocket(server, sessionMiddleware) {
         console.error('chatRoomId and message are required to send a message.');
         return;
       }
+      console.log("Received message to save: ", msg); 
+
       const newMessage = new Message({
         chatRoomId: msg.chatRoomId,
         senderId: socket.handshake.session.userId,
@@ -68,6 +72,7 @@ function initializeSocket(server, sessionMiddleware) {
       try {
         const savedMessage = await newMessage.save();
         const populatedMessage = await Message.findById(savedMessage._id).populate('senderId', 'username').exec();
+        console.log("Broadcasting chat message: ", populatedMessage); 
         io.to(msg.chatRoomId).emit("chat message", {
           chatRoomId: populatedMessage.chatRoomId,
           senderId: populatedMessage.senderId._id,
@@ -84,8 +89,6 @@ function initializeSocket(server, sessionMiddleware) {
       console.log(`User disconnected from chat room: ${socket.rooms}`);
     });
   });
-
-  
 
   return io;
 }

@@ -29,6 +29,8 @@ exports.sendMessage = async (req, res) => {
     return res.status(401).json({ error: "User not authenticated" });
   }
 
+  console.log(`Entering sendMessage: ${message} to room: ${chatRoomId} by user: ${senderId}`);
+
   try {
     const newMessage = new Message({
       chatRoomId,
@@ -36,12 +38,10 @@ exports.sendMessage = async (req, res) => {
       message,
       timestamp: new Date(),
     });
+
     await newMessage.save();
 
-    await ChatRoom.findByIdAndUpdate(chatRoomId, {
-      lastMessage: message,
-      lastMessageTimestamp: new Date(),
-    });
+    console.log(`Exiting sendMessage: ${message} saved with ID: ${newMessage._id}`);
 
     res.status(201).json(newMessage);
   } catch (error) {
@@ -50,11 +50,15 @@ exports.sendMessage = async (req, res) => {
   }
 };
 
+
 exports.getChatHistory = async (req, res) => {
+  
   const { roomId } = req.params;
 
   try {
+    console.log(`Fetching chat history for roomId: ${roomId}`);
     const messages = await Message.find({ chatRoomId: roomId }).sort({ timestamp: 1 }).populate('senderId', 'username');
+    console.log(`Fetched messages: ${messages.length}`, messages);
     const messagesWithUsernames = messages.map(msg => ({
       chatRoomId: msg.chatRoomId,
       senderId: msg.senderId._id,
