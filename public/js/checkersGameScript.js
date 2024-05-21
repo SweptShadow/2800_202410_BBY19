@@ -1,6 +1,8 @@
-//Define the players, currently just user vs computer(ai)
+//Define the player, comp and kings
 const PLAYER = 'red';
 const AI = 'black';
+const KING = 'king';
+const EMPTY = null;
 
 //Global var to track the current turn
 let currentTurn = PLAYER;
@@ -8,7 +10,7 @@ let currentTurn = PLAYER;
 //Initialize the game board
 let board = [];
 for (let i = 0; i < 8; i++) {
-  board[i] = new Array(8).fill(null);
+  board[i] = new Array(8).fill(EMPTY);
 }
 
 //Function to switch turns
@@ -137,9 +139,43 @@ function compMove() {
 }
 
 
-//Function to check if a move is valid
-function isValidMove(newRow, newCol) {
-  return newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8 && board[newRow][newCol] === null;
+//Function to check if a move is valid, including jump moves
+function isValidMove(piece, fromRow, fromCol, toRow, toCol) {
+
+  //Check if destination cell is empty
+  if (board[toRow][toCol] !== EMPTY) return false;
+
+  //Calculate distance of the move
+  let rowDistance = Math.abs(toRow - fromRow);
+  let colDistance = Math.abs(toCol - fromCol);
+
+  //Regular move
+  if (rowDistance === 1 && colDistance === 1) {
+    if (piece.classList.contains(KING)) {
+
+      //Kings can move backward
+      return true; 
+    }
+
+    return (currentTurn === PLAYER && toRow > fromRow) || //Red moves down
+           (currentTurn === AI && toRow < fromRow); //Black moves up
+  }
+
+  //Capture move
+  if (rowDistance === 2 && colDistance === 2) {
+
+    let capturedRow = (fromRow + toRow) / 2;
+    let capturedCol = (fromCol + toCol) / 2;
+    let opponent = currentTurn === PLAYER ? AI : PLAYER;
+    if (board[capturedRow][capturedCol] === opponent) {
+
+      //Valid capture
+      return true;
+    }
+  }
+
+//Invalid move
+  return false; 
 }
 
 //Function to check if a piece should be kinged
@@ -193,9 +229,40 @@ function getCaptureMoves(board, row, col, player) {
 
 //Function to check if a position is on the board
 function isValidPosition(row, col) {
+  
   return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
 
+//Function to check for a win or loss
+function checkWinLoss() {
+
+  let playerPieces = 0;
+  let aiPieces = 0;
+
+  //Count pieces for each player
+  for (let row = 0; row < 8; row++) {
+    
+    for (let col = 0; col < 8; col++) {
+
+      if (board[row][col] === PLAYER) playerPieces++;
+      if (board[row][col] === AI) aiPieces++;
+    }
+  }
+
+  //Check win/loss conditions
+  if (playerPieces === 0) {
+
+    alert('AI wins!');
+    //Reset game or handle loss
+  } else if (aiPieces === 0) {
+
+    alert('Player wins!');
+    //Reset game or handle win
+  }
+}
+
+//Call this function at the end of each turn
+checkWinLoss();
 
 //Call initialize function when the page loads
 initGame();
