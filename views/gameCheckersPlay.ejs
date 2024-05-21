@@ -4,16 +4,19 @@
 
   <h1>Play Checkers</h1>
 
+  <!-- Turn indicator -->
+  <div id="turn-indicator">Player's turn</div>
+  
   <!-- Checkerboard setup -->
   <div id="checkerboard">
     <% for(let i = 0; i < 8; i++) { %>
     <div class="row">
       <% for(let j = 0; j < 8; j++) { %>
-      <div class="cell <%= (i+j)%2 === 0 ? 'light' : 'dark' %>">
+      <div class="cell <%= (i+j)%2 === 0 ? 'light' : 'dark' %>" id="cell-<%= i %>-<%= j %>">
         <% if(i < 3 && (i+j)%2 !== 0) { %>
-        <div class="piece red"></div>
+        <div class="piece red" id="piece-<%= i %>-<%= j %>"></div>
         <% } else if(i > 4 && (i+j)%2 !== 0) { %>
-        <div class="piece black"></div>
+        <div class="piece black" id="piece-<%= i %>-<%= j %>"></div>
         <% } %>
       </div>
       <% } %>

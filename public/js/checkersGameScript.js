@@ -18,7 +18,14 @@ function switchTurns() {
 
   currentTurn = currentTurn === PLAYER ? AI : PLAYER;
 
-  //If it's the AI's turn, make a move
+  let turnIndicator = document.getElementById('turn-indicator');
+  if (currentTurn === PLAYER) {
+    turnIndicator.textContent = "Player's turn";
+  } else {
+    turnIndicator.textContent = "Computer's turn";
+  }
+
+  // If it's the AI's turn, make a move
   if (currentTurn === AI) {
     compMove();
   }
@@ -37,43 +44,83 @@ function initGame() {
       board[i][j] = AI;
     }
   }
-  //Add click event-listeners for player pieces
-  document.querySelectorAll('.piece.' + PLAYER).forEach(piece => {
-    piece.addEventListener('click', selectPiece);
+  //Attach event listeners to player pieces
+  let playerPieces = document.querySelectorAll('.piece.' + PLAYER);
+  playerPieces.forEach(piece => {
+
+    piece.addEventListener('click', function(event) {
+
+      selectPiece(event, piece);
+    });
   });
 }
 
 //Function handling piece selection
 function selectPiece(event) {
 
-  //Deselect previously selected piece
-  let selected = document.querySelector('.selected');
-  if (selected) {
-    selected.classList.remove('selected');
-  }
+   // Clear any previous move listeners to prevent stacking
+   clearMoveListeners();
 
-  //Select new piece
-  event.currentTarget.classList.add('selected');
+   // Deselect any previously selected piece
+   let previouslySelected = document.querySelector('.selected');
+   if (previouslySelected) {
+     previouslySelected.classList.remove('selected');
+   }
+ 
+   // Select the new piece and highlight it
+   let selectedPiece = event.currentTarget;
+   selectedPiece.classList.add('selected');
+ 
+   // Add logic to handle piece movement when a destination cell is clicked
+   let destinationCells = document.querySelectorAll('.cell.dark:not(.occupied)');
+   destinationCells.forEach(cell => {
+     cell.addEventListener('click', function() {
+       // Get the new row and column from the target cell's ID
+      let [newRow, newCol] = cell.id.split('-').slice(1).map(Number);
+      // Check if the move is valid before moving the piece
+      if (isValidMove(selectedPiece, newRow, newCol)) {
+        movePiece(selectedPiece, newRow, newCol);
+      }
+     });
+   });
+ }
+
+// Function to clear move listeners
+function clearMoveListeners() {
+  let destinationCells = document.querySelectorAll('.cell.dark:not(.occupied)');
+  destinationCells.forEach(cell => {
+    let newCell = cell.cloneNode(true);
+    cell.parentNode.replaceChild(newCell, cell);
+  });
 }
 
-//Function to move piece to new cell
+// Function to move piece to new cell
 function movePiece(piece, newRow, newCol) {
-
-  let targetCell = document.getElementById('cell-' + newRow + '-' + newCol);
-  if (targetCell && !targetCell.firstChild) {
-
-    targetCell.appendChild(piece);
-    piece.classList.remove('selected');
-
-    //Update the board state
-    updateBoard(piece, newRow, newCol);
-
-    //Logic for kinging checked here!
-    checkForKinging(piece, newRow);
-
-    //Sitch turn logic, after player move, computer's turn
-    switchTurns();
+  // Get the new row and column from the target cell's ID
+  let [newRow, newCol] = targetCell.id.split('-').slice(1).map(Number);
+  let originalCell = document.getElementById(`cell-${oldRow}-${oldCol}`);
+  if (originalCell) {
+    originalCell.innerHTML = ''; // Clear the original cell
   }
+
+  // Move the piece to the target cell
+  targetCell.appendChild(piece);
+  piece.classList.remove('selected');
+
+  // Update the board state
+  updateBoard(piece, newRow, newCol);
+
+  // Logic for kinging checked here!
+  checkForKinging(piece, newRow);
+
+  // Switch turn logic, after player move, computer's turn
+  switchTurns();
+
+  // Clear move listeners after the move
+  clearMoveListeners();
+
+  // Check for win/loss after the move
+  checkWinLoss();
 }
 
 //Function to handle capturing a piece
@@ -91,6 +138,9 @@ function capturePiece(fromRow, fromCol, toRow, toCol) {
 
   //Move the capturing piece
   movePiece(piece, toRow, toCol);
+
+  //Check for win/loss after the move
+  checkWinLoss();
 }
 
 
@@ -142,6 +192,11 @@ function compMove() {
 //Function to check if a move is valid, including jump moves
 function isValidMove(piece, fromRow, fromCol, toRow, toCol) {
 
+  if (!piece.classList.contains('king')) {
+    if (currentTurn === PLAYER && newRow <= oldRow) return false; // Red moves down
+    if (currentTurn === AI && newRow >= oldRow) return false; // Black moves up
+  }
+
   //Check if destination cell is empty
   if (board[toRow][toCol] !== EMPTY) return false;
 
@@ -154,11 +209,11 @@ function isValidMove(piece, fromRow, fromCol, toRow, toCol) {
     if (piece.classList.contains(KING)) {
 
       //Kings can move backward
-      return true; 
+      return true;
     }
 
     return (currentTurn === PLAYER && toRow > fromRow) || //Red moves down
-           (currentTurn === AI && toRow < fromRow); //Black moves up
+      (currentTurn === AI && toRow < fromRow); //Black moves up
   }
 
   //Capture move
@@ -174,8 +229,8 @@ function isValidMove(piece, fromRow, fromCol, toRow, toCol) {
     }
   }
 
-//Invalid move
-  return false; 
+  //Invalid move
+  return false;
 }
 
 //Function to check if a piece should be kinged
@@ -229,7 +284,7 @@ function getCaptureMoves(board, row, col, player) {
 
 //Function to check if a position is on the board
 function isValidPosition(row, col) {
-  
+
   return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
 
@@ -241,7 +296,7 @@ function checkWinLoss() {
 
   //Count pieces for each player
   for (let row = 0; row < 8; row++) {
-    
+
     for (let col = 0; col < 8; col++) {
 
       if (board[row][col] === PLAYER) playerPieces++;
@@ -261,8 +316,5 @@ function checkWinLoss() {
   }
 }
 
-//Call this function at the end of each turn
-checkWinLoss();
-
 //Call initialize function when the page loads
-initGame();
+window.onload = initGame();
