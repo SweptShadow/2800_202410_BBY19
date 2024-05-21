@@ -67,11 +67,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function appendMessage(message) {
     console.log("Appending message:", message);
     const item = document.createElement("li");
-    item.textContent = message.message;
+    item.textContent = `${message.username}: ${message.message}`;
     messages.appendChild(item);
   }
 
   loadChatRoom();
 });
-
-

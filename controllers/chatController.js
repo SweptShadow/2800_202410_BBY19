@@ -47,12 +47,18 @@ exports.getChatHistory = async (req, res) => {
   const { roomId } = req.params;
 
   try {
-    const messages = await Message.find({ chatRoomId: roomId }).sort({
-      timestamp: 1,
-    });
-    res.status(200).json(messages);
+    const messages = await Message.find({ chatRoomId: roomId }).sort({ timestamp: 1 }).populate('senderId', 'username');
+    const messagesWithUsernames = messages.map(msg => ({
+      chatRoomId: msg.chatRoomId,
+      senderId: msg.senderId._id,
+      username: msg.senderId.username,
+      message: msg.message,
+      timestamp: msg.timestamp,
+    }));
+    res.status(200).json(messagesWithUsernames);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to get chat histroy." });
+    res.status(500).json({ error: "Failed to get chat history." });
   }
 };
+

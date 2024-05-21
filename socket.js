@@ -1,5 +1,6 @@
 const { Server } = require('socket.io');
 const sharedSession = require("express-socket.io-session");
+const Message = require('./models/message');
 
 function initializeSocket(server, sessionMiddleware) {
   const io = new Server(server);
@@ -11,14 +12,41 @@ function initializeSocket(server, sessionMiddleware) {
   io.on('connection', (socket) => {
     console.log('a user connected');
 
-    socket.on('joinChatRoom', (roomId) => {
+    socket.on('joinChatRoom', async (roomId) => {
       socket.join(roomId);
       console.log(`User joined chat room: ${roomId}`);
 
-      socket.on("chat message", (msg) => {
+      try {
+        const messages = await Message.find({ chatRoomId: roomId }).sort({ timestamp: 1 });
+        const messagesWithUsernames = messages.map(msg => ({
+          ...msg.toObject(),
+          username: msg.senderId 
+        }));
+        socket.emit('chatHistory', messagesWithUsernames);
+      } catch (error) {
+        console.error('Error fetching chat history:', error);
+      }
+
+      socket.on("chat message", async (msg) => {
         console.log("Server received message: ", msg);
-        io.to(roomId).emit("chat message", msg);
-        console.log("message: " + msg.message);
+        const newMessage = new Message({
+          chatRoomId: roomId,
+          senderId: socket.handshake.session.userId,
+          message: msg.message,
+          timestamp: new Date(),
+        });
+        try {
+          await newMessage.save();
+          io.to(roomId).emit("chat message", {
+            chatRoomId: newMessage.chatRoomId,
+            senderId: newMessage.senderId,
+            username: socket.handshake.session.username,
+            message: newMessage.message,
+            timestamp: newMessage.timestamp,
+          });
+        } catch (error) {
+          console.error('Error saving message:', error);
+        }
       });
 
       socket.on('disconnect', () => {
@@ -42,5 +70,3 @@ function initializeSocket(server, sessionMiddleware) {
 }
 
 module.exports = initializeSocket;
-
-
