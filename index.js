@@ -267,24 +267,27 @@ app.get("/chat", async (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
   }
- 
-  const userId = `${req.session.userId}`;
 
-  let chatRoom = await ChatRoom.findOne({ participants: userId });
+  try {
+    const user = await User.findById(req.session.userId);
+    if (!user) {
+      console.error(`User not found: ${req.session.userId}`);
+      return res.redirect("/login");
+    }
 
-  if (!chatRoom) {
-    chatRoom = new ChatRoom({
-      participants: [userId],
-      createdAt: new Date(),
+    console.log(`User ${user.email} accessing /chat`);
+
+    res.render("chatroom", {
+      loadChatScript: true,
     });
-    await chatRoom.save();
+  } catch (error) {
+    console.error('Error accessing chat:', error);
+    res.status(500).send("Internal Server Error");
   }
-
-  res.render("chatroom", {
-    loadChatScript: true,
-    chatRoomId: chatRoom._id.toString(),
-  });
 });
+
+
+
 
 app.get("/gameCheckersHub", (req, res) => {
   res.render("gameCheckersHub");

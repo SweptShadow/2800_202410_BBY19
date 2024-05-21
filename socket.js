@@ -1,6 +1,7 @@
 const { Server } = require('socket.io');
 const sharedSession = require("express-socket.io-session");
 const Message = require('./models/message');
+const ChatRoom = require('./models/chatRoom');
 
 function initializeSocket(server, sessionMiddleware) {
   const io = new Server(server);
@@ -10,61 +11,81 @@ function initializeSocket(server, sessionMiddleware) {
   }));
 
   io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log(`User ${socket.id} connected`);
 
-    socket.on('joinChatRoom', async (roomId) => {
-      socket.join(roomId);
-      console.log(`User joined chat room: ${roomId}`);
+    if (!socket.handshake.session.userId) {
+      console.error('No user ID in session. Disconnecting socket.');
+      socket.disconnect();
+      return;
+    }
+
+    socket.on('joinChatRoom', async (roomName) => {
+      if (!roomName || roomName.trim() === '') {
+        console.error('Room name is required to join a chat room.');
+        return;
+      }
+      roomName = roomName.trim();
 
       try {
-        const messages = await Message.find({ chatRoomId: roomId }).sort({ timestamp: 1 });
+        console.log(`User joining chat room: ${roomName}`);
+        let room = await ChatRoom.findOne({ name: roomName });
+        if (!room) {
+          console.log(`Creating new chat room: ${roomName}`);
+          room = new ChatRoom({ name: roomName, createdAt: new Date() });
+          await room.save();
+        }
+        socket.join(room._id.toString());
+        console.log(`User joined chat room: ${room.name}`);
+
+        socket.emit("setChatRoomId", room._id.toString());
+
+        const messages = await Message.find({ chatRoomId: room._id }).sort({ timestamp: 1 }).populate('senderId', 'username');
         const messagesWithUsernames = messages.map(msg => ({
-          ...msg.toObject(),
-          username: msg.senderId 
+          chatRoomId: msg.chatRoomId,
+          senderId: msg.senderId._id,
+          username: msg.senderId.username,
+          message: msg.message,
+          timestamp: msg.timestamp,
         }));
         socket.emit('chatHistory', messagesWithUsernames);
       } catch (error) {
         console.error('Error fetching chat history:', error);
       }
-
-      socket.on("chat message", async (msg) => {
-        console.log("Server received message: ", msg);
-        const newMessage = new Message({
-          chatRoomId: roomId,
-          senderId: socket.handshake.session.userId,
-          message: msg.message,
-          timestamp: new Date(),
-        });
-        try {
-          await newMessage.save();
-          io.to(roomId).emit("chat message", {
-            chatRoomId: newMessage.chatRoomId,
-            senderId: newMessage.senderId,
-            username: socket.handshake.session.username,
-            message: newMessage.message,
-            timestamp: newMessage.timestamp,
-          });
-        } catch (error) {
-          console.error('Error saving message:', error);
-        }
-      });
-
-      socket.on('disconnect', () => {
-        console.log(`User disconnected from chat room: ${roomId}`);
-      });
     });
 
-    socket.on('joinVideoCallRoom', (roomId, userId) => {
-      socket.join(roomId);
-      console.log(`User ${userId} joined video call room: ${roomId}`);
-      socket.to(roomId).emit("user-connected", userId);
-
-      socket.on('disconnect', () => {
-        console.log(`User ${userId} disconnected from video call room: ${roomId}`);
-        socket.to(roomId).emit("user-disconnected", userId);
+    socket.on("chat message", async (msg) => {
+      if (!msg.chatRoomId || !msg.message) {
+        console.error('chatRoomId and message are required to send a message.');
+        return;
+      }
+      const newMessage = new Message({
+        chatRoomId: msg.chatRoomId,
+        senderId: socket.handshake.session.userId,
+        message: msg.message,
+        timestamp: new Date(),
       });
+
+      try {
+        const savedMessage = await newMessage.save();
+        const populatedMessage = await Message.findById(savedMessage._id).populate('senderId', 'username').exec();
+        io.to(msg.chatRoomId).emit("chat message", {
+          chatRoomId: populatedMessage.chatRoomId,
+          senderId: populatedMessage.senderId._id,
+          username: populatedMessage.senderId.username,
+          message: populatedMessage.message,
+          timestamp: populatedMessage.timestamp,
+        });
+      } catch (error) {
+        console.error('Error saving message:', error);
+      }
+    });
+
+    socket.on('disconnect', () => {
+      console.log(`User disconnected from chat room: ${socket.rooms}`);
     });
   });
+
+  
 
   return io;
 }

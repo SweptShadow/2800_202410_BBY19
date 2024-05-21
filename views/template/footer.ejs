@@ -32,9 +32,6 @@ will need to be modified to have chat across all pages with different conditiona
 vs chat room-->
 <% if (typeof loadChatScript !== 'undefined' && loadChatScript) { %>
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const chatRoomId = "<%= chatRoomId %>";
-  </script>
   <script src="/js/chat.js"></script>
 <% } %>
 </body>

@@ -2,12 +2,19 @@ const ChatRoom = require("../models/chatRoom");
 const Message = require("../models/message");
 
 exports.createRoom = async (req, res) => {
-  const { participants } = req.body;
+  const { name, participants } = req.body;
+
+  if (!name || name.trim() === '') {
+    return res.status(400).json({ error: "Room name is required" });
+  }
 
   try {
-    const newRoom = new ChatRoom({ participants, createdAt: new Date() });
-    await newRoom.save();
-    res.status(201).json({ chatRoomId: newRoom._id.toString() });
+    let room = await ChatRoom.findOne({ name });
+    if (!room) {
+      room = new ChatRoom({ name, participants, createdAt: new Date() });
+      await room.save();
+    }
+    res.status(201).json({ chatRoomId: room._id.toString(), name: room.name });
   } catch (error) {
     console.error("Error creating chat room:", error);
     res.status(500).json({ error: "Failed to create chat room" });
@@ -61,4 +68,3 @@ exports.getChatHistory = async (req, res) => {
     res.status(500).json({ error: "Failed to get chat history." });
   }
 };
-

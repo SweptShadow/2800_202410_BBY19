@@ -1,39 +1,39 @@
-console.log("chat.js script loaded");
-
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM fully loaded and parsed"); 
+  console.log("DOM fully loaded and parsed");
 
   const socket = io();
 
   let chatRoomId;
-
   const form = document.getElementById("form");
   const input = document.getElementById("input");
   const messages = document.getElementById("messages");
 
-  const loadChatRoom = async () => {
-    console.log("Loading chat room"); 
-    const response = await fetch("/api/chat/create-room", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ participants: [] }),
-    });
+  const roomPrompt = prompt("Enter a room name:");
+  const roomName = roomPrompt ? roomPrompt.trim() : "default";
 
-    const result = await response.json();
-    chatRoomId = result.chatRoomId;
+  if (!roomName) {
+    alert("Room name is required!");
+    return;
+  }
 
-    socket.emit("joinChatRoom", chatRoomId);
+  socket.emit("joinChatRoom", roomName);
 
-    messages.innerHTML = "";
-
+  socket.on("setChatRoomId", (id) => {
+    chatRoomId = id;
     loadChatHistory();
-  };
+  });
+
+  async function loadChatHistory() {
+    if (!chatRoomId) {
+      return;
+    }
+    const response = await fetch(`/api/chat/chat-history/${chatRoomId}`);
+    const messages = await response.json();
+    messages.forEach(appendMessage);
+  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("Form submitted"); 
     if (input.value) {
       const message = input.value;
       const response = await fetch("/api/chat/send-message", {
@@ -53,23 +53,17 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   socket.on("chat message", (msg) => {
-    console.log("Received message:", msg); 
     appendMessage(msg);
   });
 
-  async function loadChatHistory() {
-    if (!chatRoomId) return;
-    const response = await fetch(`/api/chat/chat-history/${chatRoomId}`);
-    const messages = await response.json();
-    messages.forEach(appendMessage);
-  }
+  socket.on('chatHistory', (msgs) => {
+    messages.innerHTML = '';
+    msgs.forEach(appendMessage);
+  });
 
   function appendMessage(message) {
-    console.log("Appending message:", message);
     const item = document.createElement("li");
     item.textContent = `${message.username}: ${message.message}`;
     messages.appendChild(item);
   }
-
-  loadChatRoom();
 });
