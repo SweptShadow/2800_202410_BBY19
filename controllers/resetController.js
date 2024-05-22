@@ -13,7 +13,7 @@ let transporter = nodemailer.createTransport({
 });
 
 const sendResetEmail = (email, token) => {
-  // Replace with host URL when you leave localhost and move to a hosting service.
+  // Replace with host URL when we leave localhost and move to a hosting service.
   const resetUrl = `http://localhost:9001/resetPassword?token=${token}`;
 
   let mailOptions = {

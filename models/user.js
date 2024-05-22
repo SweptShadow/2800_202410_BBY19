@@ -36,6 +36,14 @@ userSchema.statics.resetPassword = async function(token, newPassword) {
 
   await user.save();
 };
+
+/**
+ * The User model.
+ * 
+ * Contains a username, an email, a password, and an array of User friends.
+ * The password reset process connects a token to the User object that allows
+ * the server to know which password to update in the database.
+ */
 const User = mongoose.model("User", userSchema);
 module.exports = User;
 

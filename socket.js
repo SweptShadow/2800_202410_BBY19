@@ -3,6 +3,16 @@ const sharedSession = require('express-socket.io-session');
 const Message = require('./models/message');
 const User = require('./models/user');
 
+/**
+ * Starts the socket.io server.
+ * 
+ * Sets up the socket.io server and then integrates it with the shared session.
+ * Defines some event handlers for socket events like connecting to the server,
+ * joining a room and sending messages.
+ * @param {Object} server http server instance
+ * @param {Object} sessionMiddleware middleware to share session data between clients
+ * @returns {Server} socket.io server instance
+  */
 function initializeSocket(server, sessionMiddleware) {
   const io = new Server(server);
 

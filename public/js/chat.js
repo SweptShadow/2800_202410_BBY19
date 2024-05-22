@@ -23,6 +23,13 @@ document.addEventListener("DOMContentLoaded", function () {
     loadChatHistory();
   });
 
+  /**
+   * Loads the chat history for the current room.
+   * 
+   * GETs the chat history from the server with fetch and loads it into a data variable.
+   * Then appends each message into the window.
+   * @returns promise that resolves to an array of messages
+   */
   async function loadChatHistory() {
     if (!chatRoomId) {
       return;
@@ -30,15 +37,20 @@ document.addEventListener("DOMContentLoaded", function () {
     messages.innerHTML = ''; 
     const response = await fetch(`/api/chat/chat-history/${chatRoomId}`);
     const data = await response.json();
-    console.log("Fetched messages: ", data); 
+    // console.log("Fetched messages: ", data); 
     data.forEach(appendMessage);
   }
 
+  /**
+   * When a message gets submitted as form input, this POSTs it to the server
+   * with a chatRoomId and the message body, unless the field is empty. Then it
+   * emits the message to the current chatroom with socket.
+   */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (input.value) {
       const message = input.value;
-      console.log("Submitting message: ", message);
+      // console.log("Submitting message: ", message);
       const response = await fetch("/api/chat/send-message", {
         method: "POST",
         headers: {
@@ -50,17 +62,21 @@ document.addEventListener("DOMContentLoaded", function () {
         }),
       });
       const newMessage = await response.json();
-      console.log("Message saved: ", newMessage);
+      // console.log("Message saved: ", newMessage);
       socket.emit("chat message", newMessage);
       input.value = "";
     }
   });
 
   socket.on("chat message", (msg) => {
-    console.log("Received chat message: ", msg);
+    // console.log("Received chat message: ", msg);
     appendMessage(msg);
   });
 
+  /**
+   * Appends the message to the chat window.
+   * @param {String} message 
+   */
   function appendMessage(message) {
     const item = document.createElement("li");
     item.textContent = `${message.username}: ${message.message}`;

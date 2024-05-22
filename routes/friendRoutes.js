@@ -3,6 +3,13 @@ const router = express.Router();
 const User = require('../models/user');
 const Friendship = require('../models/friendship');
 
+/**
+ * Route that's called to add a new friend.
+ * 
+ * It makes sure the user is authenticated by referencing the session. Takes the input email
+ * and checks if it is already a friend. If not, it adds both users to the other's friends list.
+ * @return promise that resolves to a success message or an error message 
+ */
 router.post('/add', async (req, res) => {
   const { email } = req.body;
   const userId = req.session.userId;
@@ -41,6 +48,11 @@ router.post('/add', async (req, res) => {
   }
 });
 
+/**
+ * Route to load friends list.
+ * When an authenticated user connects to the root directory, automatically loads their friends list.
+ * @return promise that resolves to the friends list or an error message.
+ */
 router.get('/', async (req, res) => {
   const userId = req.session.userId;
 
