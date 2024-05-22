@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
   socket.on("chat message", (msg) => {
     // console.log("Received chat message: ", msg);
     appendMessage(msg);
+    scrollToBottom();
   });
 
   /**
@@ -81,5 +82,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const item = document.createElement("li");
     item.textContent = `${message.username}: ${message.message}`;
     messages.appendChild(item);
+  }
+
+  function scrollToBottom() {
+    messages.scrollTop = messages.scrollHeight;
   }
 });
