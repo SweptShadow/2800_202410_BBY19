@@ -1,7 +1,15 @@
+import Stack from './stack.js';
+
 var numSelected = null;
 var tileSelecter = null;
+var undoMoves = new Stack();
+var redoMoves = new Stack();
 
-var errors = 0;
+const undoButton = document.getElementById("undo-button");
+undoButton.addEventListener("click", undoMove);
+const redoButton = document.getElementById("redo-button");
+redoButton.addEventListener("click", redoMove);
+
 
 var board = [
     "--74916-5",
@@ -27,7 +35,7 @@ var solution = [
     "812945763"
 ];
 
-window.onload = function() {
+window.onload = function () {
     setGame();
 }
 
@@ -42,6 +50,8 @@ function setGame() {
         number.classList.add("number");
         document.getElementById("digits").appendChild(number);
     }
+
+    // Eraser
     let eraser = document.createElement("div");
     eraser.id = "";
     eraser.addEventListener("click", selectNumber);
@@ -95,6 +105,7 @@ function selectTile() {
         const c = parseInt(coords[1]);
         const enteredNumber = numSelected.id;
         const correctNumber = solution[r][c];
+        let current = this.innerText;
 
         if (enteredNumber !== correctNumber) {
             // Set the text color to red for incorrect numbers
@@ -104,35 +115,41 @@ function selectTile() {
             this.style.color = "black";
         }
         this.innerText = enteredNumber;
-        if (current) {
-            let previous = current;
-        }
-        
+        undoMoves.push([r, c, current, this.innerText]);
+        redoMoves.clear();
     }
 }
 
+function undoMove() {
+    if (undoMoves.isEmpty()) {
+        return;
+    }
+    let content = undoMoves.pop();
+    redoMoves.push(content);
+    let r = content[0].toString();
+    let c = content[1].toString();
+    let prev = content[2];
+    if (solution[r][c] != prev) {
+        document.getElementById(r + "-" + c).style.color = 'red';
+    } else {
+        document.getElementById(r + "-" + c).style.color = 'black';
+    }
+    document.getElementById(r + "-" + c).innerText = prev;
+}
 
-// let st1 = new Stack();
-// // returns false
-// console.log(stack.isEmpty()); 
-
-// // returns Underflow
-// console.log(stack.pop()); 
-
-// // Adding element to the stack
-// stack.push(10);
-// stack.push(20);
-// stack.push(30);
-
-// // Printing the stack element
-// // prints [10, 20, 30]
-// console.log(stack.printStack());
-
-// // returns 30
-// console.log(stack.peek());
-
-// // returns 30 and remove it from stack
-// console.log(stack.pop());
-
-// // returns [10, 20]
-// console.log(stack.printStack()); 
+function redoMove() {
+    if (redoMoves.isEmpty()) {
+        return;
+    }
+    let content = redoMoves.pop();
+    undoMoves.push(content);
+    let r = content[0].toString();
+    let c = content[1].toString();
+    let prev = content[3];
+    if (solution[r][c] != prev) {
+        document.getElementById(r + "-" + c).style.color = 'red';
+    } else {
+        document.getElementById(r + "-" + c).style.color = 'black';
+    }
+    document.getElementById(r + "-" + c).innerText = prev;
+}

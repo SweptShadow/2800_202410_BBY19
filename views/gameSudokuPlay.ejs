@@ -3,7 +3,6 @@
 <div class="container">
     <h1>Sudoku</h1>
     <hr>
-    <h2 id="errors">0</h2>
 
     <!-- board -->
     <div id="board"></div>
@@ -14,6 +13,7 @@
     <br>
     <div>
         <button id="undo-button">Undo</button>
+        <button id="redo-button">Redo</button>
     </div>
     <br>
     <br>
@@ -21,6 +21,7 @@
 </div>
 
 <!-- Link to game logic JS -->
-<script src="/js/sudokuGameScript.js"></script>
+<script src="/js/stack.js" type="module"></script>
+<script src="/js/sudokuGameScript.js" type="module"></script>
 
 <%- include("template/footer") %>
