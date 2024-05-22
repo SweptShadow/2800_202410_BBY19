@@ -18,10 +18,17 @@ const friendRoutes = require("./routes/friendRoutes");
 const MongoClient = require("mongodb").MongoClient;
 const cloudinary = require("cloudinary").v2;
 const fileUpload = require('express-fileupload');
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
 const cloudinary_secret = process.env.CLOUDINARY_SECRET;
+const google_client_id = process.env.GOOGLE_CLIENT_ID;
+const google_client_secret = process.env.GOOGLE_CLIENT_SECRET;
+const google_callback_url = process.env.NODE_ENV === 'production'
+? process.env.GOOGLE_CALLBACK_URL_PROD
+: process.env.GOOGLE_CALLBACK_URL_DEV;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
 mongoose.connect(mongo_uri, {
@@ -79,6 +86,9 @@ const sessionMiddleware = session({
     maxAge: sessionExpiry,
   },
 });
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -220,6 +230,15 @@ app.post("/loginSubmit", async (req, res) => {
     return;
   }
 });
+
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+app.get("/auth/google/callback", 
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
