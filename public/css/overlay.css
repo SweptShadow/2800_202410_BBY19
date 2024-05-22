@@ -1,0 +1,83 @@
+#friends-chat-overlay {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 300px;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 20px;
+    display: none; /* Initially hidden */
+  }
+  
+  #toggle-chat-overlay {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1001;
+  }
+  
+  #friends-list-container {
+    margin-bottom: 20px;
+  }
+  
+  #friends-list-container h2 {
+    margin-top: 0;
+  }
+  
+  #friends-list {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  #friends-list li {
+    cursor: pointer;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  #friends-list li:hover {
+    background: #f0f0f0;
+  }
+  
+  #chat-modal {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 300px;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 20px;
+    display: none; /* Initially hidden */
+  }
+  
+  #chat-modal h2 {
+    margin-top: 0;
+  }
+  
+  #chat-room-id {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  #chat-room-id li {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  #friends-list-container button, #chat-modal button {
+    margin-top: 10px;
+  }
+  

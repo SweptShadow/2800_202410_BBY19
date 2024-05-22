@@ -8,15 +8,16 @@ const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
-const Joi = require("joi"); 
+const Joi = require("joi");
 const { createServer } = require("node:http");
 const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
 const passResetRoutes = require("./routes/resetRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const friendRoutes = require("./routes/friendRoutes"); // Include friendRoutes
 const MongoClient = require("mongodb").MongoClient;
 
-const mongo_secret = process.env.MONGODB_SESSION_SECRET; 
+const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
@@ -46,14 +47,13 @@ client.connect((err) => {
 const userCollection = client.db(mongo_database).collection("users");
 const gameCollection = client.db(mongo_database).collection("games");
 
- 
 const User = require("./models/user");
 const ChatRoom = require("./models/chatRoom");
 const Message = require("./models/message");
 
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
-  collectionName: "sessions", 
+  collectionName: "sessions",
   crypto: {
     secret: mongo_secret,
   },
@@ -61,7 +61,7 @@ const sessionCollection = MongoStore.create({
 
 app.use("/js", express.static("./public/js"));
 
-const sessionMiddleware = session({ 
+const sessionMiddleware = session({
   secret: node_secret,
   store: sessionCollection,
   saveUninitialized: false,
@@ -98,6 +98,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/chat", chatRoutes);
+app.use("/api/friends", friendRoutes); // Add this line
 app.use("/api/password", passResetRoutes);
 
 app.get("/", (req, res) => {
@@ -184,8 +185,7 @@ app.post("/loginSubmit", async (req, res) => {
   );
 
   if (!user) {
-    console.log(`User ${username} not found.`);
-    //should create a res.render to give an error page when this happens
+    console.log(`User not found.`);
     res.redirect("/login");
     return;
   }
@@ -221,16 +221,16 @@ app.get("/main", (req, res) => {
 });
 
 app.get("/profile", async (req, res) => {
-if (req.session.authenticated) {
-  let username = req.session.username;
+  if (req.session.authenticated) {
+    let username = req.session.username;
 
-  const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1}).toArray();
-  console.log(userInfo);
+    const userInfo = await userCollection.find({ username: username }).project({ name: 1, email: 1, favGame: 1 }).toArray();
+    console.log(userInfo);
 
-  res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame});
-} else {
-  res.redirect("/login");
-}
+    res.render("profile", { username: username, email: userInfo[0].email, favGame: userInfo[0].favGame });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/games", (req, res) => {
@@ -253,11 +253,11 @@ app.get("/gamesSpecific", async (req, res) => {
   let gamename = req.query.game;
   gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
-  const gameInfo = await gameCollection.find({name: gamename}).project({name: 1, desc: 1, _id: 1, link: 1, rules: 1}).toArray();
+  const gameInfo = await gameCollection.find({ name: gamename }).project({ name: 1, desc: 1, _id: 1, link: 1, rules: 1 }).toArray();
 
-  res.render("gamesSpecific", {gamename: gamename, desc: gameInfo[0].desc, link: gameInfo[0].link, rules: gameInfo[0].rules});
+  res.render("gamesSpecific", { gamename: gamename, desc: gameInfo[0].desc, link: gameInfo[0].link, rules: gameInfo[0].rules });
 
-})
+});
 
 app.get("/social", (req, res) => {
   res.render("social");
@@ -285,9 +285,6 @@ app.get("/chat", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-
-
-
 
 app.get("/gameCheckersHub", (req, res) => {
   res.render("gameCheckersHub");

@@ -306,3 +306,65 @@ body{margin-top:20px;
     margin: 0;
     padding: 0;
   }
+
+  #friends-chat-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+  #friends-list-container {
+    margin-bottom: 20px;
+  }
+  
+  #friends-list-container h2 {
+    margin-top: 0;
+  }
+  
+  #friends-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #friends-list li {
+    cursor: pointer;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  #friends-list li:hover {
+    background: #f0f0f0;
+  }
+  
+  #chat-modal {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 300px;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+  #chat-modal h2 {
+    margin-top: 0;
+  }
+  
+  #chat-room-id {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  #chat-room-id li {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+  }
+  

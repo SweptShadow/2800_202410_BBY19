@@ -3,15 +3,14 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
-const UserSchema = new Schema({
-  username: { type: String, required: true },
+const userSchema = new Schema({
+  username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  resetToken: String,
-  resetTokenExpiry: Date,
+  friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
-UserSchema.statics.saveResetToken = async function(email, token) {
+userSchema.statics.saveResetToken = async function(email, token) {
   const expiry = Date.now() + 3600000; 
   return this.findOneAndUpdate(
     { email: email },
@@ -20,7 +19,7 @@ UserSchema.statics.saveResetToken = async function(email, token) {
   );
 };
 
-UserSchema.statics.resetPassword = async function(token, newPassword) {
+userSchema.statics.resetPassword = async function(token, newPassword) {
   const user = await this.findOne({
     resetToken: token,
     resetTokenExpiry: { $gt: Date.now() }, 
@@ -38,5 +37,5 @@ UserSchema.statics.resetPassword = async function(token, newPassword) {
   await user.save();
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', userSchema);
 
