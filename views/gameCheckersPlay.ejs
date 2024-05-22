@@ -5,24 +5,25 @@
   <h1>Play Checkers</h1>
 
   <div class="checkerscontainer">
+
     <!-- Next player indicator -->
     <div class="next-player counter">
       <div class="occupied redPiece" id="next-player"></div>
       Player
     </div>
 
-    <!-- Game board -->
+    <!-- Game Board -->
     <div class="game" id="game"></div>
 
-    <!-- Piece counters -->
+    <!-- Piece counter -->
     <div class="counter">
       <div>
         <div class="occupied redPiece"></div>
-        <span id="white-player-count-pieces">12</span> <!-- Adjusted piece count -->
+        <span id="red-player-count-pieces">10</span>
       </div>
       <div>
         <div class="occupied blackPiece"></div>
-        <span id="black-player-count-pieces">12</span> <!-- Adjusted piece count -->
+        <span id="black-player-count-pieces">10</span>
       </div>
     </div>
   </div>
@@ -32,15 +33,17 @@
     <div class="modal-content">
       <div class="modal-body">
         <p>The <strong id="winner"></strong> player won the game !!</p>
-        <p> <span id="loser"></span>, would you take your revenge ???</p>
+        <p> <span id="loser"></span>, whould you take your revenge ???</p>
 
         <div class="btn-container">
-          <button class="btn" onclick="location.reload()">Yes</button>
+          <button class="btn" onclick="location.reload()">Yes </button>
           <button class="btn" onclick="modalClose()">No</button>
         </div>
       </div>
     </div>
   </div>
+
+
 </div>
 
 <!-- Link to CSS file -->

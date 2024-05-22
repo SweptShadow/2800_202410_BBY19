@@ -1,157 +1,365 @@
+const modal = document.getElementById("easyModal");
+let game = document.getElementById("game");
+let currentPlayer = 1;
+let posNewPosition = [];
+let capturedPosition = [];
+let board = [
+  [0, -1, 0, -1, 0, -1, 0, -1, 0, -1],
+  [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0],
+  [0, -1, 0, -1, 0, -1, 0, -1, 0, -1],
+  [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+];
+
+builBoard();
+
 class Piece {
-  constructor(row, column, player) {
+  constructor(row, column) {
+
     this.row = row;
     this.column = column;
-    this.player = player;
   }
 
   compare(piece) {
+
     return piece.row === this.row && piece.column === this.column;
   }
 }
 
-// Global variables
-let currentPlayer = 'redPiece';
-let board = [];
-let selectedPiece = null;
-let possibleMoves = [];
+function movePiece(e) {
 
-// Function to initialize the game
-function initGame() {
-  // Initialize the board with pieces
-  for (let i = 0; i < 8; i++) {
+  let piece = e.target;
+  const row = parseInt(piece.getAttribute("row"));
+  const column = parseInt(piece.getAttribute("column"));
+  let p = new Piece(row, column);
 
-    // Essential for creating board
-    board[i] = new Array(8).fill(null);
-    for (let j = 0; j < 8; j++) {
-      if (i < 3 && (i + j) % 2 !== 0) {
-        board[i][j] = new Piece(i, j, 'blackPiece');
-      } else if (i > 4 && (i + j) % 2 !== 0) {
-        board[i][j] = new Piece(i, j, 'redPiece');
-      }
+  if (capturedPosition.length > 0) {
+
+    enableToCapture(p);
+  } else {
+    if (posNewPosition.length > 0) {
+
+      enableToMove(p);
     }
   }
-  buildBoard();
-}
 
-// Function to build the board
-function buildBoard() {
-  let game = document.getElementById('game');
-  game.innerHTML = ''; // Clear the board
+  if (currentPlayer === board[row][column]) {
 
-  // Create the board
-  for (let i = 0; i < 8; i++) {
-    let row = document.createElement('div');
-    row.className = 'row';
-    for (let j = 0; j < 8; j++) {
-      let cell = document.createElement('div');
-      cell.className = 'cell ' + ((i + j) % 2 === 0 ? 'light' : 'dark');
-      cell.id = `cell-${i}-${j}`;
+    player = reverse(currentPlayer);
+    if (!findPieceCaptured(p, player)) {
 
-      let piece = board[i][j];
-      if (piece) {
-        let pieceElement = document.createElement('div');
-        pieceElement.className = 'piece ' + piece.player;
-        pieceElement.id = `piece-${i}-${j}`;
-        pieceElement.addEventListener('click', selectPiece);
-        cell.appendChild(pieceElement);
-      }
-
-      row.appendChild(cell);
+      findPossibleNewPosition(p, player);
     }
-    game.appendChild(row);
   }
 }
 
-// Function to handle piece selection
-function selectPiece(event) {
-  console.log('Piece clicked', event.target);
+function enableToCapture(p) {
 
-  // Prevent the event from bubbling up to parent elements
-  event.stopPropagation(); 
-  let pieceElement = event.target;
-  let [row, column] = pieceElement.id.split('-').slice(1).map(Number);
-  let piece = board[row][column];
+  let find = false;
+  let pos = null;
+  capturedPosition.forEach((element) => {
 
-  if (piece && piece.player === currentPlayer) {
+    if (element.newPosition.compare(p)) {
 
-    // Deselect if the same piece is clicked again
-    if (selectedPiece && selectedPiece.compare(piece)) {
-      selectedPiece = null;
-      clearPossibleMoves();
-      buildBoard();
+      find = true;
+      pos = element.newPosition;
+      old = element.pieceCaptured;
       return;
     }
+  });
 
-    selectedPiece = piece;
-    showPossibleMoves(piece);
+  if (find) {
+
+    // if the current piece can move on, edit the board and rebuild
+    board[pos.row][pos.column] = currentPlayer; // move the piece
+    board[readyToMove.row][readyToMove.column] = 0; // delete the old position
+    
+    // delete the piece that had been captured
+    board[old.row][old.column] = 0;
+
+    // reinit ready to move value
+    readyToMove = null;
+    capturedPosition = [];
+    posNewPosition = [];
+    displayCurrentPlayer();
+    builBoard();
+
+    // check if there are possibility to capture other piece
+    currentPlayer = reverse(currentPlayer);
+  } else {
+
+    builBoard();
   }
 }
 
-// Function to show possible moves for a selected piece
-function showPossibleMoves(piece) {
-  clearPossibleMoves(); // Clear previous possible moves
+function enableToMove(p) {
 
-  // Calculate possible moves
-  let directions = piece.player === 'redPiece' ? [[1, -1], [1, 1]] : [[-1, -1], [-1, 1]];
-  directions.forEach(([dx, dy]) => {
-    let newRow = piece.row + dx;
-    let newCol = piece.column + dy;
-    if (isValidPosition(newRow, newCol) && !board[newRow][newCol]) {
-      possibleMoves.push({ row: newRow, column: newCol });
+  let find = false;
+  let newPosition = null;
+  // check if the case where the player play the selected piece can move on
+  posNewPosition.forEach((element) => {
+
+    if (element.compare(p)) {
+
+      find = true;
+      newPosition = element;
+      return;
     }
   });
 
-  // Highlight possible moves
-  possibleMoves.forEach(move => {
-    let cell = document.getElementById(`cell-${move.row}-${move.column}`);
-    cell.classList.add('possible-move');
-    cell.addEventListener('click', makeMove);
-  });
+  if (find) moveThePiece(newPosition);
+  else builBoard();
 }
 
-// Function to clear highlighted possible moves
-function clearPossibleMoves() {
-  possibleMoves.forEach(move => {
-    let cell = document.getElementById(`cell-${move.row}-${move.column}`);
-    cell.classList.remove('possible-move');
-    cell.removeEventListener('click', makeMove);
-  });
-  possibleMoves = [];
+function moveThePiece(newPosition) {
+
+  // if the current piece can move on, edit the board and rebuild
+  board[newPosition.row][newPosition.column] = currentPlayer;
+  board[readyToMove.row][readyToMove.column] = 0;
+
+  // init value
+  readyToMove = null;
+  posNewPosition = [];
+  capturedPosition = [];
+
+  currentPlayer = reverse(currentPlayer);
+
+  displayCurrentPlayer();
+  builBoard();
 }
 
-// Function to make a move
-function makeMove(event) {
-  if (!selectedPiece) return;
+function findPossibleNewPosition(piece, player) {
 
-  let cell = event.target;
-  let [row, column] = cell.id.split('-').slice(1).map(Number);
+  if (board[piece.row + player][piece.column + 1] === 0) {
 
-  // Move the piece
-  board[selectedPiece.row][selectedPiece.column] = null;
-  selectedPiece.row = row;
-  selectedPiece.column = column;
-  board[row][column] = selectedPiece;
-
-  // Change player turn
-  currentPlayer = currentPlayer === 'redPiece' ? 'blackPiece' : 'redPiece';
-
-  // Rebuild the board
-  clearPossibleMoves();
-  buildBoard();
-}
-
-// Function to check if a position is on the board
-function isValidPosition(row, column) {
-  return row >= 0 && row < 8 && column >= 0 && column < 8;
-}
-
-// Call initialize function when the page loads
-window.onload = initGame;
-
-document.getElementById('game').addEventListener('click', function(event) {
-  // Check if the clicked element is a piece
-  if (event.target.classList.contains('piece')) {
-    selectPiece(event);
+    readyToMove = piece;
+    markPossiblePosition(piece, player, 1);
   }
-});
+
+  if (board[piece.row + player][piece.column - 1] === 0) {
+
+    readyToMove = piece;
+    markPossiblePosition(piece, player, -1);
+  }
+}
+
+function markPossiblePosition(p, player = 0, direction = 0) {
+
+  attribute = parseInt(p.row + player) + "-" + parseInt(p.column + direction);
+
+  position = document.querySelector("[data-position='" + attribute + "']");
+  if (position) {
+
+    position.style.background = "green";
+
+    //save where it can move
+    posNewPosition.push(new Piece(p.row + player, p.column + direction));
+  }
+}
+
+function builBoard() {
+
+  game.innerHTML = "";
+  let black = 0;
+  let red = 0;
+  for (let i = 0; i < board.length; i++) {
+
+    const element = board[i];
+    let row = document.createElement("div"); // create div for each row
+    row.setAttribute("class", "row");
+
+    for (let j = 0; j < element.length; j++) {
+
+      const elmt = element[j];
+      let col = document.createElement("div"); // create div for each case
+      let piece = document.createElement("div");
+      let caseType = "";
+      let occupied = "";
+
+      if (i % 2 === 0) {
+
+        if (j % 2 === 0) {
+
+          caseType = "redcase";
+        } else {
+
+          caseType = "blackCase";
+        }
+      } else {
+
+        if (j % 2 !== 0) {
+
+          caseType = "redcase";
+        } else {
+
+          caseType = "blackCase";
+        }
+      }
+
+      // add the piece if the case isn't empty
+      if (board[i][j] === 1) {
+
+        occupied = "redPiece";
+      } else if (board[i][j] === -1) {
+
+        occupied = "blackPiece";
+      } else {
+
+        occupied = "empty";
+      }
+
+      piece.setAttribute("class", "occupied " + occupied);
+
+      // set row and colum in the case
+      piece.setAttribute("row", i);
+      piece.setAttribute("column", j);
+      piece.setAttribute("data-position", i + "-" + j);
+
+      //add event listener to each piece
+      piece.addEventListener("click", movePiece);
+
+      col.appendChild(piece);
+
+      col.setAttribute("class", "column " + caseType);
+      row.appendChild(col);
+
+      // counter number of each piece
+      if (board[i][j] === -1) {
+
+        black++;
+      } else if (board[i][j] === 1) {
+
+        red++;
+      }
+
+      //display the number of piece for each player
+      displayCounter(black, red);
+    }
+
+    game.appendChild(row);
+  }
+
+  if (black === 0 || red === 0) {
+
+    modalOpen(black);
+  }
+}
+
+function displayCurrentPlayer() {
+
+  var container = document.getElementById("next-player");
+  if (container.classList.contains("redPiece")) {
+
+    container.setAttribute("class", "occupied blackPiece");
+  } else {
+    container.setAttribute("class", "occupied redPiece");
+  }
+}
+
+function findPieceCaptured(p, player) {
+
+  let found = false;
+  if (
+    board[p.row - 1][p.column - 1] === player &&
+    board[p.row - 2][p.column - 2] === 0
+  ) {
+
+    found = true;
+    newPosition = new Piece(p.row - 2, p.column - 2);
+    readyToMove = p;
+    markPossiblePosition(newPosition);
+
+    // save the new position and the opponent's piece position
+    capturedPosition.push({
+
+      newPosition: newPosition,
+      pieceCaptured: new Piece(p.row - 1, p.column - 1),
+    });
+  }
+
+  if (
+    board[p.row - 1][p.column + 1] === player &&
+    board[p.row - 2][p.column + 2] === 0
+  ) {
+
+    found = true;
+    newPosition = new Piece(p.row - 2, p.column + 2);
+    readyToMove = p;
+    markPossiblePosition(newPosition);
+
+    // save the new position and the opponent's piece position
+    capturedPosition.push({
+      
+      newPosition: newPosition,
+      pieceCaptured: new Piece(p.row - 1, p.column + 1),
+    });
+  }
+
+  if (
+    board[p.row + 1][p.column - 1] === player &&
+    board[p.row + 2][p.column - 2] === 0
+  ) {
+
+    found = true;
+    newPosition = new Piece(p.row + 2, p.column - 2);
+    readyToMove = p;
+    markPossiblePosition(newPosition);
+
+    // save the new position and the opponent's piece position
+    capturedPosition.push({
+
+      newPosition: newPosition,
+      pieceCaptured: new Piece(p.row + 1, p.column - 1),
+    });
+  }
+
+  if (
+    board[p.row + 1][p.column + 1] === player &&
+    board[p.row + 2][p.column + 2] === 0
+  ) {
+
+    found = true;
+    newPosition = new Piece(p.row + 2, p.column + 2);
+    readyToMove = p;
+    markPossiblePosition(newPosition);
+
+    // save the new position and the opponent's piece position
+    capturedPosition.push({
+
+      newPosition: newPosition,
+      pieceCaptured: new Piece(p.row + 1, p.column + 1),
+    });
+  }
+
+  return found;
+}
+
+function displayCounter(black, red) {
+
+  var blackContainer = document.getElementById("black-player-count-pieces");
+  var redContainer = document.getElementById("red-player-count-pieces");
+  blackContainer.innerHTML = black;
+  redContainer.innerHTML = red;
+}
+
+function modalOpen(black) {
+
+  document.getElementById("winner").innerHTML = black === 0 ? "red" : "Black";
+  document.getElementById("loser").innerHTML = black !== 0 ? "red" : "Black";
+  modal.classList.add("effect");
+}
+
+function modalClose() {
+  
+  modal.classList.remove("effect");
+}
+
+function reverse(player) {
+  
+  return player === -1 ? 1 : -1;
+}
