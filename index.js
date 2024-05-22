@@ -99,8 +99,11 @@ const navLinks = [
   { name: "Social", link: "/social" },
   { name: "Chatroom", link: "/chat" },
   { name: "Profile", link: "/profile"},
-  { name: "Video Call", link: "/videocall/:room" },
+  { name: "Video Call", link: "/videocall" },
   { name: "Logout", link: "/logout" },
+  { name: "Calendar", link: "/calendar" },
+
+
 ];
 
 app.locals.navLinks = navLinks;
@@ -384,12 +387,17 @@ app.get("/gameCheckersPlay", (req, res) => {
 app.get("/gameBingoPlay", (req, res) => {
   res.render("gameBingoPlay");
 });
+app.get("/calendar", (req, res) => {
+  res.render("calendar");
+});
+
 
 app.get("/videocall", (req, res) => {
   const roomId = uuidV4();
   console.log(`Redirecting to /videocall/${roomId}`);
   res.redirect(`/videocall/${roomId}`);
 });
+
 
 app.get('/videocall/:room', (req, res) => {
   console.log(`Rendering room with ID: ${req.params.room}`);

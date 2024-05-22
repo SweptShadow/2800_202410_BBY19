@@ -1,27 +1,6 @@
-body {
-    margin: 0px;
-    padding: 0px;
-}
-
 #back {
     background-color: #5a6100;
     margin: 10px;
-}
-
-.nav {
-    display: flex;
-    padding: 5px 10px;
-    box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.2);
-}
-
-img {
-    border-radius: 50%;
-    width: 10vh;
-    height: 10vh;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 30px;
 }
 
 span {
