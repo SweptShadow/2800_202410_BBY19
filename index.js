@@ -85,7 +85,7 @@ const navLinks = [
   { name: "Social", link: "/social" },
   { name: "Chatroom", link: "/chat" },
   { name: "Profile", link: "/profile"},
-  { name: "Video Call", link: "/videocall/:room" },
+  { name: "Video Call", link: "/videocall" },
   { name: "Logout", link: "/logout" },
   { name: "Calendar", link: "/calendar" },
 
