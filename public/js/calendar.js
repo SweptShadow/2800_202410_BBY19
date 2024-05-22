@@ -8,7 +8,20 @@ async function generateCalendar() {
     if (!datesElement) return; // Safety check
     datesElement.innerHTML = ''; // Clear previous dates
   
-    for (let day = 1, firstDayOfMonth = new Date(year, month, 1).getDay(); day <= new Date(year, month + 1, 0).getDate(); day++) {
+    // Get the first day of the month
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+  
+    // Calculate the number of days in the current month
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+    // Create empty slots for days before the first day of the month
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        const emptyElement = document.createElement('div');
+        datesElement.appendChild(emptyElement);
+    }
+  
+    // Create day elements for each day of the month
+    for (let day = 1; day <= daysInMonth; day++) {
         const dayElement = document.createElement('div');
         dayElement.textContent = day;
         
@@ -16,13 +29,7 @@ async function generateCalendar() {
             dayElement.classList.add('today');
         }
     
-        // Adjust for first day of the month
-        if (day === 1) {
-            dayElement.style.gridColumnStart = firstDayOfMonth + 1;
-        }
-    
         datesElement.appendChild(dayElement);
-        
     }
   
     // Set month and year title

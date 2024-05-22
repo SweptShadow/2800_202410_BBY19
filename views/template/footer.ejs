@@ -26,16 +26,13 @@
   </ul>
 </div>
 
-
+<%- include('chatOverlay') %>
 <!--only loads the socket chat messaging if the res.render is passed a loadChatScript boolean of true.
 will need to be modified to have chat across all pages with different conditional logic for direct messaging
 vs chat room-->
 <% if (typeof loadChatScript !== 'undefined' && loadChatScript) { %>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  const chatRoomId = "<%= chatRoomId %>";
-</script>
-<script src="/js/chat.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/chat.js"></script>
 <% } %>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
   integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
