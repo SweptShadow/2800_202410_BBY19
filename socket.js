@@ -29,6 +29,12 @@ function initializeSocket(server, sessionMiddleware) {
       return;
     }
 
+    /**
+     * Event handler for joining a chat room.
+     * 
+     * Validates the session, gets the user and friend information from the db and then either joins or 
+     * creates a room based on the IDs. Loads the chat history for the users.
+     */
     socket.on('joinChatRoom', async (friendId) => {
       const userId = socket.handshake.session.userId;
 
@@ -61,6 +67,10 @@ function initializeSocket(server, sessionMiddleware) {
       }
     });
 
+    /**
+     * When a user sends a message it is saved to the database and broadcast to all users in the 
+     * same room. 
+     */
     socket.on('chat message', async (msg) => {
       const userId = socket.handshake.session.userId;
 
