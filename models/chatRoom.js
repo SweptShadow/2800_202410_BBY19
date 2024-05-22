@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-/**
- * Defines the attributes of a chat room. 
- */
 const chatRoomSchema = new Schema({
   name: { type: String, unique: true, required: true },
   participants: [{ type: Schema.Types.ObjectId, ref: "User" }],

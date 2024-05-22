@@ -31,7 +31,6 @@ function initializeSocket(server, sessionMiddleware) {
           return;
         }
 
-        // Ensure a consistent room ID
         const roomId = [userId.toString(), friendId.toString()].sort().join('_');
         socket.join(roomId);
         socket.emit('setChatRoomId', roomId);
@@ -79,6 +78,17 @@ function initializeSocket(server, sessionMiddleware) {
 
     socket.on('disconnect', () => {
       console.log(`User disconnected: ${socket.id}`);
+    });
+
+    socket.on('joinVideoCallRoom', (roomId, userId) => {
+      socket.join(roomId);
+      console.log(`User ${userId} joined video call room: ${roomId}`);
+      socket.to(roomId).emit("user-connected", userId);
+
+      socket.on('disconnect', () => {
+        console.log(`User ${userId} disconnected from video call room: ${roomId}`);
+        socket.to(roomId).emit("user-disconnected", userId);
+      });
     });
   });
 

@@ -14,7 +14,7 @@ const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
 const passResetRoutes = require("./routes/resetRoutes");
 const chatRoutes = require("./routes/chatRoutes");
-const friendRoutes = require("./routes/friendRoutes"); // Include friendRoutes
+const friendRoutes = require("./routes/friendRoutes"); 
 const MongoClient = require("mongodb").MongoClient;
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
@@ -98,7 +98,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/chat", chatRoutes);
-app.use("/api/friends", friendRoutes); // Add this line
+app.use("/api/friends", friendRoutes);
 app.use("/api/password", passResetRoutes);
 
 app.get("/", (req, res) => {

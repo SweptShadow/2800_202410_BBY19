@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require('../models/user');
 const Friendship = require('../models/friendship');
 
-// Add a friend by email
 router.post('/add', async (req, res) => {
   const { email } = req.body;
   const userId = req.session.userId;
@@ -42,7 +41,6 @@ router.post('/add', async (req, res) => {
   }
 });
 
-// Get the friends list
 router.get('/', async (req, res) => {
   const userId = req.session.userId;
 

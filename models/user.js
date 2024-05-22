@@ -36,6 +36,6 @@ userSchema.statics.resetPassword = async function(token, newPassword) {
 
   await user.save();
 };
-
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
+module.exports = User;
 
