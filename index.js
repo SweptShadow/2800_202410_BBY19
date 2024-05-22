@@ -87,14 +87,47 @@ const sessionMiddleware = session({
   },
 });
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(sessionMiddleware);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  userCollection.findOne({ _id: new mongoose.Types.ObjectId(id) }, (err, user) => {
+    done(err, user);
+  });
+});
+
+passport.use(new GoogleStrategy({
+  clientID: google_client_id,
+  clientSecret: google_client_secret,
+  callbackURL: google_callback_url
+}, async (token, tokenSecret, profile, done) => {
+  try {
+    let user = await userCollection.findOne({ googleId: profile.id });
+    if (!user) {
+      user = await userCollection.insertOne({
+        googleId: profile.id,
+        username: profile.displayName,
+        email: profile.emails[0].value,
+        type: "user",
+        bio: ""
+      });
+      user = user.ops[0];
+    }
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+}));
 
 app.use(fileUpload({
   useTempFiles: true,
