@@ -1,201 +1,365 @@
-//Define the players, currently just user vs computer(ai)
-const PLAYER = 'red';
-const AI = 'black';
+const modal = document.getElementById("easyModal");
+let game = document.getElementById("game");
+let currentPlayer = 1;
+let posNewPosition = [];
+let capturedPosition = [];
+let board = [
+  [0, -1, 0, -1, 0, -1, 0, -1, 0, -1],
+  [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0],
+  [0, -1, 0, -1, 0, -1, 0, -1, 0, -1],
+  [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+];
 
-//Global var to track the current turn
-let currentTurn = PLAYER;
+builBoard();
 
-//Initialize the game board
-let board = [];
-for (let i = 0; i < 8; i++) {
-  board[i] = new Array(8).fill(null);
-}
+class Piece {
+  constructor(row, column) {
 
-//Function to switch turns
-function switchTurns() {
+    this.row = row;
+    this.column = column;
+  }
 
-  currentTurn = currentTurn === PLAYER ? AI : PLAYER;
+  compare(piece) {
 
-  //If it's the AI's turn, make a move
-  if (currentTurn === AI) {
-    compMove();
+    return piece.row === this.row && piece.column === this.column;
   }
 }
 
-//Function initializing the game
-function initGame() {
-  //Place the pieces on the board
-  for (let i = 0; i < 3; i++) {
-    for (let j = (i % 2); j < 8; j += 2) {
-      board[i][j] = PLAYER;
+function movePiece(e) {
+
+  let piece = e.target;
+  const row = parseInt(piece.getAttribute("row"));
+  const column = parseInt(piece.getAttribute("column"));
+  let p = new Piece(row, column);
+
+  if (capturedPosition.length > 0) {
+
+    enableToCapture(p);
+  } else {
+    if (posNewPosition.length > 0) {
+
+      enableToMove(p);
     }
   }
-  for (let i = 5; i < 8; i++) {
-    for (let j = (i % 2); j < 8; j += 2) {
-      board[i][j] = AI;
+
+  if (currentPlayer === board[row][column]) {
+
+    player = reverse(currentPlayer);
+    if (!findPieceCaptured(p, player)) {
+
+      findPossibleNewPosition(p, player);
     }
   }
-  //Add click event-listeners for player pieces
-  document.querySelectorAll('.piece.' + PLAYER).forEach(piece => {
-    piece.addEventListener('click', selectPiece);
+}
+
+function enableToCapture(p) {
+
+  let find = false;
+  let pos = null;
+  capturedPosition.forEach((element) => {
+
+    if (element.newPosition.compare(p)) {
+
+      find = true;
+      pos = element.newPosition;
+      old = element.pieceCaptured;
+      return;
+    }
   });
-}
 
-//Function handling piece selection
-function selectPiece(event) {
+  if (find) {
 
-  //Deselect previously selected piece
-  let selected = document.querySelector('.selected');
-  if (selected) {
-    selected.classList.remove('selected');
-  }
+    // if the current piece can move on, edit the board and rebuild
+    board[pos.row][pos.column] = currentPlayer; // move the piece
+    board[readyToMove.row][readyToMove.column] = 0; // delete the old position
+    
+    // delete the piece that had been captured
+    board[old.row][old.column] = 0;
 
-  //Select new piece
-  event.currentTarget.classList.add('selected');
-}
+    // reinit ready to move value
+    readyToMove = null;
+    capturedPosition = [];
+    posNewPosition = [];
+    displayCurrentPlayer();
+    builBoard();
 
-//Function to move piece to new cell
-function movePiece(piece, newRow, newCol) {
-
-  let targetCell = document.getElementById('cell-' + newRow + '-' + newCol);
-  if (targetCell && !targetCell.firstChild) {
-
-    targetCell.appendChild(piece);
-    piece.classList.remove('selected');
-
-    //Update the board state
-    updateBoard(piece, newRow, newCol);
-
-    //Logic for kinging checked here!
-    checkForKinging(piece, newRow);
-
-    //Sitch turn logic, after player move, computer's turn
-    switchTurns();
-  }
-}
-
-//Function to handle capturing a piece
-function capturePiece(fromRow, fromCol, toRow, toCol) {
-  let capturedRow = (fromRow + toRow) / 2;
-  let capturedCol = (fromCol + toCol) / 2;
-  let piece = document.getElementById(`cell-${fromRow}-${fromCol}`).firstChild;
-  let capturedPiece = document.getElementById(`cell-${capturedRow}-${capturedCol}`).firstChild;
-
-  //Remove the captured piece from the board
-  if (capturedPiece) {
-    capturedPiece.remove();
-    board[capturedRow][capturedCol] = null; // Update the board array
-  }
-
-  //Move the capturing piece
-  movePiece(piece, toRow, toCol);
-}
-
-
-//Function to update the internal board representation
-function updateBoard(piece, newRow, newCol) {
-  let [oldRow, oldCol] = piece.id.split('-').map(Number);
-  board[oldRow][oldCol] = null;
-  board[newRow][newCol] = piece.classList.contains(PLAYER) ? PLAYER : AI;
-}
-
-//Function for the computer to make a move, including forced captures
-function compMove() {
-  let captures = checkForcedCaptures(board, AI);
-  if (captures.length > 0) {
-
-    //If captures are available, make a capture
-    let randomCapture = captures[Math.floor(Math.random() * captures.length)];
-    capturePiece(randomCapture.fromRow, randomCapture.fromCol, randomCapture.toRow, randomCapture.toCol);
+    // check if there are possibility to capture other piece
+    currentPlayer = reverse(currentPlayer);
   } else {
 
-    //If no captures, move a random piece
-    let pieces = document.querySelectorAll('.piece.' + AI);
-    let randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
-    let currentCell = randomPiece.parentElement;
-    let [currentRow, currentCol] = currentCell.id.split('-').map(Number);
-
-    //Attempt to move to a random adjacent cell
-    let potentialMoves = [
-      [currentRow - 1, currentCol - 1],
-      [currentRow - 1, currentCol + 1],
-
-      //Added for king movement
-      [currentRow + 1, currentCol - 1],
-      //Added for king movement
-      [currentRow + 1, currentCol + 1]
-    ];
-
-    for (let [newRow, newCol] of potentialMoves) {
-
-      if (isValidMove(newRow, newCol)) {
-        movePiece(randomPiece, newRow, newCol);
-        break;
-      }
-    }
+    builBoard();
   }
 }
 
+function enableToMove(p) {
 
-//Function to check if a move is valid
-function isValidMove(newRow, newCol) {
-  return newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8 && board[newRow][newCol] === null;
-}
+  let find = false;
+  let newPosition = null;
+  // check if the case where the player play the selected piece can move on
+  posNewPosition.forEach((element) => {
 
-//Function to check if a piece should be kinged
-function checkForKinging(piece, newRow) {
-  if ((piece.classList.contains(PLAYER) && newRow === 7) ||
-    (piece.classList.contains(AI) && newRow === 0)) {
-    piece.classList.add('king');
-  }
-}
+    if (element.compare(p)) {
 
-//Function to check for possible captures
-function checkForcedCaptures(board, player) {
-
-  let capturesAvailable = [];
-  for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 8; col++) {
-      if (board[row][col] === player) {
-
-        //Check all possible capture moves
-        let captureMoves = getCaptureMoves(board, row, col, player);
-        capturesAvailable.push(...captureMoves);
-      }
-    }
-  }
-  return capturesAvailable;
-}
-
-//Function to get all possible capture moves for a piece
-function getCaptureMoves(board, row, col, player) {
-
-  let opponent = player === PLAYER ? AI : PLAYER;
-
-  //Directions in which to look for captures
-  let directions = player === PLAYER ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]];
-  let captureMoves = [];
-
-  directions.forEach(([dx, dy]) => {
-    let enemyRow = row + dx;
-    let enemyCol = col + dy;
-    let captureRow = enemyRow + dx;
-    let captureCol = enemyCol + dy;
-
-    if (isValidPosition(enemyRow, enemyCol) && isValidPosition(captureRow, captureCol) &&
-      board[enemyRow][enemyCol] === opponent && board[captureRow][captureCol] === EMPTY) {
-      captureMoves.push({ fromRow: row, fromCol: col, toRow: captureRow, toCol: captureCol });
+      find = true;
+      newPosition = element;
+      return;
     }
   });
 
-  return captureMoves;
+  if (find) moveThePiece(newPosition);
+  else builBoard();
 }
 
-//Function to check if a position is on the board
-function isValidPosition(row, col) {
-  return row >= 0 && row < 8 && col >= 0 && col < 8;
+function moveThePiece(newPosition) {
+
+  // if the current piece can move on, edit the board and rebuild
+  board[newPosition.row][newPosition.column] = currentPlayer;
+  board[readyToMove.row][readyToMove.column] = 0;
+
+  // init value
+  readyToMove = null;
+  posNewPosition = [];
+  capturedPosition = [];
+
+  currentPlayer = reverse(currentPlayer);
+
+  displayCurrentPlayer();
+  builBoard();
 }
 
+function findPossibleNewPosition(piece, player) {
 
-//Call initialize function when the page loads
-initGame();
+  if (board[piece.row + player][piece.column + 1] === 0) {
+
+    readyToMove = piece;
+    markPossiblePosition(piece, player, 1);
+  }
+
+  if (board[piece.row + player][piece.column - 1] === 0) {
+
+    readyToMove = piece;
+    markPossiblePosition(piece, player, -1);
+  }
+}
+
+function markPossiblePosition(p, player = 0, direction = 0) {
+
+  attribute = parseInt(p.row + player) + "-" + parseInt(p.column + direction);
+
+  position = document.querySelector("[data-position='" + attribute + "']");
+  if (position) {
+
+    position.style.background = "green";
+
+    //save where it can move
+    posNewPosition.push(new Piece(p.row + player, p.column + direction));
+  }
+}
+
+function builBoard() {
+
+  game.innerHTML = "";
+  let black = 0;
+  let red = 0;
+  for (let i = 0; i < board.length; i++) {
+
+    const element = board[i];
+    let row = document.createElement("div"); // create div for each row
+    row.setAttribute("class", "row");
+
+    for (let j = 0; j < element.length; j++) {
+
+      const elmt = element[j];
+      let col = document.createElement("div"); // create div for each case
+      let piece = document.createElement("div");
+      let caseType = "";
+      let occupied = "";
+
+      if (i % 2 === 0) {
+
+        if (j % 2 === 0) {
+
+          caseType = "redcase";
+        } else {
+
+          caseType = "blackCase";
+        }
+      } else {
+
+        if (j % 2 !== 0) {
+
+          caseType = "redcase";
+        } else {
+
+          caseType = "blackCase";
+        }
+      }
+
+      // add the piece if the case isn't empty
+      if (board[i][j] === 1) {
+
+        occupied = "redPiece";
+      } else if (board[i][j] === -1) {
+
+        occupied = "blackPiece";
+      } else {
+
+        occupied = "empty";
+      }
+
+      piece.setAttribute("class", "occupied " + occupied);
+
+      // set row and colum in the case
+      piece.setAttribute("row", i);
+      piece.setAttribute("column", j);
+      piece.setAttribute("data-position", i + "-" + j);
+
+      //add event listener to each piece
+      piece.addEventListener("click", movePiece);
+
+      col.appendChild(piece);
+
+      col.setAttribute("class", "column " + caseType);
+      row.appendChild(col);
+
+      // counter number of each piece
+      if (board[i][j] === -1) {
+
+        black++;
+      } else if (board[i][j] === 1) {
+
+        red++;
+      }
+
+      //display the number of piece for each player
+      displayCounter(black, red);
+    }
+
+    game.appendChild(row);
+  }
+
+  if (black === 0 || red === 0) {
+
+    modalOpen(black);
+  }
+}
+
+function displayCurrentPlayer() {
+
+  var container = document.getElementById("next-player");
+  if (container.classList.contains("redPiece")) {
+
+    container.setAttribute("class", "occupied blackPiece");
+  } else {
+    container.setAttribute("class", "occupied redPiece");
+  }
+}
+
+function findPieceCaptured(p, player) {
+
+  let found = false;
+  if (
+    board[p.row - 1][p.column - 1] === player &&
+    board[p.row - 2][p.column - 2] === 0
+  ) {
+
+    found = true;
+    newPosition = new Piece(p.row - 2, p.column - 2);
+    readyToMove = p;
+    markPossiblePosition(newPosition);
+
+    // save the new position and the opponent's piece position
+    capturedPosition.push({
+
+      newPosition: newPosition,
+      pieceCaptured: new Piece(p.row - 1, p.column - 1),
+    });
+  }
+
+  if (
+    board[p.row - 1][p.column + 1] === player &&
+    board[p.row - 2][p.column + 2] === 0
+  ) {
+
+    found = true;
+    newPosition = new Piece(p.row - 2, p.column + 2);
+    readyToMove = p;
+    markPossiblePosition(newPosition);
+
+    // save the new position and the opponent's piece position
+    capturedPosition.push({
+      
+      newPosition: newPosition,
+      pieceCaptured: new Piece(p.row - 1, p.column + 1),
+    });
+  }
+
+  if (
+    board[p.row + 1][p.column - 1] === player &&
+    board[p.row + 2][p.column - 2] === 0
+  ) {
+
+    found = true;
+    newPosition = new Piece(p.row + 2, p.column - 2);
+    readyToMove = p;
+    markPossiblePosition(newPosition);
+
+    // save the new position and the opponent's piece position
+    capturedPosition.push({
+
+      newPosition: newPosition,
+      pieceCaptured: new Piece(p.row + 1, p.column - 1),
+    });
+  }
+
+  if (
+    board[p.row + 1][p.column + 1] === player &&
+    board[p.row + 2][p.column + 2] === 0
+  ) {
+
+    found = true;
+    newPosition = new Piece(p.row + 2, p.column + 2);
+    readyToMove = p;
+    markPossiblePosition(newPosition);
+
+    // save the new position and the opponent's piece position
+    capturedPosition.push({
+
+      newPosition: newPosition,
+      pieceCaptured: new Piece(p.row + 1, p.column + 1),
+    });
+  }
+
+  return found;
+}
+
+function displayCounter(black, red) {
+
+  var blackContainer = document.getElementById("black-player-count-pieces");
+  var redContainer = document.getElementById("red-player-count-pieces");
+  blackContainer.innerHTML = black;
+  redContainer.innerHTML = red;
+}
+
+function modalOpen(black) {
+
+  document.getElementById("winner").innerHTML = black === 0 ? "red" : "Black";
+  document.getElementById("loser").innerHTML = black !== 0 ? "red" : "Black";
+  modal.classList.add("effect");
+}
+
+function modalClose() {
+  
+  modal.classList.remove("effect");
+}
+
+function reverse(player) {
+  
+  return player === -1 ? 1 : -1;
+}

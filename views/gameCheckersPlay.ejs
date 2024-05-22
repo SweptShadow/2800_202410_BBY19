@@ -2,24 +2,47 @@
 
 <div class="game-play-box">
 
-  <h1>Play Checkers</h1>
+  <h1>Checkers</h1>
 
-  <!-- Checkerboard setup -->
-  <div id="checkerboard">
-    <% for(let i = 0; i < 8; i++) { %>
-    <div class="row">
-      <% for(let j = 0; j < 8; j++) { %>
-      <div class="cell <%= (i+j)%2 === 0 ? 'light' : 'dark' %>">
-        <% if(i < 3 && (i+j)%2 !== 0) { %>
-        <div class="piece red"></div>
-        <% } else if(i > 4 && (i+j)%2 !== 0) { %>
-        <div class="piece black"></div>
-        <% } %>
-      </div>
-      <% } %>
+  <div class="checkerscontainer">
+
+    <!-- Next player indicator -->
+    <div class="next-player counter">
+      <div class="occupied redPiece" id="next-player"></div>
+      Player
     </div>
-    <% } %>
+
+    <!-- Game Board -->
+    <div class="game" id="game"></div>
+
+    <!-- Piece counter -->
+    <div class="counter">
+      <div>
+        <div class="occupied redPiece"></div>
+        <span id="red-player-count-pieces">10</span>
+      </div>
+      <div>
+        <div class="occupied blackPiece"></div>
+        <span id="black-player-count-pieces">10</span>
+      </div>
+    </div>
   </div>
+
+  <!-- Modal for game end -->
+  <div id="easyModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>The <strong id="winner"></strong> player won the game !!</p>
+        <p> <span id="loser"></span>, whould you take your revenge ???</p>
+
+        <div class="btn-container">
+          <button class="btn" onclick="location.reload()">Yes </button>
+          <button class="btn" onclick="modalClose()">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 </div>
 
