@@ -1,18 +1,37 @@
-/* Style for the checkerboard... */
-#checkerboard {
+/* General styles */
+.game-play-box {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+}
+
+.checkerscontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Styles for the checkerboard */
+#game {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  width: 320px;
-  height: 320px;
+  grid-template-columns: repeat(8, 50px);
+  grid-template-rows: repeat(8, 50px);
+  gap: 0;
 }
 
 .row {
-  display: contents;
+  display: flex;
 }
 
 .cell {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .light {
@@ -23,28 +42,89 @@
   background-color: #b58863;
 }
 
-.piece {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  margin: 2px;
+.possible-move {
+  background-color: #76b041; /* Highlight color for possible moves */
 }
 
-.red {
+/* Styles for the pieces */
+.piece {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  position:absolute;
+}
+
+.redPiece {
   background-color: red;
 }
 
-.black {
+.blackPiece {
   background-color: black;
 }
 
-.game-play-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+/* Styles for the next player indicator */
+.next-player {
+  margin-bottom: 20px;
 }
 
-.selected {
-  border: 2px solid yellow;
+.occupied {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.redPiece {
+  background-color: red;
+}
+
+.blackPiece {
+  background-color: black;
+}
+
+/* Styles for the counters */
+.counter {
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+  margin-top: 20px;
+}
+
+/* Modal styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 60%;
+  height: 60%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* Button styles */
+.btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn:hover {
+  opacity: 0.8;
 }
