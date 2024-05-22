@@ -19,7 +19,7 @@
         <div class="bio">
             <h3>Bio</h3>
             <form id="bioForm" action="/bioSubmit" method="post">
-                <textarea name="bio" id="bioTextarea" rows="5" cols="50"><%= bio %></textarea>
+                <textarea name="bio" id="bioTextarea" rows="5" cols="50" maxlength="250"><%= bio %></textarea>
                 <button class="btn btn-primary" id="updateBioButton" type="submit" style="display: none;">Update Bio</button>
             </form>
         </div>

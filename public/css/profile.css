@@ -179,3 +179,7 @@ textarea {
     justify-content: center;
     text-align: center;
 }
+
+.modal-dialog {
+    margin-top: 20%;
+}
