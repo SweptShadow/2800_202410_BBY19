@@ -10,6 +10,17 @@ html, body {
     background-color: #87CEEB;
 }
 
+/* #region fontRegion */
+@font-face {
+    font-family: 'YourFontName';
+    src: url('fonts/Gilroy-ExtraBold.otf"') format('otf');
+  }
+  
+  body {
+    font-family: 'Gilroy-ExtraBold', sans-serif;
+  }
+/* #endregion */
+
 /* #region socialRegion*/
 
 .social-container,[id^="person"] {

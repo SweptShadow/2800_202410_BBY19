@@ -1,8 +1,10 @@
 .profileContent {
-    padding: 20px;
-    height: 700px;
+    padding: 1vw;
+    min-height: 70vh;
+    padding-bottom: none;
 }
-body{
+
+body {
     background: #87CEEB;
     background: radial-gradient(at center, #87CEEB, #FFFFFF);
 }
@@ -17,95 +19,163 @@ body{
     border: 2px solid white;
     border-radius: 20px;
     
+}
 
+.profileContainer h1 {
+    color: black;
+    font-size: 3.8vw;
+    font-weight: 600;
+    margin-top: 2%;
 }
 
 .profileContainer h2 {
     background-color: rgb(255, 255, 255);
-    border-radius: 28px;
-    grid-row: 12 / 14;
-    grid-column: 2 / 6;
+    border-radius: 2vw;
     align-items: center;
-    height: 100%;
-    font-size: 35px;
+    font-size: 3.5vw;
     display: flex;
     justify-content: center;
     text-align: center;
+    grid-row: 13 / 15;
+    grid-column: 2 / 8;
+    font-weight: 550;
 }
-
 .profileContainer h3 {
-    background-color: rgb(138, 138, 138);
-    grid-row: 16 / 18;
-    grid-column: 2 / 6;
-    border-radius: 28px;
+    background-color: rgb(233, 233, 233);
+    border-radius: 2vw;
     align-items: center;
-    height: 100%;
-    font-size: 23px;
+    font-size: 2vw;
     display: flex;
     justify-content: center;
     text-align: center;
-    
+    grid-row: 17 / 19;
+    grid-column: 2 / 8;
 }
 
 .profileContainer .profilePic {
-    background-color: lightyellow;
-    grid-row: 2 / span 8;
-    grid-column: 2 /span 4;
+    grid-row: 2 / 11;
+    grid-column:2 / 8 ;
+    border-radius: 2vw;
+    overflow: hidden;
 }
 
 .profileContainer .profilePic img {
     width: 100%;
     height: 100%;
-
+    object-fit: cover;
 }
 
 .profileInfo {
-    background: #67b7d7;
-    background: radial-gradient(at center, #67b7d7, #cfdffe);
-    box-shadow: 0 0.25rem 1rem 0 rgba(33, 64, 165, 0.125);
-    grid-row: 2 / 19;
-    grid-column: 7 / 19;
+    background-color: white;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
     text-align: center;
-    border-radius: 15px;
+    border-radius: 1.5vw;
+    grid-row: 2 / 20;
+    grid-column: 9 / 20;
 }
+
 .profileContainer .bio {
-    background-color: white;
-    grid-row: 6 / 18;
-    grid-column: 8 / 18;
-    text-align: center;
-    font-size: 35px;
+    background: #3c37e3;
+    background: radial-gradient(at center, #67b7d7, #cfdffe);
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    font-size: 3.5vw;
     font-weight: 500;
-    padding: 15px;
-    border-radius: 20px;
+    padding: 1.5vw;
+    border-radius: 2vw;
+    grid-row: 6 / 19;
+    grid-column: 10 / 19;
+    text-align: center;
 }
 
-.profileContainer .bio p {
+.profileContainer .bio h3 {
     background-color: white;
-    font-size: 24px;
-    height: 85%;
-    border: 1px solid black;
-    border-radius: 20px;
-    font-weight: 400;
+    font-size: 2.8vw;
+    height: 10%;
+    width: 60%;
+    border-radius: 2vw;
+    font-weight: 600;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    margin: auto;
+    margin-bottom: 1%;
 
 }
 
+.bio #bioForm {
+    width: 100%;
+    font-size: 2.2vw;
+    height: 80%;
+    border-radius: 1.5vw;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    border-color: white;
+}
 .profileContainer .favGame {
     background-color: rgb(255, 255, 255);
-    grid-row: 4;
-    grid-column: 8 / 18;
     font-weight: 650;
-    padding-left: 10px;
+    padding-left: 1vw;
+    border-radius: 1.5vw;
+    grid-row: 4;
+    grid-column: 10 / 19;
+    font-size: 1.5vw;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    border: 1px solid grey;
 }
+textarea {
+    width: 100%;
+    height: 100%;
+    border-radius: 1.5vw;
+    font-size: 1.8vw;
+    border: none;
+}
+
+#updateBioButton {
+    font-size: 1.5vw;
+    height: 15%;
+}
+
 #changePic {
     z-index: 100;
-    grid-row: 10 / 11;
-    grid-column: 2 / 6;
+    grid-row: 11 / 12;
+    grid-column: 2 / 8;
+    font-size: 1.6vw;
+    padding-bottom: 8%;
+    width: 80%;
+    margin: 3% auto 0 auto;
 }
+
 #changeName {
-    grid-row: 14;
-    grid-column: 2 / 6;
+    grid-row: 15 / 16;
+    grid-column: 2 / 8;
+    font-size: 1.6vw;
+    align-items:  center;
+    padding-bottom: 8%;
+    width: 80%;
+    margin: 0 auto 0 auto;
 }
+
 #changeEmail {
-    grid-row: 18;
-    grid-column: 2 / 6;
+    grid-row: 19;
+    grid-column: 2 / 8;
+    font-size: 1.6vw;
+    align-items:  center;
+    padding-bottom: 8%;
+    width: 80%;
+    margin: 0 auto 0 auto;
+}
+
+#changeFavGame {
+    border-radius: 1.5vw;
+    grid-row: 4;
+    grid-column: 18;
+    font-size: 1.4vw;
+    padding-bottom: 10%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    text-align: center;
 }

@@ -15,9 +15,12 @@ const initializeSocket = require("./socket");
 const passResetRoutes = require("./routes/resetRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const MongoClient = require("mongodb").MongoClient;
+const cloudinary = require("cloudinary").v2;
+const fileUpload = require('express-fileupload');
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET; 
 const node_secret = process.env.NODE_SESSION_SECRET;
+const cloudinary_secret = process.env.CLOUDINARY_SECRET;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
 mongoose.connect(mongo_uri, {
@@ -28,6 +31,12 @@ mongoose.connect(mongo_uri, {
 const client = new MongoClient(mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+});
+
+cloudinary.config({ 
+  cloud_name: "defvzhd9k", 
+  api_key: "422958868577472", 
+  api_secret: cloudinary_secret
 });
 
 //for the video call server
@@ -76,6 +85,11 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(sessionMiddleware);
+
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: '/tmp/'
+}));
 
 const io = initializeSocket(server, sessionMiddleware);
 
@@ -142,6 +156,7 @@ app.post("/signupSubmit", async (req, res) => {
     password: hashedPass,
     email: email,
     type: type,
+    bio: ""
   });
 
   console.log(`User ${username} successfully added to database.`);
@@ -224,13 +239,77 @@ app.get("/profile", async (req, res) => {
 if (req.session.authenticated) {
   let username = req.session.username;
 
-  const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1}).toArray();
+  const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1, bio: 1, pfp: 1}).toArray();
   console.log(userInfo);
+  //check bio and if empty/whitespace, send example message. Else, send user's bio from database
+  let bio = userInfo[0].bio
+  if (bio === '' || /^\s*$/.test(bio)) {
+    bio = "Add bio here...";
+  }
+  
+  let pfp = userInfo[0].pfp;
+  if (!pfp || pfp === '') {
+    pfp = "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg";
+  }
+  console.log("pfp: " + pfp);
 
-  res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame});
+  res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame, bio: bio, pfp: pfp});
 } else {
   res.redirect("/login");
 }
+});
+
+app.post("/bioSubmit", async (req, res) => {
+  let bio = req.body.bio;
+  await userCollection.updateOne({username: req.session.username}, {$set: {bio: bio}});
+  res.redirect('/profile');
+});
+
+app.post("/usernameSubmit", async (req, res) => {
+  let name = req.body.username;
+  await userCollection.updateOne({username: req.session.username}, {$set: {username: name}});
+  req.session.username = name;
+  res.redirect("/profile");
+});
+
+app.post("/emailSubmit", async (req, res) => {
+  let newEmail = req.body.email;
+  await userCollection.updateOne({username: req.session.username}, {$set: {email: newEmail}});
+  res.redirect("/profile");
+});
+
+app.post("/favGameSubmit", async (req, res) => {
+  let newFavGame = req.body.favGame;
+  await userCollection.updateOne({username: req.session.username}, {$set: {favGame: newFavGame}});
+  res.redirect("/profile");
+});
+
+app.post("/pfpSubmit", async (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+
+  const file = req.files.pfp;
+
+  cloudinary.uploader.upload(file.tempFilePath, {
+    folder: 'profile_pictures',
+    public_id: `${req.session.username}_pfp`,
+    overwrite: true   
+    }, (err, result) => {
+    if (err) {  
+      return res.status(500).send({ message: 'Upload failed', error: err.message });
+    }
+
+    const pfpUrl = result.secure_url;
+
+    userCollection.updateOne({ username: req.session.username }, { $set: { pfp: pfpUrl } })
+      .then(() => {
+        res.redirect('/profile');
+      })
+      .catch(err => {
+        res.status(500).send({ message: 'Database update failed', error: err.message });
+      });
+  });
 });
 
 app.get("/games", (req, res) => {
