@@ -29,7 +29,7 @@
        <div class="nav__menu" id="nav-menu">
           <ul class="nav__list">
               <% for (var i = 0; i < navLinks.length; i++) { %>
-              <li class="nav__item"><a href="<%= locals.navLinks[i].link %>" class="nav__link"
+              <li class="nav__item"><a href="<%= locals.navLinks[i].link %>" class="nav__link
                 <% if (locals.navLinks[i].link == locals.currentUrl) { %>active<% } %>" aria-current="page">
                 <%= locals.navLinks[i].name %></a></li>
               <% } %>

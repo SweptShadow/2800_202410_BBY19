@@ -384,8 +384,6 @@ html {
 }
 
 body {
-  background-color: var(--body-color);
-  color: var(--text-color);
   margin-top: 55px;
 }
 
@@ -541,6 +539,7 @@ header .nav__logo {
   transition: color .4s;
 }
 
+
 .nav__close {
   position: absolute;
   top: 1.15rem;
@@ -611,5 +610,12 @@ header .show-menu {
   .container {
     margin: 0 0% 0 2%;
   }
+}
+
+.active {
+    color: rgb(108, 108, 108);
+    border: 1px solid white;
+    padding: 7px;
+    border-radius: 15px;
 }
   
