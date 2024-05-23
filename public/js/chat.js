@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("form");
   const input = document.getElementById("input");
   const messages = document.getElementById("messages");
+  const typingIndicator = document.getElementById("typing-indicator");
 
   const roomPrompt = prompt("Enter a room name:");
   const roomName = roomPrompt ? roomPrompt.trim() : "default";
@@ -65,13 +66,32 @@ document.addEventListener("DOMContentLoaded", function () {
       // console.log("Message saved: ", newMessage);
       socket.emit("chat message", newMessage);
       input.value = "";
+      socket.emit("stop typing", chatRoomId); // Notify server that typing has stopped
     }
+  });
+
+  input.addEventListener("keypress", () => {
+    socket.emit("typing", chatRoomId); // Notify server that user is typing
   });
 
   socket.on("chat message", (msg) => {
     // console.log("Received chat message: ", msg);
     appendMessage(msg);
     scrollToBottom();
+  });
+
+  socket.on("typing", (username) => {
+    typingIndicator.textContent = `${username} is typing...`;
+
+    // Clear after 3 seconds
+    clearTimeout(typingIndicator.timer);
+    typingIndicator.timer = setTimeout(() => {
+      typingIndicator.textContent = '';
+    }, 3000);
+  });
+
+  socket.on("stop typing", () => {
+    typingIndicator.textContent = '';
   });
 
   /**
