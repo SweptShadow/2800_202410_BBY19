@@ -340,7 +340,7 @@ app.get("/gamesSpecific", async (req, res) => {
 
 app.get("/social", async (req, res) => {
   try {
-    const friendsCollection = client.db(mongo_database).collection("friendships");
+    const friendsCollection = client.db(mongo_database).collection("users");
     const friends = await friendsCollection.find().toArray();
     res.render("social", { friends });
   } catch (error) {
