@@ -115,9 +115,9 @@ passport.use(new GoogleStrategy({
   callbackURL: process.env.GOOGLE_CALLBACK_URL
 }, async (token, tokenSecret, profile, done) => {
   try {
-    console.log('Google profile:', profile); // Log the profile to inspect its structure
+    console.log('Google profile:', profile);
 
-    // Check if profile.emails and profile.emails[0] are available
+
     const email = profile.emails && profile.emails[0] && profile.emails[0].value;
 
     if (!email) {
