@@ -59,7 +59,7 @@ vs chat room-->
       });
       var logoImg = $(this);
       var originalSrc = '/images/logo.png';
-      var secondSrc = '/images/second-logo.jpg';
+      var secondSrc = '/images/logo2.png';
 
       logoImg.addClass('firework').delay(500).queue(function(next) {
         logoImg.removeClass('firework');
@@ -77,8 +77,8 @@ vs chat room-->
           logoImg.attr('src', newSrc)
             .fadeIn(200)
             .animate({
-              'width': '230px',
-              'height': '140px'
+              'width': '100%',
+              'height': '100%'
             }, 200);
         });
     });
