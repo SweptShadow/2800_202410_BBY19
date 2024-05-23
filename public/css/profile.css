@@ -26,7 +26,7 @@ body {
     color: black;
     font-size: 3.8vw;
     font-weight: 600;
-    margin-top: 2%;
+    margin-top: 1%;
 }
 
 .profileContainer h2 {
@@ -347,6 +347,7 @@ textarea {
         border-radius: 20%;
         padding: none;
         text-align: center;
+        align-items: center;
         display: flex;
         justify-content: center;
     }
@@ -392,5 +393,13 @@ textarea {
 @media only screen and (max-width: 500px) {
     #changePic {
         font-size: 3vw;
+        
+    }
+}
+
+@media only screen and (min-width: 1350px) {
+    .profileInfo h1 {
+        font-size: 3vw;
+        margin-top: 0;
     }
 }

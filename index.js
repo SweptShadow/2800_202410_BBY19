@@ -137,11 +137,7 @@ app.use(fileUpload({
 const io = initializeSocket(server, sessionMiddleware);
 
 const navLinks = [
-  { name: "Home", link: "/" },
-  { name: "Games", link: "/games" },
-  { name: "Social", link: "/social" },
   { name: "Chatroom", link: "/chat" },
-  { name: "Profile", link: "/profile"},
   { name: "Video Call", link: "/videocall" },
   { name: "Logout", link: "/logout" },
   { name: "Calendar", link: "/calendar" },
