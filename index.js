@@ -102,32 +102,55 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => {
   userCollection.findOne({ _id: new mongoose.Types.ObjectId(id) }, (err, user) => {
+    if (err) {
+      console.error('Error during deserialization:', err);
+    }
     done(err, user);
   });
 });
 
 passport.use(new GoogleStrategy({
-  clientID: google_client_id,
-  clientSecret: google_client_secret,
-  callbackURL: google_callback_url
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.GOOGLE_CALLBACK_URL
 }, async (token, tokenSecret, profile, done) => {
   try {
+    console.log('Google profile:', profile); // Log the profile to inspect its structure
+
+    // Check if profile.emails and profile.emails[0] are available
+    const email = profile.emails && profile.emails[0] && profile.emails[0].value;
+
+    if (!email) {
+      throw new Error('No email found in Google profile');
+    }
+
     let user = await userCollection.findOne({ googleId: profile.id });
     if (!user) {
-      user = await userCollection.insertOne({
+      user = new userCollection({
         googleId: profile.id,
         username: profile.displayName,
-        email: profile.emails[0].value,
+        email: email,
         type: "user",
         bio: ""
       });
-      user = user.ops[0];
+      await user.save();
     }
     done(null, user);
   } catch (err) {
+    console.error('Error in Google Strategy:', err);
     done(err, null);
   }
 }));
+
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+app.get("/auth/google/callback", 
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
+
 
 app.use(fileUpload({
   useTempFiles: true,
