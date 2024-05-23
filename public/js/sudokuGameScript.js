@@ -63,6 +63,14 @@ function setGame() {
     eraser.appendChild(img);
     document.getElementById("digits").appendChild(eraser);
 
+    // Solver
+    let hint = document.createElement("div");
+    hint.id = "H";
+    hint.innerText = "H";
+    hint.addEventListener("click", selectNumber);
+    hint.classList.add("number");
+    document.getElementById("digits").appendChild(hint);
+
     // Board
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
@@ -117,7 +125,32 @@ function selectTile() {
         this.innerText = enteredNumber;
         undoMoves.push([r, c, current, this.innerText]);
         redoMoves.clear();
+        evaluateBoard();
     }
+}
+
+// document.getElementById(r + "-" + c).innerText = prev;
+function evaluateBoard() {
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            let onBoard = document.getElementById(r + "-" + c).innerText;
+            let onSolution = solution[r][c];
+            if (onBoard === "") {
+                return;
+            }
+        }
+    }
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            let onBoard = document.getElementById(r + "-" + c).innerText;
+            let onSolution = solution[r][c];
+            if (onBoard != onSolution) {
+                alert("Incorrect solution!");
+                return;
+            }
+        }
+    }
+    alert("You win!");
 }
 
 function undoMove() {
