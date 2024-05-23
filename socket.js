@@ -12,7 +12,7 @@ const User = require('./models/user');
  * @param {Object} server http server instance
  * @param {Object} sessionMiddleware middleware to share session data between clients
  * @returns {Server} socket.io server instance
-  */
+ */
 function initializeSocket(server, sessionMiddleware) {
   const io = new Server(server);
 
@@ -94,6 +94,14 @@ function initializeSocket(server, sessionMiddleware) {
       } catch (error) {
         console.error('Error saving message:', error);
       }
+    });
+
+    socket.on('typing', (chatRoomId) => {
+      socket.to(chatRoomId).emit('typing', socket.handshake.session.username);
+    });
+
+    socket.on('stop typing', (chatRoomId) => {
+      socket.to(chatRoomId).emit('stop typing');
     });
 
     socket.on('disconnect', () => {
