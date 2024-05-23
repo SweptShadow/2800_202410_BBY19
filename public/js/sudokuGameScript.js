@@ -104,7 +104,21 @@ function selectNumber() {
 
 
 function selectTile() {
-    if (numSelected) {
+    if (numSelected.id === "H") {
+        if (this.classList.contains("tile-start")) {
+            return;
+        }
+        const coords = this.id.split("-");
+        const r = parseInt(coords[0]);
+        const c = parseInt(coords[1]);
+        const enteredNumber = solution[r][c];
+        let current = this.innerText;
+        this.style.color = "black";
+        this.innerText = enteredNumber;
+        undoMoves.push([r, c, current, this.innerText]);
+        redoMoves.clear();
+        evaluateBoard();
+    } else if (numSelected) {
         if (this.classList.contains("tile-start")) {
             return;
         }
@@ -129,7 +143,6 @@ function selectTile() {
     }
 }
 
-// document.getElementById(r + "-" + c).innerText = prev;
 function evaluateBoard() {
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
@@ -185,4 +198,5 @@ function redoMove() {
         document.getElementById(r + "-" + c).style.color = 'black';
     }
     document.getElementById(r + "-" + c).innerText = prev;
+    evaluateBoard();
 }
