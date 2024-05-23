@@ -203,8 +203,15 @@ app.post("/signupSubmit", async (req, res) => {
   });
 
   console.log(`User ${username} successfully added to database.`);
+
+  const user = await userCollection.findOne(
+    { email: email },
+    { projection: { _id: 1, username: 1, password: 1 } }
+  );
+
   req.session.authenticated = true;
-  req.session.username = username;
+  req.session.userId = user._id;
+  req.session.username = user.username;
   res.redirect("/");
 });
 

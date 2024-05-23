@@ -157,13 +157,15 @@ body{
 
 
 #gamesSpecificContent {
-    height: 850px;
+    height: 1080px;
+    background: #87CEEB;
+    background: radial-gradient(at center, #87CEEB, #FFFFFF);
 }
 
 .gameContainer {
     margin: auto;
     width: 80%;
-    height: 100%;
+    height: 80%;
     display: grid;
     grid-template-columns: repeat(10, 10%);
     grid-template-rows: repeat(10, 10%);
@@ -180,7 +182,7 @@ body{
 }
 
 .gameView {
-    grid-row: 1 / 8;
+    grid-row: 1 / 9;
     grid-column: 1 /span 10;
     background-color: rgba(185, 185, 185, 0.527);
     border-radius: 15px 15px 0 0;
@@ -191,7 +193,7 @@ body{
 }
 
 .gameDesc {
-    grid-row: 8 /span 9;
+    grid-row: 9 /span 9;
     grid-column: 1 /span 10;
     background-color: white;
     border-radius: 0 0 15px 15px;
@@ -204,7 +206,7 @@ body{
     width: 85%;
 }
 .helpButton {
-    grid-row: 8;
+    grid-row: 9;
     grid-column:10;
     margin-top: 15px;
     margin-bottom: 15px;
@@ -330,5 +332,17 @@ body{
     padding: 0.3rem; line-height: 0.5;
   }
   .square {height: 80px; width: 80px;}
+}
+@media screen and (max-width: 700px) {
+    #gamesSpecificContent {
+        height: 950px;
+    }
+    .gameDesc {
+        grid-row: 8 /span 9;
+        grid-column: 1 /span 10;
+    }
+    .helpButton {
+        grid-row: 8;
+    }
 }
 /* #endregion */
