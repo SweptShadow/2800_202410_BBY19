@@ -18,10 +18,17 @@ const friendRoutes = require("./routes/friendRoutes");
 const MongoClient = require("mongodb").MongoClient;
 const cloudinary = require("cloudinary").v2;
 const fileUpload = require('express-fileupload');
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
 const cloudinary_secret = process.env.CLOUDINARY_SECRET;
+const google_client_id = process.env.GOOGLE_CLIENT_ID;
+const google_client_secret = process.env.GOOGLE_CLIENT_SECRET;
+const google_callback_url = process.env.NODE_ENV === 'production'
+? process.env.GOOGLE_CALLBACK_URL_PROD
+: process.env.GOOGLE_CALLBACK_URL_DEV;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
 mongoose.connect(mongo_uri, {
@@ -85,6 +92,42 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(sessionMiddleware);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  userCollection.findOne({ _id: new mongoose.Types.ObjectId(id) }, (err, user) => {
+    done(err, user);
+  });
+});
+
+passport.use(new GoogleStrategy({
+  clientID: google_client_id,
+  clientSecret: google_client_secret,
+  callbackURL: google_callback_url
+}, async (token, tokenSecret, profile, done) => {
+  try {
+    let user = await userCollection.findOne({ googleId: profile.id });
+    if (!user) {
+      user = await userCollection.insertOne({
+        googleId: profile.id,
+        username: profile.displayName,
+        email: profile.emails[0].value,
+        type: "user",
+        bio: ""
+      });
+      user = user.ops[0];
+    }
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+}));
 
 app.use(fileUpload({
   useTempFiles: true,
@@ -223,6 +266,15 @@ app.post("/loginSubmit", async (req, res) => {
     return;
   }
 });
+
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+app.get("/auth/google/callback", 
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
