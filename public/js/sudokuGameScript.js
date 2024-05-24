@@ -88,7 +88,7 @@ function setGame() {
             }
             tile.addEventListener("click", selectTile);
             tile.classList.add("tile");
-            document.getElementById("board").appendChild(tile);
+            document.getElementById("sudokuBoard").appendChild(tile);
         }
     }
 }

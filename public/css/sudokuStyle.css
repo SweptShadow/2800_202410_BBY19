@@ -59,7 +59,7 @@ hr {
   align-items: center;
 }
 
-#board {
+#sudokuBoard {
   width: 450px;
   height: 450px;
   margin: 0 auto;
