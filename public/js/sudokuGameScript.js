@@ -53,7 +53,7 @@ function setGame() {
 
     // Eraser
     let eraser = document.createElement("div");
-    eraser.id = "0";
+    eraser.id = "";
     eraser.addEventListener("click", selectNumber);
     eraser.classList.add("number");
     let img = document.createElement("img");
