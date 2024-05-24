@@ -1,8 +1,7 @@
 /* * {transition: all 0.2s linear !important;} */
 /* #region gamesRegion */
 body{
-    background: #87CEEB;
-    background: radial-gradient(at center, #87CEEB, #FFFFFF);
+    background: var(--background);
 }
 
 .height{

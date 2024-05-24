@@ -2,19 +2,23 @@ function setTheme(theme) {
   const root = document.documentElement;
   switch (theme) {
     case 'option1':
-      root.style.setProperty('--background-color-default', '#f7a54c'); 
+      root.style.setProperty('--background-color-default', '#f7a54c');
+      root.style.setProperty('--background', 'radial-gradient(at center, #f7a54c, #FFFFFF)'); 
       localStorage.setItem('theme', 'option1');
       break;
     case 'option2':
       root.style.setProperty('--background-color-default', '#9370DB'); 
+      root.style.setProperty('--background', 'radial-gradient(at center, #9370DB, #FFFFFF)'); 
       localStorage.setItem('theme', 'option2');
       break;
     case 'option3':
       root.style.setProperty('--background-color-default', '#98FB98'); 
+      root.style.setProperty('--background', 'radial-gradient(at center, #98FB98, #FFFFFF)');
       localStorage.setItem('theme', 'option3');
       break;
     default:
       root.style.setProperty('--background-color-default', '#87CEEB');
+      root.style.setProperty('--background', 'radial-gradient(at center, #87CEEB, #FFFFFF)');
       localStorage.setItem('theme', 'default');
       break;
   }
