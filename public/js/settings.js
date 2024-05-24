@@ -1,22 +1,28 @@
-
-
 function setTheme(theme) {
   const root = document.documentElement;
   switch (theme) {
     case 'option1':
-      root.style.setProperty('--background-color-default', '#f7a54c'); 
+      root.style.setProperty('--background-color-default', '#f7a54c');
+      localStorage.setItem('theme', 'option1');
       break;
     case 'option2':
-      root.style.setProperty('--background-color-default', '#5dc4de'); 
+      root.style.setProperty('--background-color-default', '#5dc4de');
+      localStorage.setItem('theme', 'option2');
       break;
     case 'option3':
       root.style.setProperty('--background-color-default', '#FFFFFF'); 
       break;
     default:
-      root.style.setProperty('--background-color-default', '#87CEEB');
+      root.style.setProperty('--background-color-default', '#87CEEB'); 
+      localStorage.setItem('theme', 'default');
       break;
   }
 }
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  const savedTheme = localStorage.getItem('theme') || 'default';
+  setTheme(savedTheme);
+});
   
   // Toggle the settings modal
   document.getElementById('settings-btn').onclick = function(event) {
