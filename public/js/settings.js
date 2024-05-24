@@ -3,15 +3,15 @@ function setTheme(theme) {
   switch (theme) {
     case 'option1':
       root.style.setProperty('--background-color-default', '#f7a54c'); 
-      localStorage.setItem('theme', 'orange');
+      localStorage.setItem('theme', 'option1');
       break;
     case 'option2':
       root.style.setProperty('--background-color-default', '#9370DB'); 
-      localStorage.setItem('theme', 'purple');
+      localStorage.setItem('theme', 'option2');
       break;
     case 'option3':
       root.style.setProperty('--background-color-default', '#98FB98'); 
-      localStorage.setItem('theme', 'green');
+      localStorage.setItem('theme', 'option3');
       break;
     default:
       root.style.setProperty('--background-color-default', '#87CEEB');
