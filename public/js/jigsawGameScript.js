@@ -1,72 +1,23 @@
-//Initialize the game
-function initGame() {
+//Array of elements belonging to the grid class and piece class
+var grids = new Array();
+var pieces = new Array();
 
-  let pieces = document.querySelectorAll('.puzzle-piece');
-  pieces.forEach(piece => {
-    piece.addEventListener('dragstart', dragStart);
-  });
+//The puzzle piece currently selected by the user's mouse and keyboard
+var mousePiece = null;
+var keyPiece = null;
 
-  let puzzleArea = document.getElementById('jigsaw-puzzle');
-  puzzleArea.addEventListener('dragover', dragOver);
-  puzzleArea.addEventListener('drop', dropPiece);
-}
+//The index number of keyPiece
+var keyIndex = null;
 
-//Function to handle drag start
-function dragStart(event) {
+//Boolean value, true = keyboard use is in Select Piece mode, false = keyboard use is in Move Piece mode
+var selectMode = true;
 
-  event.dataTransfer.setData('text/plain', event.target.dataset.position);
-}
+/* Horizontal distance in pixels between the left edge of mousePiece and the mouse pointer */
+var diffX = null;
 
-//Function to handle drag over
-function dragOver(event) {
+/* Vertical distance in pixels between the top edge of mousePiece and the mouse pointer */
+var diffY = null;
 
-  event.preventDefault();
-}
-
-//Function to handle dropping of a piece
-function dropPiece(event) {
-
-  event.preventDefault();
-  let target = event.target;
-  if (target.classList.contains('puzzle-piece')) {
-
-    let sourcePosition = event.dataTransfer.getData('text/plain');
-    let targetPosition = target.dataset.position;
-
-    //Swap the positions of the pieces
-    let sourcePiece = document.querySelector(`[data-position="${sourcePosition}"]`);
-    let targetStyle = target.getAttribute('style');
-    target.setAttribute('style', sourcePiece.getAttribute('style'));
-    sourcePiece.setAttribute('style', targetStyle);
-
-    //Update the positions in the dataset
-    target.dataset.position = sourcePosition;
-    sourcePiece.dataset.position = targetPosition;
-
-    //Check if puzzle is completed
-    checkCompletion();
-  }
-}
-
-//Function to check if puzzle is completed
-function checkCompletion() {
-
-  let pieces = document.querySelectorAll('.puzzle-piece');
-  let isCompleted = true;
-  pieces.forEach(piece => {
-
-    let position = piece.dataset.position.split('-');
-    let expectedBackgroundPosition = `${-position[1] * 100}px ${-position[0] * 100}px`;
-    if (piece.getAttribute('style').indexOf(expectedBackgroundPosition) === -1) {
-      isCompleted = false;
-    }
-  });
-
-  if (isCompleted) {
-    
-    alert('Congratulations! You have completed the puzzle.');
-  }
-}
-
-//Initialize function when the page loads
-initGame();
+//Int representing the highest z-index value on the page
+var maxZ = 1;
+var hoverGrid = null;
