@@ -120,7 +120,7 @@ passport.deserializeUser(async (id, done) => {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.GOOGLE_CALLBACK_URL_DEV
+  callbackURL: google_callback_url
 }, async (token, tokenSecret, profile, done) => {
   try {
     console.log('Google profile:', profile); 
