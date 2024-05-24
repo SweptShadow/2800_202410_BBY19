@@ -16,13 +16,18 @@ document.addEventListener("DOMContentLoaded", function () {
   /**
    * Toggles the chat overlay by setting the display element.
    */
-  toggleChatOverlayButton.addEventListener("click", () => {
-    if (friendsChatOverlay.style.display === "none") {
-      friendsChatOverlay.style.display = "block";
-    } else {
-      friendsChatOverlay.style.display = "none";
-    }
-  });
+toggleChatOverlayButton.addEventListener("click", () => {
+  if (friendsChatOverlay.classList.contains("show")) {
+    friendsChatOverlay.classList.remove("show");
+  } else {
+    friendsChatOverlay.classList.add("show");
+  }
+});
+
+const closeChatModalButton = document.querySelector("#chat-modal button");
+closeChatModalButton.addEventListener("click", () => {
+  chatModal.classList.remove("show");
+});
 
   /**
    * GETs the friends list from the server and loads it into the UI.

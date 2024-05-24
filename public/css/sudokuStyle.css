@@ -59,7 +59,7 @@ hr {
   align-items: center;
 }
 
-#board {
+#sudokuBoard {
   width: 450px;
   height: 450px;
   margin: 0 auto;
@@ -91,4 +91,21 @@ hr {
 
 .number-selected {
   background-color: gray;
+}
+
+.tile-start {
+  background-color: #e4a561;
+}
+
+.horizontal-line {
+  border-bottom: 3px solid black;
+}
+
+.vertical-line {
+  border-right: 3px solid black;
+}
+
+.wrong-number {
+  color: red;
+  background-color: red;
 }

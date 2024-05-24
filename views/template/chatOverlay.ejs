@@ -5,7 +5,7 @@
     <h2>Friends</h2>
     <form id="add-friend-form">
       <input type="email" name="friend-email" placeholder="Enter friend's email" required>
-      <button type="submit">Add Friend</button>
+      <button type="submit" data-button="add-friend">Add Friend</button>
     </form>
     <ul id="friends-list"></ul>
   </div>
@@ -17,9 +17,9 @@
     <p id="typing-indicator"></p>
     <form id="chat-form">
       <input type="text" id="chat-input" placeholder="Type a message" required>
-      <button type="submit">Send</button>
+      <button type="submit" data-button="send-message">Send</button>
     </form>
-    <button onclick="document.getElementById('chat-modal').style.display='none'">Close</button>
+    <button data-button="close" onclick="document.getElementById('chat-modal').style.display='none'">Close</button>
   </div>
 </div>
 

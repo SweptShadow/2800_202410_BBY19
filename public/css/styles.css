@@ -1,5 +1,12 @@
+:root {
+  --background-color-default: #87CEEB;
+  --background-color-orange: #f7a54c;
+  --background-color-purple: #9370DB;
+  --background-color-green: #98FB98; 
+}
+
 html, body {
-    background-color: #87CEEB;
+  background-color: var(--background-color-default);
 }
 
 #bottom-Navbar {
@@ -7,7 +14,7 @@ html, body {
 }
 
 #header {
-    background-color: #87CEEB;
+    background-color: var(--background-color-default);
 }
 
 /* #region fontRegion */
@@ -480,15 +487,19 @@ header .nav {
 header .nav__logo {
   color: var(--title-color);
   font-weight: var(--font-semi-bold);
-  transition: color .4s;
-  height: 100%;
+  transition: color 0.4s;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+/* Responsive logo image styling */
 .nav__logo img {
-    height: 100%;
-    width: 100%;
+  height: auto;
+  width: 100%;
+  max-width: 150px; /* Set a max-width to ensure it doesn't get too large */
+  object-fit: contain; /* Ensures the image scales properly */
 }
 
 .nav__actions {
