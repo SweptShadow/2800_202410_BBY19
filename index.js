@@ -36,6 +36,8 @@ mongoose.connect(mongo_uri, {
   useUnifiedTopology: true,
 });
 
+console.log('Google Callback URL:', google_callback_url);
+
 const client = new MongoClient(mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
