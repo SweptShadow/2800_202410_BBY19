@@ -26,9 +26,7 @@ const node_secret = process.env.NODE_SESSION_SECRET;
 const cloudinary_secret = process.env.CLOUDINARY_SECRET;
 const google_client_id = process.env.GOOGLE_CLIENT_ID;
 const google_client_secret = process.env.GOOGLE_CLIENT_SECRET;
-const google_callback_url = process.env.NODE_ENV === 'production'
-? process.env.GOOGLE_CALLBACK_URL_PROD
-: process.env.GOOGLE_CALLBACK_URL_DEV;
+const google_callback_url = process.env.GOOGLE_CALLBACK_URL_PROD
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
 mongoose.connect(mongo_uri, {
