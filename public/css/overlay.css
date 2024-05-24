@@ -127,4 +127,45 @@
     background: linear-gradient(135deg, #004080, #0073e6);
     transform: scale(0.95);
   }
+
+/* Settings modal styles */
+.settings-modal {
+  position: fixed;
+  top: 50px; 
+  right: 10px;
+  width: 300px; 
+  background: linear-gradient(135deg, #e7e7e7, #9b9b9b);
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  padding: 20px;
+  transform: translateY(-100%);
+  transition: transform 1s ease, opacity 1s ease;
+  opacity: 0; 
+  pointer-events: none; 
+}
+
+.settings-modal.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto; 
+}
+
+.settings-modal-content {
+  padding: 10px;
+}
+
+.settings-modal-content button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.settings-modal-content button:hover {
+  background-color: #f1f1f1;
+}
+
   

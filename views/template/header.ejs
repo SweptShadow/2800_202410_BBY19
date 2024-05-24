@@ -46,6 +46,8 @@
           <!-- Login button -->
           <i class="ri-user-line nav__login" id="login-btn" href="/profile"></i>
 
+          <i class="ri-settings-3-line nav__settings" id="settings-btn"></i>
+
           <!-- Toggle button -->
           <div class="nav__toggle" id="nav-toggle">
              <i class="ri-menu-line"></i>
@@ -53,6 +55,17 @@
        </div>
     </nav>
  </header>
+
+<!-- Settings Dropdown Menu -->
+<div id="settings-modal" class="settings-modal">
+  <div class="settings-modal-content">
+    <button onclick="setTheme('default')">Default</button>
+    <button onclick="setTheme('option1')">Option 1</button>
+    <button onclick="setTheme('option2')">Option 2</button>
+    <button onclick="setTheme('option3')">Option 3</button>
+  </div>
+</div>
+<script src="/js/settings.js"></script>
   
   <!-- <div class="container-fluid" id="header">
     <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
