@@ -1,30 +1,86 @@
 <%- include("template/header") %>
-<!-- Include the header template -->
-
-<main>
-  <h1 style="text-align: center;">Jigsaw Puzzle Game</h1>
-
-  <div class="Hub-box">
-    <!-- Container for the completed jigsaw image -->
-    <div id="jigsaw-complete">
-      <img src="/images/jigsaw/trial1.png" alt="Completed Jigsaw Image">
-    </div>
-    <br>
-    <!-- Container for the jigsaw puzzle pieces -->
-    <div id="jigsaw-puzzle">
-      <% for(let i = 0; i < 3; i++) { %>
-      <% for(let j = 0; j < 3; j++) { %>
-      <div class="puzzle-piece piece-<%= i %>-<%= j %>" data-position="<%= i %>-<%= j %>"></div>
-      <% } %>
-      <% } %>
-    </div>
-  </div>
-</main>
 
 <!-- Link to CSS file -->
 <link rel="stylesheet" href="/css/jigsawStyle.css">
 
-<!-- Link to JS file -->
+<div class="jigsaw-box">
+  <h1 style="text-align: center;">Jigsaw Puzzle Game</h1>
+
+  <div class="Hub-box">
+    <form id="jigsaw" action="">
+
+      <div id="puzzleGrid">
+        <div id="grid0" class="grid"></div>
+        <div id="grid1" class="grid"></div>
+        <div id="grid2" class="grid"></div>
+        <div id="grid3" class="grid"></div>
+        <div id="grid4" class="grid"></div>
+        <div id="grid5" class="grid"></div>
+        <div id="grid6" class="grid"></div>
+        <div id="grid7" class="grid"></div>
+        <div id="grid8" class="grid"></div>
+        <div id="grid9" class="grid"></div>
+        <div id="grid10" class="grid"></div>
+        <div id="grid11" class="grid"></div>
+        <div id="grid12" class="grid"></div>
+        <div id="grid13" class="grid"></div>
+        <div id="grid14" class="grid"></div>
+        <div id="grid15" class="grid"></div>
+        <div id="grid16" class="grid"></div>
+        <div id="grid17" class="grid"></div>
+        <div id="grid18" class="grid"></div>
+        <div id="grid19" class="grid"></div>
+        <div id="grid20" class="grid"></div>
+        <div id="grid21" class="grid"></div>
+        <div id="grid22" class="grid"></div>
+        <div id="grid23" class="grid"></div>
+        <div id="grid24" class="grid"></div>
+      </div>
+
+      <div id="puzzlePieces">
+        <div id="piece0" class="pieces"></div>
+        <div id="piece1" class="pieces"></div>
+        <div id="piece2" class="pieces"></div>
+        <div id="piece3" class="pieces"></div>
+        <div id="piece4" class="pieces"></div>
+        <div id="piece5" class="pieces"></div>
+        <div id="piece6" class="pieces"></div>
+        <div id="piece7" class="pieces"></div>
+        <div id="piece8" class="pieces"></div>
+        <div id="piece9" class="pieces"></div>
+        <div id="piece10" class="pieces"></div>
+        <div id="piece11" class="pieces"></div>
+        <div id="piece12" class="pieces"></div>
+        <div id="piece13" class="pieces"></div>
+        <div id="piece14" class="pieces"></div>
+        <div id="piece15" class="pieces"></div>
+        <div id="piece16" class="pieces"></div>
+        <div id="piece17" class="pieces"></div>
+        <div id="piece18" class="pieces"></div>
+        <div id="piece19" class="pieces"></div>
+        <div id="piece20" class="pieces"></div>
+        <div id="piece21" class="pieces"></div>
+        <div id="piece22" class="pieces"></div>
+        <div id="piece23" class="pieces"></div>
+        <div id="piece24" class="pieces"></div>
+      </div>
+
+      <div id="controls" class="aligncenter">
+        <p>
+          <input id="solve" type="button" value="Solve It" />
+          <input id="jumble" type="button" value="Jumble It" />
+        </p>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<!-- Link to JS files/scripts for page -->
 <script src="/js/jigsawGameScript.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
 
 <%- include("template/footer") %>
