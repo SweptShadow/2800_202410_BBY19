@@ -151,12 +151,9 @@ app.use(fileUpload({
 const io = initializeSocket(server, sessionMiddleware);
 
 const navLinks = [
-  { name: "Chatroom", link: "/chat" },
   { name: "Video Call", link: "/videocall" },
   { name: "Logout", link: "/logout" },
   { name: "Calendar", link: "/calendar" },
-
-
 ];
 
 app.locals.navLinks = navLinks;
@@ -172,7 +169,10 @@ app.use("/api/friends", friendRoutes);
 app.use("/api/password", passResetRoutes);
 
 app.get("/", (req, res) => {
-  res.render("root", { session: req.session });
+  res.render("root", { 
+    session: req.session, 
+    userId: req.session.userId || null 
+  });
 });
 
 app.get("/resetPassword", (req, res) => {
@@ -306,10 +306,6 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-app.get("/main", (req, res) => {
-  res.render("main");
-});
-
 app.get("/profile", async (req, res) => {
   if (req.session.authenticated) {
     let username = req.session.username;
@@ -428,7 +424,6 @@ app.get("/social", async (req, res) => {
 res.render("social")
 });
 
-
 app.get("/chat", async (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
@@ -475,13 +470,11 @@ app.get("/calendar", (req, res) => {
   res.render("calendar");
 });
 
-
 app.get("/videocall", (req, res) => {
   const roomId = uuidV4();
   console.log(`Redirecting to /videocall/${roomId}`);
   res.redirect(`/videocall/${roomId}`);
 });
-
 
 app.get('/videocall/:room', (req, res) => {
   console.log(`Rendering room with ID: ${req.params.room}`);
