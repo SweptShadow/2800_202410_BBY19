@@ -607,7 +607,7 @@ header .show-menu {
 }
 
 @media screen and (min-width: 1150px) {
-  .container {
+  header .container {
     margin: 0 0% 0 2%;
   }
 }

@@ -120,7 +120,7 @@ const startBoard = game => {
     game.on('checkMate', color => {
         const endScene = document.getElementById('endscene');
         endScene.getElementsByClassName('winning-sign')[0].innerHTML = color + ' Wins';
-        endScene.classList.add('show');
+        endScene.classList.add('chessshow');
     })
 }
 

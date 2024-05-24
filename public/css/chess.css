@@ -127,7 +127,7 @@
     margin-top: 40vh;
     font-size: 40px;
 }
-.show{
+.chessshow{
 	display: block !important;
 	animation: showMessage 1s ease-out;
 	animation-fill-mode: both;
