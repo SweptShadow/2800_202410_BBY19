@@ -1,4 +1,4 @@
-* {transition: all 0.2s linear !important;}
+/* * {transition: all 0.2s linear !important;} */
 /* #region gamesRegion */
 body{
     background: #87CEEB;
@@ -264,6 +264,7 @@ body{
     max-height: 70%;
     overflow-y: auto;
     width: 80%;
+    z-index: 1001;
 }
 
 .close {
