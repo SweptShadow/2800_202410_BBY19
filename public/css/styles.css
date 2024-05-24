@@ -480,15 +480,19 @@ header .nav {
 header .nav__logo {
   color: var(--title-color);
   font-weight: var(--font-semi-bold);
-  transition: color .4s;
-  height: 100%;
+  transition: color 0.4s;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+/* Responsive logo image styling */
 .nav__logo img {
-    height: 100%;
-    width: 100%;
+  height: auto;
+  width: 100%;
+  max-width: 150px; /* Set a max-width to ensure it doesn't get too large */
+  object-fit: contain; /* Ensures the image scales properly */
 }
 
 .nav__actions {
