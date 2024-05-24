@@ -14,12 +14,12 @@ html, body {
 }
 
 #header {
-    background-color: var(--background-color-default);
+    background-color: var(--background-color-default);  
 }
 
 /* #region fontRegion */
 @font-face {
-    font-family: 'YourFontName';
+    font-family: 'Gilroy-ExtraBold';
     src: url('fonts/Gilroy-ExtraBold.otf"') format('otf');
   }
   
