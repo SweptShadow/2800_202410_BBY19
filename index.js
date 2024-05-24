@@ -152,8 +152,8 @@ const io = initializeSocket(server, sessionMiddleware);
 
 const navLinks = [
   { name: "Video Call", link: "/videocall" },
-  { name: "Logout", link: "/logout" },
   { name: "Calendar", link: "/calendar" },
+  { name: "Logout", link: "/logout" },
 ];
 
 app.locals.navLinks = navLinks;

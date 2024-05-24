@@ -2,18 +2,19 @@ function setTheme(theme) {
   const root = document.documentElement;
   switch (theme) {
     case 'option1':
-      root.style.setProperty('--background-color-default', '#f7a54c');
-      localStorage.setItem('theme', 'option1');
+      root.style.setProperty('--background-color-default', '#f7a54c'); 
+      localStorage.setItem('theme', 'orange');
       break;
     case 'option2':
-      root.style.setProperty('--background-color-default', '#5dc4de');
-      localStorage.setItem('theme', 'option2');
+      root.style.setProperty('--background-color-default', '#9370DB'); 
+      localStorage.setItem('theme', 'purple');
       break;
     case 'option3':
-      root.style.setProperty('--background-color-default', '#FFFFFF'); 
+      root.style.setProperty('--background-color-default', '#98FB98'); 
+      localStorage.setItem('theme', 'green');
       break;
     default:
-      root.style.setProperty('--background-color-default', '#87CEEB'); 
+      root.style.setProperty('--background-color-default', '#87CEEB');
       localStorage.setItem('theme', 'default');
       break;
   }

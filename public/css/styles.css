@@ -1,8 +1,8 @@
 :root {
   --background-color-default: #87CEEB;
-  --background-color-option1: #f7a54c;
-  --background-color-option2: #5dc4de;
-  --background-color-option3: #FFFFFF; 
+  --background-color-orange: #f7a54c;
+  --background-color-purple: #9370DB;
+  --background-color-green: #98FB98; 
 }
 
 html, body {
