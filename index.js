@@ -338,15 +338,19 @@ app.get("/gamesSpecific", async (req, res) => {
 
 });
 
-app.get("/social", async (req, res) => {
+app.get("/api/friends", async (req, res) => {
   try {
-    const friendsCollection = client.db(mongo_database).collection("users");
+    const friendsCollection = client.db(mongo_database).collection("friendships");
     const friends = await friendsCollection.find().toArray();
-    res.render("social", { friends });
+    res.json(friends);
   } catch (error) {
     console.error('Error fetching friends:', error);
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ error: 'Internal Server Error' });
   }
+});
+
+app.get("/social", async (req, res) => {
+res.render("social")
 });
 
 
