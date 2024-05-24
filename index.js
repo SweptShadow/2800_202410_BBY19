@@ -97,13 +97,24 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  console.log('Serializing User:', user);
+  done(null, user._id);
 });
 
-passport.deserializeUser((id, done) => {
-  userCollection.findOne({ _id: new mongoose.Types.ObjectId(id) }, (err, user) => {
-    done(err, user);
-  });
+passport.deserializeUser(async (id, done) => {
+  console.log('Deserializing User ID:', id);
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      console.log('User not found');
+      return done(new Error('User not found'), null);
+    }
+    console.log('Deserialized User:', user);
+    done(null, user);
+  } catch (err) {
+    console.log('Error deserializing user:', err);
+    done(err, null);
+  }
 });
 
 passport.use(new GoogleStrategy({
@@ -214,8 +225,8 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/loginSubmit", async (req, res) => {
-  var inputEmail = req.body.email;
-  var inputPass = req.body.password;
+  const inputEmail = req.body.email;
+  const inputPass = req.body.password;
 
   const loginSchema = Joi.object({
     email: Joi.string()
@@ -250,25 +261,47 @@ app.post("/loginSubmit", async (req, res) => {
 
   console.log("Fetched User:", user);
 
-  if (await bcrypt.compare(inputPass, user.password)) {
-    console.log("Password is correct");
-    req.session.authenticated = true;
-    req.session.userId = user._id;
-    req.session.username = user.username;
-    res.redirect("/");
-    return;
-  } else {
-    console.log("Password incorrect");
+  // Check if user is a Google user
+  if (!user.password) {
+    console.error("User does not have a local password, likely a Google user.");
     res.redirect("/login");
     return;
   }
+
+  if (!inputPass || !user.password) {
+    console.error("Missing inputPass or user.password");
+    res.redirect("/login");
+    return;
+  }
+
+  try {
+    const isMatch = await bcrypt.compare(inputPass, user.password);
+    if (isMatch) {
+      console.log("Password is correct");
+      req.session.authenticated = true;
+      req.session.userId = user._id;
+      req.session.username = user.username;
+      res.redirect("/");
+    } else {
+      console.log("Password incorrect");
+      res.redirect("/login");
+    }
+  } catch (err) {
+    console.error("Error comparing passwords:", err);
+    res.redirect("/login");
+  }
 });
+
+
 
 app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 app.get("/auth/google/callback", 
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
+    req.session.authenticated = true;
+    req.session.userId = req.user._id;
+    req.session.username = req.user.username;
     res.redirect("/");
   }
 );
