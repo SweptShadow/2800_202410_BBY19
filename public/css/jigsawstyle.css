@@ -37,6 +37,11 @@ input {
   color: white;
 }
 
+.jigsaw-box {
+  background-color: rgb(204, 236, 226);
+  height: 800px;
+}
+
 div.grid {
   position: absolute;
   width: 60px;
