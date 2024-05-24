@@ -97,32 +97,46 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  console.log('Serializing User:', user);
+  done(null, user._id);
 });
 
-passport.deserializeUser((id, done) => {
-  userCollection.findOne({ _id: new mongoose.Types.ObjectId(id) }, (err, user) => {
-    done(err, user);
-  });
+passport.deserializeUser(async (id, done) => {
+  console.log('Deserializing User ID:', id);
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      console.log('User not found');
+      return done(null, false, { message: 'User not found' });
+    }
+    console.log('Deserialized User:', user);
+    done(null, user);
+  } catch (err) {
+    console.log('Error deserializing user:', err);
+    done(err, null);
+  }
 });
 
 passport.use(new GoogleStrategy({
-  clientID: google_client_id,
-  clientSecret: google_client_secret,
-  callbackURL: google_callback_url
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.GOOGLE_CALLBACK_URL_DEV
 }, async (token, tokenSecret, profile, done) => {
   try {
+    console.log('Google profile:', profile); 
     let user = await userCollection.findOne({ googleId: profile.id });
     if (!user) {
-      user = await userCollection.insertOne({
+      const newUser = {
         googleId: profile.id,
         username: profile.displayName,
         email: profile.emails[0].value,
         type: "user",
         bio: ""
-      });
-      user = user.ops[0];
+      };
+      const result = await userCollection.insertOne(newUser);
+      user = result.ops[0]; 
     }
+    console.log('User found or created:', user); 
     done(null, user);
   } catch (err) {
     done(err, null);
@@ -275,6 +289,9 @@ app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "em
 app.get("/auth/google/callback", 
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
+    req.session.authenticated = true;
+    req.session.userId = req.user._id;
+    req.session.username = req.user.username;
     res.redirect("/");
   }
 );
