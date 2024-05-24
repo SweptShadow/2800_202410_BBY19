@@ -401,12 +401,10 @@ app.get("/gameSudokuPlay", (req, res) => {
 
 app.get("/gamesSpecific", async (req, res) => {
   let gamename = req.query.game;
-  gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
   let gameTitle = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
-  const gameInfo = await gameCollection.find({ name: gamename }).project({ name: 1, desc: 1, _id: 1, link: 1, rules: 1 }).toArray();
-  gamename = req.query.game;
-
+  const gameInfo = await gameCollection.find({ name: gameTitle }).project({ name: 1, desc: 1, _id: 1, link: 1, rules: 1 }).toArray();
+  
   res.render("gamesSpecific", { gameTitle: gameTitle, gamename: gamename, desc: gameInfo[0].desc, link: gameInfo[0].link, rules: gameInfo[0].rules });
 
 });
