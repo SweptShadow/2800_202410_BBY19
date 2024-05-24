@@ -1,69 +1,20 @@
 <%- include("template/header") %>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-
+<body>
 <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-12 col-sm-8 col-lg-6">
-            <!-- Section Heading-->
-            <div class="section_heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
-              <h3>Friends <span> & Family</span></h3>
-              <div class="line"></div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <!-- Single Advisor-->
-          <div class="col-12 col-sm-6 col-lg-3">
-            <div class="single_advisor_profile wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
-              <!-- Team Thumb-->
-              <div class="advisor_thumb"><img src="/images/stock.jpg" alt="">
-                <!-- Social Info-->
-              </div>
-              <!-- Team Details-->
-              <div class="single_advisor_details_info">
-                <h6>Name</h6>
-              </div>
-            </div>
-          </div>
-          <!-- Single Advisor-->
-          <div class="col-12 col-sm-6 col-lg-3">
-            <div class="single_advisor_profile wow fadeInUp" data-wow-delay="0.3s" style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
-              <!-- Team Thumb-->
-              <div class="advisor_thumb"><img src="/images/stock.jpg" alt="">
-                <!-- Social Info-->
-              </div>
-              <!-- Team Details-->
-              <div class="single_advisor_details_info">
-                <h6>Name</h6>
-              </div>
-            </div>
-          </div>
-          <!-- Single Advisor-->
-          <div class="col-12 col-sm-6 col-lg-3">
-            <div class="single_advisor_profile wow fadeInUp" data-wow-delay="0.4s" style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp;">
-              <!-- Team Thumb-->
-              <div class="advisor_thumb"><img src="/images/stock.jpg" alt="">
-                <!-- Social Info-->
-              </div>
-              <!-- Team Details-->
-              <div class="single_advisor_details_info">
-                <h6>Name</h6>
-              </div>
-            </div>
-          </div>
-          <!-- Single Advisor-->
-          <div class="col-12 col-sm-6 col-lg-3">
-            <div class="single_advisor_profile wow fadeInUp" data-wow-delay="0.5s" style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
-              <!-- Team Thumb-->
-              <div class="advisor_thumb"><img src="/images/stock.jpg" alt="">
-                <!-- Social Info-->
-              </div>
-              <!-- Team Details-->
-              <div class="single_advisor_details_info">
-                <h6>Name</h6>
-              </div>
-            </div>
-          </div>
-        </div>
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-lg-6">
+      <div class="section_heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+        <h3>Friends <span> & Family</span></h3>
+        <div class="line"></div>
       </div>
+    </div>
+  </div>
+  <div class="row" id="friends-cards">
+    <!-- Friend cards will be appended here by JavaScript -->
+  </div>
+</div>
+
+<script src="/js/social.js" ></script>
+</body>
 <%- include("template/footer") %>
