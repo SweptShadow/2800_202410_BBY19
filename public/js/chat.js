@@ -66,12 +66,12 @@ document.addEventListener("DOMContentLoaded", function () {
       // console.log("Message saved: ", newMessage);
       socket.emit("chat message", newMessage);
       input.value = "";
-      socket.emit("stop typing", chatRoomId); // Notify server that typing has stopped
+      socket.emit("stop typing", chatRoomId); 
     }
   });
 
   input.addEventListener("keypress", () => {
-    socket.emit("typing", chatRoomId); // Notify server that user is typing
+    socket.emit("typing", chatRoomId);
   });
 
   socket.on("chat message", (msg) => {
