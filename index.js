@@ -546,6 +546,14 @@ app.get("/videocall/:room", (req, res) => {
   res.render("room", { roomId: req.params.room });
 });
 
+app.get("/terms-of-service", (req, res) => {
+  res.render("termsOfService");
+});
+
+app.get("/privacy-policy", (req, res) => {
+  res.render("privacyPolicy");
+});
+
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
