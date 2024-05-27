@@ -19,6 +19,7 @@ const cloudinary = require("cloudinary").v2;
 const fileUpload = require("express-fileupload");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const path = require('path');
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
@@ -436,6 +437,44 @@ app.post("/pfpSubmit", async (req, res) => {
         });
     }
   );
+});
+
+app.get("/defaultSubmit", async (req, res) => {
+  let image = req.query.image + ".jpg";
+  const file = path.join(__dirname, 'public/images', image);
+  console.log("image: "+image);
+
+  cloudinary.uploader.upload(
+    file,
+    {
+      folder: "profile_pictures",
+      public_id: `${req.session.username}_pfp`,
+      overwrite: true,
+    },
+    (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .send({ message: "Upload failed", error: err.message });
+      }
+
+      const pfpUrl = result.secure_url;
+
+      userCollection
+        .updateOne(
+          { username: req.session.username },
+          { $set: { pfp: pfpUrl } }
+        )
+        .then(() => {
+          res.redirect("/profile");
+        })
+        .catch((err) => {
+          res
+            .status(500)
+            .send({ message: "Database update failed", error: err.message });
+        });
+    }
+  )
 });
 
 app.get("/games", (req, res) => {
