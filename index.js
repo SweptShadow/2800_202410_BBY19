@@ -209,8 +209,7 @@ app.post("/signupSubmit", async (req, res) => {
   const validateUser = userSchema.validate({ username, password, email });
   if (validateUser.error != null) {
     console.log(validateUser.error);
-    res.redirect("/signup");
-    return;
+    return res.render("signup", { error: validateUser.error.details[0].message });
   }
 
   const hashedPass = await bcrypt.hash(password, saltRounds);
@@ -237,7 +236,7 @@ app.post("/signupSubmit", async (req, res) => {
     res.redirect("/");
   } catch (err) {
     console.error("Error inserting user:", err);
-    res.redirect("/signup");
+    res.render("signup", { error: "An error occurred while creating your account. Please try again." });
   }
 });
 
@@ -265,8 +264,7 @@ app.post("/loginSubmit", async (req, res) => {
 
   if (validateLogin.error != null) {
     console.log(validateLogin.error);
-    res.redirect("/login");
-    return;
+    return res.render("login", { error: validateLogin.error.details[0].message });
   }
 
   const user = await userCollection.findOne(
@@ -276,8 +274,7 @@ app.post("/loginSubmit", async (req, res) => {
 
   if (!user) {
     console.log(`User not found.`);
-    res.redirect("/login");
-    return;
+    return res.render("login", { error: "User not found." });
   }
 
   console.log("Fetched User:", user);
@@ -287,8 +284,7 @@ app.post("/loginSubmit", async (req, res) => {
     req.session.authenticated = true;
     req.session.userId = user._id;
     req.session.username = user.username;
-    res.redirect("/");
-    return;
+    return res.redirect("/");
   }
 
   if (await bcrypt.compare(inputPass, user.password)) {
@@ -299,9 +295,10 @@ app.post("/loginSubmit", async (req, res) => {
     res.redirect("/");
   } else {
     console.log("Password incorrect");
-    res.redirect("/login");
+    res.render("login", { error: "Password is incorrect." });
   }
 });
+
 
 
 app.get(

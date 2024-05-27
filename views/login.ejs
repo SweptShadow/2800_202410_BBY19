@@ -1,21 +1,23 @@
 <%- include("template/header") %>
 <div id="login-container">
     <form class="login-form" action="/loginSubmit" method="post">
+        <% if (typeof error !== 'undefined') { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
         <div class="input-group">
-            <label for="username" class="login-text"><h1 class="login-text text-bg">Email</h1></label>
-            <input type="text" id="username" name="email" placeholder="Enter your email">
+            <label for="email-phone" class="login-text"><h1 class="login-text text-bg">Email/Phone*</h1></label>
+            <input type="text" id="email-phone" name="email" placeholder="Enter your email/phone">
         </div>
         <div class="input-group">
-            <label for="password" class="login-text"><h1 class="login-text text-bg">Password</h1></label>
+            <label for="password" class="login-text"><h1 class="login-text text-bg">Password*</h1></label>
             <input type="password" id="password" name="password" placeholder="Enter your password">
         </div>
-        <div class="remember-me">
-            <input type="checkbox" id="remember" name="remember">
-            <label for="remember" class="checkbox-label"><h1 class="login-text text-bg">Remember me</h1></label>
-        </div>
+        <p>Fields marked with an * indicate they are required.</p>
         <button class="submit-button" type="submit"><h1 class="login-text">Login</h1></button>
         <a href="/api/password/requestReset" class="btn btn-link">Forgot your password?</a>
         <a href="/auth/google" class="btn btn-primary" role="button">Sign in with Google</a>
+        <br>
     </form>
 </div>
+<script src="/js/login.js"></script>
 <%- include("template/footer") %>
