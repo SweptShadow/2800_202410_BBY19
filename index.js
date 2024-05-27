@@ -169,6 +169,7 @@ app.locals.navLinks = navLinks;
 app.use((req, res, next) => {
   console.log(`Received request for ${req.url}`);
   app.locals.currentUrl = url.parse(req.url).pathname;
+  res.locals.userId = req.session.userId;
   next();
 });
 

@@ -100,6 +100,26 @@
     padding: 5px;
     border-bottom: 1px solid #ddd;
   }
+
+  .sent {
+    text-align: right;
+    background-color: #d1f7c4; 
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px 0;
+    float: right;
+    clear: both;
+  }
+  
+  .received {
+    text-align: left;
+    background-color: #f1f0f0; 
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px 0;
+    float: left;
+    clear: both;
+  }
   
   #friends-list-container button, #chat-modal button {
     margin-top: 10px;
@@ -167,5 +187,7 @@
 .settings-modal-content button:hover {
   background-color: #f1f1f1;
 }
+
+
 
   

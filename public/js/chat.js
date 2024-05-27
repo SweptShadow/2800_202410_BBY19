@@ -101,6 +101,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function appendMessage(message) {
     const item = document.createElement("li");
     item.textContent = `${message.username}: ${message.message}`;
+
+    if (message.senderId === userId) {
+      item.classList.add("sent");
+    } else {
+      item.classList.add("received");
+    }
+
     messages.appendChild(item);
   }
 

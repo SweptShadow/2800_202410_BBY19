@@ -75,7 +75,10 @@ closeChatModalButton.addEventListener("click", () => {
       currentChatRoomId = roomId;
     });
     socket.on("chatHistory", (messages) => {
-      chatRoomIdElement.innerHTML = messages.map(msg => `<li>${msg.username}: ${msg.message}</li>`).join('');
+      chatRoomIdElement.innerHTML = messages.map(msg => `
+        <li class="${msg.senderId === userId ? 'sent' : 'received'}">
+          ${msg.username}: ${msg.message}
+        </li>`).join('');
       chatModal.style.display = "block";
       scrollToBottom();
     });
@@ -87,19 +90,20 @@ closeChatModalButton.addEventListener("click", () => {
       const message = chatInput.value;
       socket.emit("chat message", { chatRoomId: currentChatRoomId, message });
       chatInput.value = '';
-      socket.emit("stop typing", currentChatRoomId); // Notify server that typing has stopped
+      socket.emit("stop typing", currentChatRoomId); 
       scrollToBottom();
     }
   });
 
   chatInput.addEventListener("keypress", () => {
     if (chatInput.value && currentChatRoomId) {
-      socket.emit("typing", currentChatRoomId); // Notify server that user is typing
+      socket.emit("typing", currentChatRoomId);
     }
   });
 
   socket.on("chat message", (msg) => {
     const newMessage = document.createElement("li");
+    newMessage.className = msg.senderId === userId ? 'sent' : 'received';
     newMessage.textContent = `${msg.username}: ${msg.message}`;
     chatRoomIdElement.appendChild(newMessage);
     scrollToBottom();
@@ -108,7 +112,6 @@ closeChatModalButton.addEventListener("click", () => {
   socket.on("typing", (username) => {
     typingIndicator.textContent = `${username} is typing...`;
 
-    // Clear after 3 seconds
     clearTimeout(typingIndicator.timer);
     typingIndicator.timer = setTimeout(() => {
       typingIndicator.textContent = '';
