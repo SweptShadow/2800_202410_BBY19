@@ -14,10 +14,10 @@ const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
 const passResetRoutes = require("./routes/resetRoutes");
 const chatRoutes = require("./routes/chatRoutes");
-const friendRoutes = require("./routes/friendRoutes"); 
+const friendRoutes = require("./routes/friendRoutes");
 const MongoClient = require("mongodb").MongoClient;
 const cloudinary = require("cloudinary").v2;
-const fileUpload = require('express-fileupload');
+const fileUpload = require("express-fileupload");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
@@ -26,9 +26,10 @@ const node_secret = process.env.NODE_SESSION_SECRET;
 const cloudinary_secret = process.env.CLOUDINARY_SECRET;
 const google_client_id = process.env.GOOGLE_CLIENT_ID;
 const google_client_secret = process.env.GOOGLE_CLIENT_SECRET;
-const google_callback_url = process.env.NODE_ENV === 'production'
-? process.env.GOOGLE_CALLBACK_URL_PROD
-: process.env.GOOGLE_CALLBACK_URL_DEV;
+const google_callback_url =
+  process.env.NODE_ENV === "production"
+    ? process.env.GOOGLE_CALLBACK_URL_PROD
+    : process.env.GOOGLE_CALLBACK_URL_DEV;
 const mongo_uri = process.env.MONGODB_URI;
 const mongo_database = process.env.MONGODB_DATABASE;
 mongoose.connect(mongo_uri, {
@@ -41,15 +42,15 @@ const client = new MongoClient(mongo_uri, {
   useUnifiedTopology: true,
 });
 
-cloudinary.config({ 
-  cloud_name: "defvzhd9k", 
-  api_key: "422958868577472", 
-  api_secret: cloudinary_secret
+cloudinary.config({
+  cloud_name: "defvzhd9k",
+  api_key: "422958868577472",
+  api_secret: cloudinary_secret,
 });
 
 //for the video call server
-const server = require('http').Server(app);
-const { v4: uuidV4 } = require('uuid');
+const server = require("http").Server(app);
+const { v4: uuidV4 } = require("uuid");
 
 client.connect((err) => {
   if (err) {
@@ -97,56 +98,63 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  console.log('Serializing User:', user);
+  // console.log('Serializing User:', user);
   done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
-  console.log('Deserializing User ID:', id);
+  // console.log('Deserializing User ID:', id);
   try {
     const user = await User.findById(id);
     if (!user) {
-      console.log('User not found');
-      return done(null, false, { message: 'User not found' });
+      console.log("User not found");
+      return done(null, false, { message: "User not found" });
     }
-    console.log('Deserialized User:', user);
+    // console.log('Deserialized User:', user);
     done(null, user);
   } catch (err) {
-    console.log('Error deserializing user:', err);
+    // console.log('Error deserializing user:', err);
     done(err, null);
   }
 });
 
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: google_callback_url
-}, async (token, tokenSecret, profile, done) => {
-  try {
-    console.log('Google profile:', profile); 
-    let user = await userCollection.findOne({ googleId: profile.id });
-    if (!user) {
-      const newUser = {
-        googleId: profile.id,
-        username: profile.displayName,
-        email: profile.emails[0].value,
-        type: "user",
-        bio: ""
-      };
-      const result = await userCollection.insertOne(newUser);
-      user = result.ops[0]; 
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: google_client_id,
+      clientSecret: google_client_secret,
+      callbackURL: google_callback_url,
+    },
+    async (token, tokenSecret, profile, done) => {
+      try {
+        // console.log('Google profile:', profile);
+        let user = await userCollection.findOne({ googleId: profile.id });
+        if (!user) {
+          const newUser = {
+            googleId: profile.id,
+            username: profile.displayName,
+            email: profile.emails[0].value,
+            type: "user",
+            bio: "",
+          };
+          const result = await userCollection.insertOne(newUser);
+          user = result.ops[0];
+        }
+        // console.log('User found or created:', user);
+        done(null, user);
+      } catch (err) {
+        done(err, null);
+      }
     }
-    console.log('User found or created:', user); 
-    done(null, user);
-  } catch (err) {
-    done(err, null);
-  }
-}));
+  )
+);
 
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: '/tmp/'
-}));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
 
 const io = initializeSocket(server, sessionMiddleware);
 
@@ -169,9 +177,9 @@ app.use("/api/friends", friendRoutes);
 app.use("/api/password", passResetRoutes);
 
 app.get("/", (req, res) => {
-  res.render("root", { 
-    session: req.session, 
-    userId: req.session.userId || null 
+  res.render("root", {
+    session: req.session,
+    userId: req.session.userId || null,
   });
 });
 
@@ -186,17 +194,18 @@ app.get("/signup", (req, res) => {
 });
 
 app.post("/signupSubmit", async (req, res) => {
-  var username = req.body.username;
-  var password = req.body.password;
-  var email = req.body.email;
-  var type = "user";
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
 
   const userSchema = Joi.object({
     username: Joi.string().alphanum().max(25).required(),
     password: Joi.string().max(25).required(),
-    email: Joi.string().email({
-      minDomainSegments: 2,
-    }),
+    email: Joi.string()
+      .email({
+        minDomainSegments: 2,
+      })
+      .required(),
   });
 
   const validateUser = userSchema.validate({ username, password, email });
@@ -206,27 +215,32 @@ app.post("/signupSubmit", async (req, res) => {
     return;
   }
 
-  var hashedPass = await bcrypt.hash(password, saltRounds);
+  const hashedPass = await bcrypt.hash(password, saltRounds);
 
-  await userCollection.insertOne({
-    username: username,
-    password: hashedPass,
-    email: email,
-    type: type,
-    bio: ""
-  });
+  try {
+    await userCollection.insertOne({
+      username: username,
+      password: hashedPass,
+      email: email,
+      type: "user",
+      bio: "",
+    });
 
-  console.log(`User ${username} successfully added to database.`);
+    console.log(`User ${username} successfully added to database.`);
 
-  const user = await userCollection.findOne(
-    { email: email },
-    { projection: { _id: 1, username: 1, password: 1 } }
-  );
+    const user = await userCollection.findOne(
+      { email: email },
+      { projection: { _id: 1, username: 1, password: 1 } }
+    );
 
-  req.session.authenticated = true;
-  req.session.userId = user._id;
-  req.session.username = user.username;
-  res.redirect("/");
+    req.session.authenticated = true;
+    req.session.userId = user._id;
+    req.session.username = user.username;
+    res.redirect("/");
+  } catch (err) {
+    console.error("Error inserting user:", err);
+    res.redirect("/signup");
+  }
 });
 
 app.get("/login", (req, res) => {
@@ -284,9 +298,13 @@ app.post("/loginSubmit", async (req, res) => {
   }
 });
 
-app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
-app.get("/auth/google/callback", 
+app.get(
+  "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
     req.session.authenticated = true;
@@ -310,77 +328,111 @@ app.get("/profile", async (req, res) => {
   if (req.session.authenticated) {
     let username = req.session.username;
 
-  const userInfo = await userCollection.find({username: username}).project({name: 1, email: 1, favGame: 1, bio: 1, pfp: 1}).toArray();
-  console.log(userInfo);
-  //check bio and if empty/whitespace, send example message. Else, send user's bio from database
-  let bio = userInfo[0].bio
-  if (bio === '' || /^\s*$/.test(bio)) {
-    bio = "Add bio here...";
-  }
-  
-  let pfp = userInfo[0].pfp;
-  if (!pfp || pfp === '') {
-    pfp = "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg";
-  }
-  console.log("pfp: " + pfp);
+    const userInfo = await userCollection
+      .find({ username: username })
+      .project({ name: 1, email: 1, favGame: 1, bio: 1, pfp: 1 })
+      .toArray();
+    console.log(userInfo);
+    //check bio and if empty/whitespace, send example message. Else, send user's bio from database
+    let bio = userInfo[0].bio;
+    if (bio === "" || /^\s*$/.test(bio)) {
+      bio = "Add bio here...";
+    }
 
-  res.render("profile", {username: username, email: userInfo[0].email, favGame: userInfo[0].favGame, bio: bio, pfp: pfp});
-} else {
-  res.redirect("/login");
-}
+    let pfp = userInfo[0].pfp;
+    if (!pfp || pfp === "") {
+      pfp =
+        "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg";
+    }
+    console.log("pfp: " + pfp);
+
+    res.render("profile", {
+      username: username,
+      email: userInfo[0].email,
+      favGame: userInfo[0].favGame,
+      bio: bio,
+      pfp: pfp,
+    });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/bioSubmit", async (req, res) => {
   let bio = req.body.bio;
-  await userCollection.updateOne({username: req.session.username}, {$set: {bio: bio}});
-  res.redirect('/profile');
+  await userCollection.updateOne(
+    { username: req.session.username },
+    { $set: { bio: bio } }
+  );
+  res.redirect("/profile");
 });
 
 app.post("/usernameSubmit", async (req, res) => {
   let name = req.body.username;
-  await userCollection.updateOne({username: req.session.username}, {$set: {username: name}});
+  await userCollection.updateOne(
+    { username: req.session.username },
+    { $set: { username: name } }
+  );
   req.session.username = name;
   res.redirect("/profile");
 });
 
 app.post("/emailSubmit", async (req, res) => {
   let newEmail = req.body.email;
-  await userCollection.updateOne({username: req.session.username}, {$set: {email: newEmail}});
+  await userCollection.updateOne(
+    { username: req.session.username },
+    { $set: { email: newEmail } }
+  );
   res.redirect("/profile");
 });
 
 app.post("/favGameSubmit", async (req, res) => {
   let newFavGame = req.body.favGame;
-  await userCollection.updateOne({username: req.session.username}, {$set: {favGame: newFavGame}});
+  await userCollection.updateOne(
+    { username: req.session.username },
+    { $set: { favGame: newFavGame } }
+  );
   res.redirect("/profile");
 });
 
 app.post("/pfpSubmit", async (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send('No files were uploaded.');
+    return res.status(400).send("No files were uploaded.");
   }
 
   const file = req.files.pfp;
 
-  cloudinary.uploader.upload(file.tempFilePath, {
-    folder: 'profile_pictures',
-    public_id: `${req.session.username}_pfp`,
-    overwrite: true   
-    }, (err, result) => {
-    if (err) {  
-      return res.status(500).send({ message: 'Upload failed', error: err.message });
+  cloudinary.uploader.upload(
+    file.tempFilePath,
+    {
+      folder: "profile_pictures",
+      public_id: `${req.session.username}_pfp`,
+      overwrite: true,
+    },
+    (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .send({ message: "Upload failed", error: err.message });
+      }
+
+      const pfpUrl = result.secure_url;
+
+      userCollection
+        .updateOne(
+          { username: req.session.username },
+          { $set: { pfp: pfpUrl } }
+        )
+        .then(() => {
+          res.redirect("/profile");
+        })
+        .catch((err) => {
+          res
+            .status(500)
+            .send({ message: "Database update failed", error: err.message });
+        });
     }
-
-    const pfpUrl = result.secure_url;
-
-    userCollection.updateOne({ username: req.session.username }, { $set: { pfp: pfpUrl } })
-      .then(() => {
-        res.redirect('/profile');
-      })
-      .catch(err => {
-        res.status(500).send({ message: 'Database update failed', error: err.message });
-      });
-  });
+  );
 });
 
 app.get("/games", (req, res) => {
@@ -401,27 +453,39 @@ app.get("/gameSudokuPlay", (req, res) => {
 
 app.get("/gamesSpecific", async (req, res) => {
   let gamename = req.query.game;
+  gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
   let gameTitle = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
-  const gameInfo = await gameCollection.find({ name: gameTitle }).project({ name: 1, desc: 1, _id: 1, link: 1, rules: 1 }).toArray();
-  
-  res.render("gamesSpecific", { gameTitle: gameTitle, gamename: gamename, desc: gameInfo[0].desc, link: gameInfo[0].link, rules: gameInfo[0].rules });
+  const gameInfo = await gameCollection
+    .find({ name: gamename })
+    .project({ name: 1, desc: 1, _id: 1, link: 1, rules: 1 })
+    .toArray();
+  gamename = req.query.game;
 
+  res.render("gamesSpecific", {
+    gameTitle: gameTitle,
+    gamename: gamename,
+    desc: gameInfo[0].desc,
+    link: gameInfo[0].link,
+    rules: gameInfo[0].rules,
+  });
 });
 
 app.get("/api/friends", async (req, res) => {
   try {
-    const friendsCollection = client.db(mongo_database).collection("friendships");
+    const friendsCollection = client
+      .db(mongo_database)
+      .collection("friendships");
     const friends = await friendsCollection.find().toArray();
     res.json(friends);
   } catch (error) {
-    console.error('Error fetching friends:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching friends:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 app.get("/social", async (req, res) => {
-res.render("social")
+  res.render("social");
 });
 
 app.get("/chat", async (req, res) => {
@@ -442,7 +506,7 @@ app.get("/chat", async (req, res) => {
       loadChatScript: true,
     });
   } catch (error) {
-    console.error('Error accessing chat:', error);
+    console.error("Error accessing chat:", error);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -476,9 +540,9 @@ app.get("/videocall", (req, res) => {
   res.redirect(`/videocall/${roomId}`);
 });
 
-app.get('/videocall/:room', (req, res) => {
+app.get("/videocall/:room", (req, res) => {
   console.log(`Rendering room with ID: ${req.params.room}`);
-  res.render('room', { roomId: req.params.room });
+  res.render("room", { roomId: req.params.room });
 });
 
 app.get("*", (req, res) => {
