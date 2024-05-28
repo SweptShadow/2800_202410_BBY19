@@ -15,7 +15,7 @@ html, body {
 }
 
 #bottom-Navbar {
-    background-color: peachpuff;
+    background-color: white;
 }
 
 #header {
@@ -344,6 +344,9 @@ body{margin-top:20px;
     /* Ensure it stays above other content */
     z-index: 1000;
     border-radius: 10px;
+  }
+  .text-secondary {
+    color: black!important;
   }
 
   /* the tradmark footer*/
