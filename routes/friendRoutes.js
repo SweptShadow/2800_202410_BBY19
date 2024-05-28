@@ -61,7 +61,7 @@ router.get('/', async (req, res) => {
   }
 
   try {
-    const user = await User.findById(userId).populate('friends', 'username email');
+    const user = await User.findById(userId).populate('friends', 'username email pfp');
     res.status(200).json(user.friends);
   } catch (error) {
     console.error('Error fetching friends:', error);
