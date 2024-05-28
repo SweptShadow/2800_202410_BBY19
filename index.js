@@ -19,7 +19,7 @@ const cloudinary = require("cloudinary").v2;
 const fileUpload = require("express-fileupload");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const eventRoutes = require('./routes/eventRoutes');
+const eventRoutes = require('./routes/events');
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
@@ -174,7 +174,7 @@ app.use((req, res, next) => {
 app.use("/api/chat", chatRoutes);
 app.use("/api/friends", friendRoutes);
 app.use("/api/password", passResetRoutes);
-app.use('/api/event', eventRoutes);
+app.use('/api/events', eventRoutes);
 
 app.get("/", (req, res) => {
   res.render("root", {
