@@ -13,7 +13,10 @@ let transporter = nodemailer.createTransport({
 });
 
 const sendResetEmail = (email, token) => {
-  const hostUrl = process.env.NODE_ENV === "production" ? process.env.HOST_URL_PROD : process.env.HOST_URL_DEV;
+  const hostUrl =
+    process.env.NODE_ENV === "production"
+      ? process.env.HOST_URL_PROD
+      : process.env.HOST_URL_DEV;
   const resetUrl = `http://${hostUrl}/resetPassword?token=${token}`;
 
   let mailOptions = {
@@ -21,7 +24,27 @@ const sendResetEmail = (email, token) => {
     to: email,
     subject: "Password Reset",
     text: `You requested a password reset. Click the link to reset your password: ${resetUrl}`,
-    html: `<p>You requested a password reset. Click the link to reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`,
+    html: `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+      <div style="background-color: #f8f9fa; padding: 20px; text-align: center;">
+        <img src="https://your-logo-url.com/logo.png" alt="Golden Gaming" style="max-width: 200px;">
+      </div>
+      <div style="padding: 20px;">
+        <h2 style="color: #2c3e50;">Password Reset Request</h2>
+        <p>Hello,</p>
+        <p>You requested a password reset for your Golden Gaming account. Click the link below to reset your password:</p>
+        <p style="text-align: center;">
+          <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #3498db; border-radius: 5px; text-decoration: none;">Reset Password</a>
+        </p>
+        <p>If you did not request a password reset, please ignore this email or contact our support if you have any concerns.</p>
+        <p>Thank you,<br>Golden Gaming Team</p>
+      </div>
+      <div style="background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #777;">
+        <p>&copy; ${new Date().getFullYear()} Golden Gaming. All rights reserved.</p>
+        <p><a href="https://goldengaming.com/privacy-policy" style="color: #3498db; text-decoration: none;">Privacy Policy</a> | <a href="https://goldengaming.com/terms-of-service" style="color: #3498db; text-decoration: none;">Terms of Service</a></p>
+      </div>
+    </div>
+  `,
   };
 
   // Returns an error if failed or the info object if successful

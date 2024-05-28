@@ -9,7 +9,6 @@ const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const sessionExpiry = 24 * 60 * 60 * 1000;
 const Joi = require("joi");
-const { createServer } = require("node:http");
 const mongoose = require("mongoose");
 const initializeSocket = require("./socket");
 const passResetRoutes = require("./routes/resetRoutes");
@@ -65,8 +64,6 @@ const userCollection = client.db(mongo_database).collection("users");
 const gameCollection = client.db(mongo_database).collection("games");
 
 const User = require("./models/user");
-const ChatRoom = require("./models/chatRoom");
-const Message = require("./models/message");
 
 const sessionCollection = MongoStore.create({
   mongoUrl: mongo_uri,
@@ -212,8 +209,7 @@ app.post("/signupSubmit", async (req, res) => {
   const validateUser = userSchema.validate({ username, password, email });
   if (validateUser.error != null) {
     console.log(validateUser.error);
-    res.redirect("/signup");
-    return;
+    return res.render("signup", { error: validateUser.error.details[0].message });
   }
 
   const hashedPass = await bcrypt.hash(password, saltRounds);
@@ -240,7 +236,7 @@ app.post("/signupSubmit", async (req, res) => {
     res.redirect("/");
   } catch (err) {
     console.error("Error inserting user:", err);
-    res.redirect("/signup");
+    res.render("signup", { error: "An error occurred while creating your account. Please try again." });
   }
 });
 
@@ -249,8 +245,8 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/loginSubmit", async (req, res) => {
-  var inputEmail = req.body.email;
-  var inputPass = req.body.password;
+  const inputEmail = req.body.email;
+  const inputPass = req.body.password;
 
   const loginSchema = Joi.object({
     email: Joi.string()
@@ -268,22 +264,28 @@ app.post("/loginSubmit", async (req, res) => {
 
   if (validateLogin.error != null) {
     console.log(validateLogin.error);
-    res.redirect("/login");
-    return;
+    return res.render("login", { error: validateLogin.error.details[0].message });
   }
 
   const user = await userCollection.findOne(
     { email: inputEmail },
-    { projection: { _id: 1, username: 1, password: 1 } }
+    { projection: { _id: 1, username: 1, password: 1, googleId: 1 } }
   );
 
   if (!user) {
     console.log(`User not found.`);
-    res.redirect("/login");
-    return;
+    return res.render("login", { error: "User not found." });
   }
 
   console.log("Fetched User:", user);
+
+  if (user.googleId) {
+    console.log("Google user logged in");
+    req.session.authenticated = true;
+    req.session.userId = user._id;
+    req.session.username = user.username;
+    return res.redirect("/");
+  }
 
   if (await bcrypt.compare(inputPass, user.password)) {
     console.log("Password is correct");
@@ -291,13 +293,13 @@ app.post("/loginSubmit", async (req, res) => {
     req.session.userId = user._id;
     req.session.username = user.username;
     res.redirect("/");
-    return;
   } else {
     console.log("Password incorrect");
-    res.redirect("/login");
-    return;
+    res.render("login", { error: "Password is incorrect." });
   }
 });
+
+
 
 app.get(
   "/auth/google",
@@ -546,9 +548,26 @@ app.get("/videocall/:room", (req, res) => {
   res.render("room", { roomId: req.params.room });
 });
 
+app.get("/terms-of-service", (req, res) => {
+  res.render("termsOfService");
+});
+
+app.get("/privacy-policy", (req, res) => {
+  res.render("privacyPolicy");
+});
+
+app.get("/error", (req, res) => {
+  res.render("error");
+});
+
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render("error");
 });
 
 server.listen(PORT, () => {

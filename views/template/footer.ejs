@@ -18,11 +18,11 @@
       </a>
     </li>
 
-    <li>
+    <!-- <li>
       <a href="#" class="nav-link text-secondary">
         <i class="bi bi-heart"></i> Family
       </a>
-    </li>
+    </li> -->
   </ul>
 </div>
 
@@ -49,10 +49,21 @@ vs chat room-->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
   $(document).ready(function() {
+    var clickTimeout;
+
+    $('#logo').click(function() {
+      clearTimeout(clickTimeout); 
+
+      clickTimeout = setTimeout(function() {
+        // Single click action: Redirect to home
+        window.location.href = "/";
+      }, 200);
+    });
 
     $('#logo').dblclick(function() {
+      clearTimeout(clickTimeout); 
 
-      //Add a firework effect
+      // Add a firework effect
       $(this).addClass('firework').delay(500).queue(function(next) {
         $(this).removeClass('firework');
         next();
