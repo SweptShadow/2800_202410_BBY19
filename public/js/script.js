@@ -1,15 +1,18 @@
 console.log("video script loaded");
 
+// socket port and mypeer Host/port
 const socket = io('/');
 const videoGrid = document.getElementById('video-grid');
 const myPeer = new Peer(undefined, {
   host: '/',
   port: '9002',  
 });
+
 const myVideo = document.createElement('video');
 myVideo.muted = true;
 const peers = {};
 
+// if the user has a media device with a mic and video, send the stream
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     .then(stream => {
@@ -22,7 +25,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           addVideoStream(video, userVideoStream);
         });
       });
-
+      // connnect a new user to the session
       socket.on('user-connected', userId => {
         connectToNewUser(userId, stream);
       });
@@ -34,6 +37,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   console.error('getUserMedia is not supported on this browser');
 }
 
+// send a message to socket when a user disconnects
 socket.on('user-disconnected', userId => {
   if (peers[userId]) peers[userId].close();
 });

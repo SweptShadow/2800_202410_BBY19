@@ -4,6 +4,8 @@
 
 <link rel="stylesheet" type="text/css" href="/css/bingo.css" />
 <script type="text/javascript" src="/js/bingo.js"></script>
+<script src="/js/gamesSpecific.js"></script>
+
 </head>
 
 <div class="game-play-box">
@@ -57,14 +59,25 @@
 			</tr>
 		</table>
 	</div>
-	
+
+<!-- Create another card button -->
 <p><a href="#" onclick="anotherCard()">Click here</a> to create a new card</p>
 
 <h3>The current number: <a href="#" onclick="getBingoNum('currentNumber')">Drop Ball</a></h3>
 <h3><span id="currentNumber">&nbsp;</span></h3> <!-- Element to display the current number -->
 
+<!-- the help button with the overlay -->
+<div id="helpOverlay" class="overlay">
+	<div class="overlay-content">
+		<span class="close" onclick="closeHelpOverlay()">&times;</span>
+		<p><%- include("gameRules/bingoRules.ejs") %></p>
+	</div>
+</div>
+
 <h3>Previous Numbers:</h3>
 <div id="lastNumbers"></div> 
+
+<button class="helpButton" style="width: auto; margin: 0 auto;">Help</button>
 
 <%- include("template/footer") %>
   
