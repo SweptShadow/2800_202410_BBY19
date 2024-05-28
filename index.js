@@ -417,15 +417,24 @@ app.post("/pfpSubmit", async (req, res) => {
       if (err) {
         return res
           .status(500)
-          .send({ message: "Upload failed", error: err.message });
+          .send({ message: "Upload failed", error: err.message });  
       }
 
+      
+
       const pfpUrl = result.secure_url;
+
+      const autoCropUrl = cloudinary.url(pfpUrl, {
+        crop: 'auto',
+        gravity: 'auto',
+        width: 500,
+        height: 500,
+      });
 
       userCollection
         .updateOne(
           { username: req.session.username },
-          { $set: { pfp: pfpUrl } }
+          { $set: { pfp: autoCropUrl } }
         )
         .then(() => {
           res.redirect("/profile");
@@ -515,16 +524,37 @@ app.get("/gamesSpecific", async (req, res) => {
 
 app.get("/api/friends", async (req, res) => {
   try {
-    const friendsCollection = client
-      .db(mongo_database)
-      .collection("friendships");
+    const friendsCollection = client.db(mongo_database).collection("friendships");
     const friends = await friendsCollection.find().toArray();
-    res.json(friends);
+
+    console.log("Begin mapping friends");
+    const friendsWithPfp = await Promise.all(friends.map(async (friend) => {
+      try {
+        const user = await userCollection.findOne(
+          { username: friend.username },
+          { projection: { pfp: 1 } }
+        );
+
+        if (user && user.pfp) {
+          friend.pfp = user.pfp;
+          console.log(`Appended pfp for ${friend.username}: ${user.pfp}`);
+        } else {
+          console.log(`User not found or missing pfp for ${friend.username}`);
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+      return friend;
+    }));
+
+    console.log("Final friends list with pfp:", friendsWithPfp);
+    res.json(friendsWithPfp);
   } catch (error) {
     console.error("Error fetching friends:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 app.get("/social", async (req, res) => {
   res.render("social");

@@ -23,14 +23,24 @@ html, body {
 }
 
 /* #region fontRegion */
-@font-face {
-    font-family: 'Gilroy-ExtraBold';
+/* @font-face {
+    font-family: 'Gilroy ExtraBold';
     src: url('fonts/Gilroy-ExtraBold.otf"') format('otf');
-  }
+  } */
   
   body {
-    font-family: 'Gilroy-ExtraBold', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
   }
+.nunito-sans-nunitoFont {
+  font-family: "Nunito Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100,
+    "YTLC" 500;
+}
+  
 /* #endregion */
 
 /* #region socialRegion*/
@@ -77,10 +87,17 @@ body{margin-top:20px;
         -webkit-transform: rotate(-15deg);
         transform: rotate(-15deg);
     }
+    .advisor_thumb img {
+      height: 170px;
+      width: 100%;
+    }
     @media only screen and (max-width: 575px) {
         .single_advisor_profile .advisor_thumb::after {
             height: 160px;
             bottom: -90px;
+        }
+        .advisor_thumb img {
+          height: 300px;
         }
     }
     .single_advisor_profile .advisor_thumb .social-info {
@@ -133,6 +150,10 @@ body{margin-top:20px;
     @media only screen and (min-width: 768px) and (max-width: 991px) {
         .single_advisor_profile .single_advisor_details_info h6 {
             font-size: 14px;
+            
+        }
+        .advisor_thumb img {
+          height: 200px;
         }
     }
     .single_advisor_profile .single_advisor_details_info p {
@@ -176,6 +197,8 @@ body{margin-top:20px;
     .single_advisor_profile:focus .single_advisor_details_info p {
         color: #ffffff;
     }
+
+    
 /* #endregion */
 
 
