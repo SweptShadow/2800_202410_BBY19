@@ -440,7 +440,7 @@ app.post("/pfpSubmit", catchAsync(async (req, res) => {
         });
     }
   );
-});
+}));
 
 app.get("/defaultSubmit", async (req, res) => {
   let image = req.query.image + ".jpg";
@@ -478,7 +478,7 @@ app.get("/defaultSubmit", async (req, res) => {
         });
     }
   )
-}));
+});
 
 app.get("/games", (req, res) => {
   res.render("games");
