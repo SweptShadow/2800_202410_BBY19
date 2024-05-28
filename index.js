@@ -174,10 +174,18 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/friends", friendRoutes);
 app.use("/api/password", passResetRoutes);
 
+//Middleware to make the user object available to all templates
+app.use((req, res, next) => {
+  //User object is stored in session
+  res.locals.user = req.session.user; 
+  next();
+});
+
 app.get("/", (req, res) => {
   res.render("root", {
     session: req.session,
     userId: req.session.userId || null,
+    userName: req.session.username,
   });
 });
 
