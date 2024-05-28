@@ -3,10 +3,11 @@ var numbers = [];
 
 function newCard() {
     //Starting loop through each square card
-    for (var i = 0; i < 24; i++) {  //<--always this code for loops. change in red
+    for (var i = 0; i < 24; i++) {  
         setSquare(i);
     }
 }
+
 
 function setSquare(thisSquare) {
     var currSquare = "square" + thisSquare;
@@ -29,9 +30,7 @@ function getBingoNum(elementId) {
     var currNum = Math.floor(Math.random() * 50);
     // Update the HTML content of the specified element with the new number
     document.getElementById(elementId).innerHTML = currNum;
-    // Append the new number to the history array
     numbers.push(currNum);
-    // Display the history of clicked numbers (optional)
     displayClickedNumbersHistory();
 }
 
