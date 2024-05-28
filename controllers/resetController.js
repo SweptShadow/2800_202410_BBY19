@@ -17,7 +17,7 @@ const sendResetEmail = (email, token) => {
     process.env.NODE_ENV === "production"
       ? process.env.HOST_URL_PROD
       : process.env.HOST_URL_DEV;
-  const resetUrl = `http://${hostUrl}/resetPassword?token=${token}`;
+  const resetUrl = `${hostUrl}/resetPassword?token=${token}`;
 
   let mailOptions = {
     from: process.env.EMAIL_RESET_USER,
