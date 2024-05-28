@@ -5,15 +5,15 @@
             <div class="alert alert-danger"><%= error %></div>
         <% } %>
         <div class="input-group">
-            <label for="email-phone" class="login-text"><h1 class="login-text text-bg">Email/Phone*</h1></label>
+            <label for="email-phone" class="login-text">Email/Phone*</label>
             <input type="text" id="email-phone" name="email" placeholder="Enter your email/phone">
         </div>
         <div class="input-group">
-            <label for="password" class="login-text"><h1 class="login-text text-bg">Password*</h1></label>
+            <label for="password" class="login-text">Password*</label>
             <input type="password" id="password" name="password" placeholder="Enter your password">
         </div>
         <p>Fields marked with an * indicate they are required.</p>
-        <button class="submit-button" type="submit"><h1 class="login-text">Login</h1></button>
+        <button class="submit-button" type="submit">Login</button>
         <a href="/api/password/requestReset" class="btn btn-link">Forgot your password?</a>
         <a href="/auth/google" class="btn btn-primary" role="button">Sign in with Google</a>
         <br>

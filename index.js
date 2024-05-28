@@ -37,6 +37,12 @@ mongoose.connect(mongo_uri, {
   useUnifiedTopology: true,
 });
 
+function catchAsync(fn) {
+  return function (req, res, next) {
+    fn(req, res, next).catch(next);
+  };
+}
+
 const client = new MongoClient(mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -96,22 +102,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  // console.log('Serializing User:', user);
   done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
-  // console.log('Deserializing User ID:', id);
   try {
     const user = await User.findById(id);
     if (!user) {
       console.log("User not found");
       return done(null, false, { message: "User not found" });
     }
-    // console.log('Deserialized User:', user);
     done(null, user);
   } catch (err) {
-    // console.log('Error deserializing user:', err);
     done(err, null);
   }
 });
@@ -125,7 +127,6 @@ passport.use(
     },
     async (token, tokenSecret, profile, done) => {
       try {
-        // console.log('Google profile:', profile);
         let user = await userCollection.findOne({ googleId: profile.id });
         if (!user) {
           const newUser = {
@@ -138,7 +139,6 @@ passport.use(
           const result = await userCollection.insertOne(newUser);
           user = result.ops[0];
         }
-        // console.log('User found or created:', user);
         done(null, user);
       } catch (err) {
         done(err, null);
@@ -192,7 +192,7 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-app.post("/signupSubmit", async (req, res) => {
+app.post("/signupSubmit", catchAsync(async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
@@ -239,13 +239,13 @@ app.post("/signupSubmit", async (req, res) => {
     console.error("Error inserting user:", err);
     res.render("signup", { error: "An error occurred while creating your account. Please try again." });
   }
-});
+}));
 
 app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.post("/loginSubmit", async (req, res) => {
+app.post("/loginSubmit", catchAsync(async (req, res) => {
   const inputEmail = req.body.email;
   const inputPass = req.body.password;
 
@@ -298,9 +298,7 @@ app.post("/loginSubmit", async (req, res) => {
     console.log("Password incorrect");
     res.render("login", { error: "Password is incorrect." });
   }
-});
-
-
+}));
 
 app.get(
   "/auth/google",
@@ -324,11 +322,7 @@ app.get("/logout", (req, res) => {
   res.render("logout");
 });
 
-app.get("/signup", (req, res) => {
-  res.render("signup");
-});
-
-app.get("/profile", async (req, res) => {
+app.get("/profile", catchAsync(async (req, res) => {
   if (req.session.authenticated) {
     let username = req.session.username;
 
@@ -360,18 +354,18 @@ app.get("/profile", async (req, res) => {
   } else {
     res.redirect("/login");
   }
-});
+}));
 
-app.post("/bioSubmit", async (req, res) => {
+app.post("/bioSubmit", catchAsync(async (req, res) => {
   let bio = req.body.bio;
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { bio: bio } }
   );
   res.redirect("/profile");
-});
+}));
 
-app.post("/usernameSubmit", async (req, res) => {
+app.post("/usernameSubmit", catchAsync(async (req, res) => {
   let name = req.body.username;
   await userCollection.updateOne(
     { username: req.session.username },
@@ -379,27 +373,27 @@ app.post("/usernameSubmit", async (req, res) => {
   );
   req.session.username = name;
   res.redirect("/profile");
-});
+}));
 
-app.post("/emailSubmit", async (req, res) => {
+app.post("/emailSubmit", catchAsync(async (req, res) => {
   let newEmail = req.body.email;
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { email: newEmail } }
   );
   res.redirect("/profile");
-});
+}));
 
-app.post("/favGameSubmit", async (req, res) => {
+app.post("/favGameSubmit", catchAsync(async (req, res) => {
   let newFavGame = req.body.favGame;
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { favGame: newFavGame } }
   );
   res.redirect("/profile");
-});
+}));
 
-app.post("/pfpSubmit", async (req, res) => {
+app.post("/pfpSubmit", catchAsync(async (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send("No files were uploaded.");
   }
@@ -484,7 +478,7 @@ app.get("/defaultSubmit", async (req, res) => {
         });
     }
   )
-});
+}));
 
 app.get("/games", (req, res) => {
   res.render("games");
@@ -502,7 +496,7 @@ app.get("/gameSudokuPlay", (req, res) => {
   res.render("gameSudokuPlay");
 });
 
-app.get("/gamesSpecific", async (req, res) => {
+app.get("/gamesSpecific", catchAsync(async (req, res) => {
   let gamename = req.query.game;
   gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
   let gameTitle = gamename.charAt(0).toUpperCase() + gamename.slice(1);
@@ -520,9 +514,9 @@ app.get("/gamesSpecific", async (req, res) => {
     link: gameInfo[0].link,
     rules: gameInfo[0].rules,
   });
-});
+}));
 
-app.get("/api/friends", async (req, res) => {
+app.get("/api/friends", catchAsync(async (req, res) => {
   try {
     const friendsCollection = client.db(mongo_database).collection("friendships");
     const friends = await friendsCollection.find().toArray();
@@ -553,14 +547,14 @@ app.get("/api/friends", async (req, res) => {
     console.error("Error fetching friends:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});
+}));
 
 
-app.get("/social", async (req, res) => {
+app.get("/social", (req, res) => {
   res.render("social");
 });
 
-app.get("/chat", async (req, res) => {
+app.get("/chat", catchAsync(async (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
   }
@@ -581,7 +575,7 @@ app.get("/chat", async (req, res) => {
     console.error("Error accessing chat:", error);
     res.status(500).send("Internal Server Error");
   }
-});
+}));
 
 app.get("/gameCheckersHub", (req, res) => {
   res.render("gameCheckersHub");
