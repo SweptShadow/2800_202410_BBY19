@@ -3,12 +3,14 @@
 <!-- Link to CSS file -->
 <link rel="stylesheet" href="/css/jigsawstyle.css">
 
+<!-- Container for Jigsaw game -->
 <div class="jigsaw-box">
   <h1 style="text-align: center;">Jigsaw Puzzle Game</h1>
 
   <div class="Hub-box">
     <form id="jigsaw" action="">
 
+      <!-- Grid for placement of tiles -->
       <div id="puzzleGrid">
         <div id="grid0" class="grid"></div>
         <div id="grid1" class="grid"></div>
@@ -37,6 +39,7 @@
         <div id="grid24" class="grid"></div>
       </div>
 
+      <!-- Grid where jumbled puzzle pieces go -->
       <div id="puzzlePieces">
         <div id="piece0" class="pieces"></div>
         <div id="piece1" class="pieces"></div>
@@ -65,6 +68,7 @@
         <div id="piece24" class="pieces"></div>
       </div>
 
+      <!-- Buttons to jumble and solve puzzle -->
       <div id="controls" class="aligncenter">
         <p>
           <input id="solve" type="button" value="Solve It" />
@@ -77,6 +81,21 @@
 
   </div>
 </div>
+
+<br>
+<!-- Help button with rules -->
+<div id="helpOverlay" class="overlay">
+  <div class="overlay-content">
+      <span class="close" onclick="closeHelpOverlay()">&times;</span>
+      <p><%- include("gameRules/jigsawRules.ejs") %></p>
+  </div>
+</div>
+
+<button class="helpButton" style="width: auto; margin: 0 auto;">Help</button>
+
+<br>
+<br>
+<br>
 
 <!-- Link to JS files/scripts for page -->
 <script src="/js/jigsawGameScript.js"></script>
