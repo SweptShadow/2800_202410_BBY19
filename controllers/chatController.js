@@ -57,6 +57,7 @@ exports.sendMessage = async (req, res) => {
       senderId,
       message,
       timestamp: new Date(),
+      isRead: false,
     });
 
     await newMessage.save();
@@ -80,20 +81,25 @@ exports.sendMessage = async (req, res) => {
  * @param {*} res chat history for the room
  */
 exports.getChatHistory = async (req, res) => {
-  
   const { roomId } = req.params;
 
   try {
     // console.log(`Fetching chat history for roomId: ${roomId}`);
     const messages = await Message.find({ chatRoomId: roomId }).sort({ timestamp: 1 }).populate('senderId', 'username');
     // console.log(`Fetched messages: ${messages.length}`, messages);
+
+    await Message.updateMany({ chatRoomId: roomId, isRead: false }, { $set: { isRead: true } });
+
     const messagesWithUsernames = messages.map(msg => ({
       chatRoomId: msg.chatRoomId,
       senderId: msg.senderId._id,
       username: msg.senderId.username,
       message: msg.message,
       timestamp: msg.timestamp,
+      isRead: msg.isRead,
     }));
+
+    console.log("Chat history:", JSON.stringify(messagesWithUsernames, null, 2));
     res.status(200).json(messagesWithUsernames);
   } catch (error) {
     console.error(error);

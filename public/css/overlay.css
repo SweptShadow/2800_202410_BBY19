@@ -188,6 +188,21 @@
   background-color: #f1f1f1;
 }
 
+.unread-dot {
+  height: 10px;
+  width: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+#toggle-chat-overlay .unread-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
 
 
   
