@@ -6,6 +6,9 @@ const eventSchema = new mongoose.Schema({
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
+/** The database model for a calendar event. Contains the Date, the game being scheduled 
+ * and an array of the participants.
+ */
 const Event = mongoose.model('Event', eventSchema);
 
 module.exports = Event;

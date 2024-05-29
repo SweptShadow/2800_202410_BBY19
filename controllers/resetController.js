@@ -12,6 +12,15 @@ let transporter = nodemailer.createTransport({
   },
 });
 
+/**
+ * Sends a password reset email to the specified email address.
+ * 
+ * Constructs a reset URL using the provided token and sends an email with
+ * a link to reset the password. Uses the configured transporter for sending emails.
+ * 
+ * @param {string} email - The email address to send the reset email to.
+ * @param {string} token - The token to include in the reset URL.
+ */
 const sendResetEmail = (email, token) => {
   const hostUrl =
     process.env.NODE_ENV === "production"
@@ -47,7 +56,7 @@ const sendResetEmail = (email, token) => {
   `,
   };
 
-  // Returns an error if failed or the info object if successful
+  // if we get an error, return the error. if we succeed, give the info messageId
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log("Error sending email:", error);
@@ -56,6 +65,14 @@ const sendResetEmail = (email, token) => {
   });
 };
 
+/**
+ * Handles password reset requests.
+ * 
+ * Generates a reset token, saves it for the user, and sends a reset email.
+ * 
+ * @param {Object} req - The request object, containing the email address in the body.
+ * @param {Object} res - The response object.
+ */
 exports.requestPasswordReset = async (req, res) => {
   const email = req.body.email;
 
@@ -74,6 +91,14 @@ exports.requestPasswordReset = async (req, res) => {
   }
 };
 
+/**
+ * Resets the user's password using the provided token.
+ * 
+ * Finds the user by the token and updates their password.
+ * 
+ * @param {Object} req - The request object, containing the reset token and new password in the body.
+ * @param {Object} res - The response object.
+ */
 exports.resetPassword = async (req, res) => {
   const token = req.body.token;
   const newPassword = req.body.password;

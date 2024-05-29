@@ -3,22 +3,22 @@ const router = express.Router();
 const Event = require('../models/event');
 const User = require('../models/user');
 
-// Route to create a new event
+/**
+ * Creates a new event and associates it with the participants.
+ * @param {Object} req - contains the date, the game to be played, and the participants array
+ * @param {Object} res - Express response object.
+ */
 router.post('/', async (req, res) => {
   const { date, game, participants } = req.body;
   console.log('Incoming request body:', req.body);
 
   try {
-    // Find users by their emails
     const users = await User.find({ email: { $in: participants } });
-
-    // Extract ObjectIds of the found users
     const participantIds = users.map(user => user._id);
 
     const event = new Event({ date, game, participants: participantIds });
     await event.save();
 
-    // Update each participant's event list
     await User.updateMany(
       { _id: { $in: participantIds } },
       { $push: { events: event._id } }
@@ -31,7 +31,11 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Route to fetch events for a user
+/**
+ * Fetches all events associated with a specific user.
+ * @param {Object} req - request object containing userId 
+ * @param {Object} res - response object that updates the status
+ */
 router.get('/:userId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).populate('events');

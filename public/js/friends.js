@@ -66,6 +66,10 @@ closeChatModalButton.addEventListener("click", () => {
     }
   }
 
+   /**
+   * Submits a request to add a new friend by email.
+   * @param {Event} e - The form submission event.
+   */
   addFriendForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = addFriendForm.elements["friend-email"].value;
@@ -83,6 +87,10 @@ closeChatModalButton.addEventListener("click", () => {
     }
   });
 
+  /**
+   * Opens a chat with the specified friend.
+   * @param {string} friendId - The ID of the friend to chat with.
+   */
   async function openChat(friendId) {
     socket.emit("joinChatRoom", friendId);
     socket.on("setChatRoomId", (roomId) => {
@@ -98,6 +106,10 @@ closeChatModalButton.addEventListener("click", () => {
     });
   }
 
+  /**
+   * Handles the submission of a new chat message.
+   * @param {Event} e - The form submission event.
+   */
   chatForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (chatInput.value && currentChatRoomId) {
@@ -109,12 +121,19 @@ closeChatModalButton.addEventListener("click", () => {
     }
   });
 
+  /**
+   * Emits a typing event when the user starts typing a message.
+   */
   chatInput.addEventListener("keypress", () => {
     if (chatInput.value && currentChatRoomId) {
       socket.emit("typing", currentChatRoomId);
     }
   });
 
+  /**
+   * Handles receiving a new chat message and appends it to the chat window.
+   * @param {Object} msg - The message object containing sender details and message content.
+   */
   socket.on("chat message", (msg) => {
     const newMessage = document.createElement("li");
     newMessage.className = msg.senderId === userId ? 'sent' : 'received';
@@ -123,6 +142,10 @@ closeChatModalButton.addEventListener("click", () => {
     scrollToBottom();
   });
 
+  /**
+   * Displays a typing indicator when another user is typing.
+   * @param {string} username - The username of the user who is typing.
+   */
   socket.on("typing", (username) => {
     typingIndicator.textContent = `${username} is typing...`;
 
