@@ -1,6 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
     let currentMonthOffset = 0;
   
+    const gameUrls = {
+      chess: "http://localhost:9001/gamesSpecific/?game=chess",
+      checkers: "http://localhost:9001/gameCheckersPlay",
+      jigsaw: "http://localhost:9001/gameJigsawPlay",
+      bingo: "http://localhost:9001/gameBingoPlay",
+      sudoku: "http://localhost:9001/gameSudokuPlay"
+    };
+  
     async function fetchEvents(userId, monthOffset = 0) {
       try {
         const response = await fetch(`/api/events/${userId}`);
@@ -52,7 +60,10 @@ document.addEventListener("DOMContentLoaded", function () {
           const eventList = document.createElement("ul");
           dayEvents.forEach(event => {
             const eventItem = document.createElement("li");
-            eventItem.textContent = event.game;
+            const eventLink = document.createElement("a");
+            eventLink.href = gameUrls[event.game];
+            eventLink.textContent = event.game;
+            eventItem.appendChild(eventLink);
             eventList.appendChild(eventItem);
           });
           dayElement.appendChild(eventList);
