@@ -350,6 +350,7 @@ app.get("/profile", catchAsync(async (req, res) => {
       .project({ name: 1, email: 1, favGame: 1, bio: 1, pfp: 1 })
       .toArray();
     console.log(userInfo);
+
     //check bio and if empty/whitespace, send example message. Else, send user's bio from database
     let bio = userInfo[0].bio;
     if (bio === "" || /^\s*$/.test(bio)) {
@@ -378,6 +379,7 @@ app.get("/profile", catchAsync(async (req, res) => {
 
 app.post("/bioSubmit", catchAsync(async (req, res) => {
   let bio = req.body.bio;
+
   //submit new bio to database using $set
   await userCollection.updateOne(
     { username: req.session.username },
@@ -388,6 +390,8 @@ app.post("/bioSubmit", catchAsync(async (req, res) => {
 
 app.post("/usernameSubmit", catchAsync(async (req, res) => {
   let name = req.body.username;
+
+  //submit new username to the database
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { username: name } }
@@ -398,6 +402,8 @@ app.post("/usernameSubmit", catchAsync(async (req, res) => {
 
 app.post("/emailSubmit", catchAsync(async (req, res) => {
   let newEmail = req.body.email;
+
+  //submit new email to the database
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { email: newEmail } }
@@ -407,6 +413,8 @@ app.post("/emailSubmit", catchAsync(async (req, res) => {
 
 app.post("/favGameSubmit", catchAsync(async (req, res) => {
   let newFavGame = req.body.favGame;
+
+  //submit new favourite game to the database
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { favGame: newFavGame } }
@@ -422,6 +430,7 @@ app.post("/pfpSubmit", catchAsync(async (req, res) => {
     return res.status(400).send("No files were uploaded.");
   }
 
+  //get file from the request object (file that user chose and submitted on profile.ejs)
   const file = req.files.pfp;
 
   //upload the file from the temporary filepath to the cloudinary server

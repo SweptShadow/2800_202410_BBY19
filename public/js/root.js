@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // all the pages in an array
     const tutorialContent = [
       `<h2>Welcome to Golden Gaming</h2><p>This is the first page of your tutorial.</p>
       <p>Use the "Next" and "Previous" buttons to navigate through the tutorial pages</p>
@@ -70,19 +71,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const prevButton = document.getElementById("prevButton");
     const nextButton = document.getElementById("nextButton");
 
+    //everytime new page is loaded, scroll to top
     function scrollToTopOfModal() {
       var modalContent = document.querySelector('.modal-content'); // Assuming your modal content has this class
       if (modalContent) {
         modalContent.scrollTop = 0; // Scroll to the top of the modal content
       }
     }
-  
+  //update content and buttons
     function updateModalContent() {
       tutorialBody.innerHTML = tutorialContent[currentPage];
       prevButton.style.display = currentPage === 0 ? "none" : "inline-block";
       nextButton.textContent = currentPage === tutorialContent.length - 1 ? "Finish" : "Next";
     }
   
+    //go to previous page
     prevButton.addEventListener("click", function () {
       if (currentPage > 0) {
         currentPage--;
@@ -91,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   
+    //go to next page and if its the last page, the nextButton turns to "Finish" and it closes the modal on click
     nextButton.addEventListener("click", function () {
       if (currentPage < tutorialContent.length - 1) {
         $(nextButton).attr("data-dismiss", "");
