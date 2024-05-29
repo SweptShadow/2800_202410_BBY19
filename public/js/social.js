@@ -24,6 +24,17 @@ document.addEventListener("DOMContentLoaded", async function () {
         `;
         console.log("here")
         friendsCardsContainer.appendChild(card);
+
+        const socialCard = document.getElementById("friends-cards");
+        const friendsChatOverlay = document.getElementById("friends-chat-overlay");
+
+        socialCard.addEventListener("click", () => {
+          if (friendsChatOverlay.classList.contains("show")) {
+            friendsChatOverlay.classList.remove("show");
+          } else {
+            friendsChatOverlay.classList.add("show");
+          }
+        });
       });
     } catch (error) {
       console.error('Error fetching friends:', error);

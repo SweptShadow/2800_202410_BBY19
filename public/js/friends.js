@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const chatForm = document.getElementById("chat-form");
   const chatInput = document.getElementById("chat-input");
 
-  const socialCard = document.getElementById("friends-cards");
+  
 
   let currentChatRoomId = null;
 
@@ -26,13 +26,7 @@ toggleChatOverlayButton.addEventListener("click", () => {
   }
 });
 
-socialCard.addEventListener("click", () => {
-  if (friendsChatOverlay.classList.contains("show")) {
-    friendsChatOverlay.classList.remove("show");
-  } else {
-    friendsChatOverlay.classList.add("show");
-  }
-});
+
 
 const closeChatModalButton = document.querySelector("#chat-modal button");
 closeChatModalButton.addEventListener("click", () => {
