@@ -8,6 +8,11 @@
   --background-orange: radial-gradient(at center, #f7a54c, #FFFFFF);
   --background-purple: radial-gradient(at center, #9370DB, #FFFFFF);
   --background-green: radial-gradient(at center, #98FB98, #FFFFFF);
+  
+  --overlay-background-default: linear-gradient(135deg, #004080, #0073e6);
+  --overlay-background-orange: linear-gradient(135deg, #c45d1d, #f57d42);
+  --overlay-background-purple: linear-gradient(135deg, #6a5acd, #9370db);
+  --overlay-background-green: linear-gradient(135deg, #6ab06a, #98fb98);
 }
 
 html, body {
