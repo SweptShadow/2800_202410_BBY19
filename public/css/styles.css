@@ -57,14 +57,21 @@ html, body {
   }
   #tutorialButton {
     background-color: var(--background-color-default);
-    border: 1px solid white;
+    border: 2px solid grey;
     margin: 0px 5px;
     border-radius: 15px;
     height: 50px;
-    color: white;
+    color: black;
     font-weight: 600;
     font-size: 25px;
-    
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    transition: all 0.4s ease;
+  }
+  #tutorialButton:hover {
+    color: white;
+    background-color: rgb(105, 105, 105);
   }
   #prevButton, #nextButton {
     background: var(--background-color-default);
@@ -679,7 +686,7 @@ header .nav__logo {
 /* Show menu */
 header .show-menu {
   top: 0;
-  transition: all 2s ease;
+  transition: all 0.5s ease;
 }
 
 /* For medium devices */
