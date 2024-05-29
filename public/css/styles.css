@@ -343,10 +343,45 @@ body{margin-top:20px;
     margin-bottom: 10px;
     /* Ensure it stays above other content */
     z-index: 1000;
-    border-radius: 10px;
+    border-radius: 15px;
+    border: 1px solid #adadad;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
   }
   .text-secondary {
-    color: black!important;
+    color: black !important;
+    font-size: 18px;
+  }
+  @media screen and (max-width: 455px) {
+    .text-secondary {
+      font-size: 14px !important;
+      
+    }
+    a.nav-link.text-secondary::after {
+      display: none;
+    }
+    .nav li:nth-of-type(1) a {
+      font-size: 0 !important; /* Hide text by setting font-size to 0 */
+    }
+  
+    /* Target the "Games" text */
+    .nav li:nth-of-type(2) a {
+      font-size: 0 !important; /* Hide text by setting font-size to 0 */
+    }
+  
+    /* Target the "Social" text */
+    .nav li:nth-of-type(3) a {
+      font-size: 0 !important; /* Hide text by setting font-size to 0 */
+    } 
+    .nav li a i {
+      font-size: 25px; /* Set a size for the icons */
+      
+    }
+    .nav > li{
+      margin: 0 auto;
+    }
+    
   }
 
   /* the tradmark footer*/
