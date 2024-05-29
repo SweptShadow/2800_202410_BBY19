@@ -6,6 +6,26 @@
         <button id="prev-month">Previous</button>
         <button id="next-month">Next</button>
     </div>
+    <div id="event-modal" style="display:none;">
+        <form id="event-form">
+            <label for="event-date">Date:</label>
+            <input type="date" id="event-date" name="date" required>
+            
+            <label for="event-game">Game:</label>
+            <select id="event-game" name="game" class="dropdown" required>
+                <option value="chess">Chess</option>
+                <option value="checkers">Checkers</option>
+                <option value="jigsaw">Jigsaw</option>
+                <option value="bingo">Bingo</option>
+                <option value="sudoku">Sudoku</option>
+            </select>
+            
+            <label for="event-participants">Participants:</label>
+            <select id="event-participants" name="participants" class="dropdown" multiple required></select>
+            
+            <button type="submit">Create Event</button>
+        </form>
+    </div>
     <div class="calendar-body">
         <div class="day-names">
             <div>Sun</div>
@@ -20,26 +40,7 @@
     </div>
 </div>
 
-<div id="event-modal" style="display:none;">
-    <form id="event-form">
-        <label for="event-date">Date:</label>
-        <input type="date" id="event-date" name="date" required>
-        
-        <label for="event-game">Game:</label>
-        <select id="event-game" name="game" class="dropdown" required>
-            <option value="chess">Chess</option>
-            <option value="checkers">Checkers</option>
-            <option value="jigsaw">Jigsaw</option>
-            <option value="bingo">Bingo</option>
-            <option value="sudoku">Sudoku</option>
-        </select>
-        
-        <label for="event-participants">Participants:</label>
-        <select id="event-participants" name="participants" class="dropdown" multiple required></select>
-        
-        <button type="submit">Create Event</button>
-    </form>
-</div>
+
 
 <script>
   const userId = "<%= userId %>";
