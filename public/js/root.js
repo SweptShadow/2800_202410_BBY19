@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("loaded root.js");
     const tutorialContent = [
       `<h2>Welcome to Golden Gaming</h2><p>This is the first page of your tutorial.</p>
       <p>Use the "Next" and "Previous" buttons to navigate through the tutorial pages</p>
@@ -62,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
       `<h2>Themes</h2><p>Click the cog icon in the top right to access themes</p>
       <img style="width: 50%" src="/images/tutorial/ss18.png">
       <p>This will open a couple theme options, click one and see what you like!</p>
-      <img style="width: 50%" src="/images/tutorial/ss19.png">`
+      <img style="width: 50%" src="/images/tutorial/ss19.png">`,
     ];
   
     let currentPage = 0;

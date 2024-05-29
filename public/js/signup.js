@@ -1,6 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
     const signupForm = document.querySelector(".login-form");
   
+    /**
+   * Validates the signup form fields before submission.
+   * Checks if the email is valid and if the username and password fields are not empty.
+   * @param {Event} event - The form submission event.
+   */
     signupForm.addEventListener("submit", function(event) {
       const email = document.getElementById("email-phone").value;
       const username = document.getElementById("username").value;

@@ -1,17 +1,36 @@
+/**
+ * Creates the calendar and event handling functions.
+ */
 document.addEventListener("DOMContentLoaded", function () {
   let currentMonthOffset = 0;
 
   console.log("UserId:", userId);
   console.log("UserEmail:", userEmail);
 
+  // sets the game URLs for production environment
   const gameUrls = {
-    chess: "http://localhost:9001/gamesSpecific/?game=chess",
-    checkers: "http://localhost:9001/gameCheckersPlay",
-    jigsaw: "http://localhost:9001/gameJigsawPlay",
-    bingo: "http://localhost:9001/gameBingoPlay",
-    sudoku: "http://localhost:9001/gameSudokuPlay"
+    chess: "https://goldengaming.onrender.com/gamesSpecific/?game=chess",
+    checkers: "https://goldengaming.onrender.com/gameCheckersPlay",
+    jigsaw: "https://goldengaming.onrender.com/gameJigsawPlay",
+    bingo: "https://goldengaming.onrender.com/gameBingoPlay",
+    sudoku: "https://goldengaming.onrender.com/gameSudokuPlay"
   };
 
+  // sets the game URLs for development environment
+  // const gameUrls = {
+  //   chess: "http://localhost:9001/gamesSpecific/?game=chess",
+  //   checkers: "http://localhost:9001/gameCheckersPlay",
+  //   jigsaw: "http://localhost:9001/gameJigsawPlay",
+  //   bingo: "http://localhost:9001/gameBingoPlay",
+  //   sudoku: "http://localhost:9001/gameSudokuPlay"
+  // };
+
+  /**
+   * Fetches events for the specified user and month.
+   * @param {string} userId - The user's ID.
+   * @param {number} [monthOffset=0] - The offset for the current month.
+   * @returns {Promise<Array>} The events for the user.
+   */
   async function fetchEvents(userId, monthOffset = 0) {
     try {
       const response = await fetch(`/api/events/${userId}`);
@@ -25,6 +44,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  /**
+   * Fetches the friends list.
+   * @returns {Promise<Array>} The list of friends.
+   */
   async function fetchFriends() {
     try {
       const response = await fetch('/api/friends');
@@ -38,6 +61,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  /**
+   * Generates the calendar for the specified month offset. 
+   * @param {number} [monthOffset=0] - The offset for the current month.
+   */
   async function generateCalendar(monthOffset = 0) {
     const now = new Date();
     const month = now.getMonth() + monthOffset;
@@ -146,6 +173,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  /**
+   * Populates the friends dropdown with the user's friends.
+   */
   async function populateFriendsDropdown() {
     const friends = await fetchFriends();
     const participantsSelect = document.getElementById('event-participants');
