@@ -43,6 +43,32 @@ html, body {
   
 /* #endregion */
 
+
+/* #region indexRegion */
+  .d-block {
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  }
+  #tutorialButton {
+    background: linear-gradient(135deg, #007bff, #00d2ff);
+    border: none;
+    border-radius: 15px;
+    height: 50px;
+    color: white;
+    font-weight: 600;
+    font-size: 25px;
+    
+  }
+  #prevButton, #nextButton {
+    background: var(--background-color-default);
+    border: none;
+    border-radius: 50px; 
+  }
+
+/* #endRegion */
+
+
 /* #region socialRegion*/
 
 .social-container,[id^="person"] {

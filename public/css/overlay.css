@@ -54,6 +54,7 @@
   
   #friends-list-container h2 {
     margin-top: 0;
+    font-weight: 700;
   }
   
   #friends-list {
@@ -72,6 +73,10 @@
   #friends-list li:hover {
     background: #f0f0f0;
   }
+
+  #add-friend-form input {
+    border-radius: 8px;
+  }
   
   #chat-modal {
     position: fixed;
@@ -88,6 +93,7 @@
   
   #chat-modal h2 {
     margin-top: 0;
+    font-weight: 700;
   }
   
   #chat-room-id {
