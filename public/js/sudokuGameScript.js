@@ -1,7 +1,6 @@
 import Stack from './stack.js';
 
 var numSelected = null;
-var tileSelecter = null;
 var undoMoves = new Stack();
 var redoMoves = new Stack();
 
