@@ -8,11 +8,12 @@
         <% if (!session.authenticated) { %>
           <a href="/login" class="btn btn-primary btn-lg px-4 gap-3">Login</a>
           <a href="/signup" class="btn btn-outline-secondary btn-lg px-4">Signup</a>
-        <% } %>
+        <% } else { %>
         
       </div>
       <br><br>
       <button id="tutorialButton" type="button" data-toggle="modal" data-target="#tutorialModal">Help me get started</button>
+      <% } %>
     </div>
   </div>
 
