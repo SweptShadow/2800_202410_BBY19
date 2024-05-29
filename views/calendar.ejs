@@ -35,7 +35,7 @@
         </select>
         
         <label for="event-participants">Participants:</label>
-        <input type="text" id="event-participants" name="participants" required>
+        <select id="event-participants" name="participants" multiple required></select>
         
         <button type="submit">Create Event</button>
     </form>
@@ -43,6 +43,9 @@
 
 <script>
   const userId = "<%= userId %>";
+  const userEmail = "<%= userEmail %>";
+  console.log("UserId:", userId);
+  console.log("UserEmail:", userEmail); 
 </script>
 <script src="/js/calendar.js"></script>
 
