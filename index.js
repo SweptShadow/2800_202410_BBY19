@@ -531,7 +531,7 @@ app.get("/gameBingoPlay", (req, res) => {
 });
 
 app.get("/calendar", (req, res) => {
-  res.render("calendar");
+  res.render('calendar', { userId: req.session.userId });
 });
 
 app.get("/videocall", (req, res) => {
