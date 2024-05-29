@@ -10,6 +10,7 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
+  pfp: { type: String, required: false, unique: true },
 });
 
 userSchema.statics.saveResetToken = async function(email, token) {

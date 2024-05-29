@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const chatForm = document.getElementById("chat-form");
   const chatInput = document.getElementById("chat-input");
 
+  
+
   let currentChatRoomId = null;
 
   /**
@@ -23,6 +25,8 @@ toggleChatOverlayButton.addEventListener("click", () => {
     friendsChatOverlay.classList.add("show");
   }
 });
+
+
 
 const closeChatModalButton = document.querySelector("#chat-modal button");
 closeChatModalButton.addEventListener("click", () => {
@@ -41,9 +45,19 @@ closeChatModalButton.addEventListener("click", () => {
       console.log("Raw response text:", text);
       const friends = JSON.parse(text);
       friendsList.innerHTML = '';
-      friends.forEach(friend => {
+      friends.forEach(async friend => {
         const listItem = document.createElement("li");
-        listItem.textContent = `${friend.username} (${friend.email})`;
+        //add user pfp here maybe
+        const img = document.createElement("img");
+        img.src = friend.pfp || '/images/stock.jpg';
+        img.style.height = '25px';
+        img.style.width = '25px';
+        img.style.borderRadius = '50%';
+        img.style.border = "1px solid white";
+
+        listItem.appendChild(img);
+        const textNode = document.createTextNode(` ${friend.username} (${friend.email})`);
+        listItem.appendChild(textNode);;
         listItem.addEventListener("click", () => openChat(friend._id));
         friendsList.appendChild(listItem);
       });

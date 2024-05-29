@@ -20,6 +20,7 @@ const fileUpload = require("express-fileupload");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const eventRoutes = require('./routes/events');
+const path = require('path');
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
@@ -176,10 +177,18 @@ app.use("/api/friends", friendRoutes);
 app.use("/api/password", passResetRoutes);
 app.use('/api/events', eventRoutes);
 
+//Middleware to make the user object available to all templates
+app.use((req, res, next) => {
+  //User object is stored in session
+  res.locals.user = req.session.user; 
+  next();
+});
+
 app.get("/", (req, res) => {
   res.render("root", {
     session: req.session,
     userId: req.session.userId || null,
+    userName: req.session.username,
   });
 });
 
@@ -335,6 +344,7 @@ app.get("/profile", catchAsync(async (req, res) => {
   if (req.session.authenticated) {
     let username = req.session.username;
 
+    //get user info from database
     const userInfo = await userCollection
       .find({ username: username })
       .project({ name: 1, email: 1, favGame: 1, bio: 1, pfp: 1 })
@@ -346,6 +356,7 @@ app.get("/profile", catchAsync(async (req, res) => {
       bio = "Add bio here...";
     }
 
+    //if profile picture is blank, send a stock profile photo image
     let pfp = userInfo[0].pfp;
     if (!pfp || pfp === "") {
       pfp =
@@ -367,6 +378,7 @@ app.get("/profile", catchAsync(async (req, res) => {
 
 app.post("/bioSubmit", catchAsync(async (req, res) => {
   let bio = req.body.bio;
+  //submit new bio to database using $set
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { bio: bio } }
@@ -402,15 +414,71 @@ app.post("/favGameSubmit", catchAsync(async (req, res) => {
   res.redirect("/profile");
 }));
 
+//from "change profile picture" button on profile.ejs"
 app.post("/pfpSubmit", catchAsync(async (req, res) => {
+
+  //check if file submitted
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send("No files were uploaded.");
   }
 
   const file = req.files.pfp;
 
+  //upload the file from the temporary filepath to the cloudinary server
   cloudinary.uploader.upload(
     file.tempFilePath,
+    {
+      folder: "profile_pictures",
+      public_id: `${req.session.username}_pfp`,
+      overwrite: true,
+    },
+    (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .send({ message: "Upload failed", error: err.message });  
+      }
+
+      
+
+      const pfpUrl = result.secure_url;
+
+      //automatically crop the submitted image
+      const autoCropUrl = cloudinary.url(pfpUrl, {
+        crop: 'auto',
+        gravity: 'auto',
+        width: 500,
+        height: 500,
+      });
+
+      //send photo url to database stored as a string
+      userCollection
+        .updateOne(
+          { username: req.session.username },
+          { $set: { pfp: autoCropUrl } }
+        )
+        .then(() => {
+          res.redirect("/profile");
+        })
+        .catch((err) => {
+          res
+            .status(500)
+            .send({ message: "Database update failed", error: err.message });
+        });
+    }
+  );
+}));
+
+//route for submitting one of the default profile pictures on profile.ejs change picture modal"
+app.get("/defaultSubmit", async (req, res) => {
+
+  //find the default photo using query params
+  let image = req.query.image + ".jpg";
+  const file = path.join(__dirname, 'public/images', image);
+
+  //similarily to /pfpsubmit, upload the default photo to the cloudinary server
+  cloudinary.uploader.upload(
+    file,
     {
       folder: "profile_pictures",
       public_id: `${req.session.username}_pfp`,
@@ -439,8 +507,8 @@ app.post("/pfpSubmit", catchAsync(async (req, res) => {
             .send({ message: "Database update failed", error: err.message });
         });
     }
-  );
-}));
+  )
+});
 
 app.get("/games", (req, res) => {
   res.render("games");
@@ -459,15 +527,22 @@ app.get("/gameSudokuPlay", (req, res) => {
 });
 
 app.get("/gamesSpecific", catchAsync(async (req, res) => {
+  //get game name from query params
   let gamename = req.query.game;
   gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
+  
+  //game title is the capitlized name for displaying on gamesSpecific.ejs
   let gameTitle = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
+  //find gameInfo using capitalized gamename
   const gameInfo = await gameCollection
     .find({ name: gamename })
     .project({ name: 1, desc: 1, _id: 1, link: 1, rules: 1 })
     .toArray();
+
+  //gamename goes back to lowercase so it can be used to reference files
   gamename = req.query.game;
+
 
   res.render("gamesSpecific", {
     gameTitle: gameTitle,
@@ -480,16 +555,38 @@ app.get("/gamesSpecific", catchAsync(async (req, res) => {
 
 app.get("/api/friends", catchAsync(async (req, res) => {
   try {
-    const friendsCollection = client
-      .db(mongo_database)
-      .collection("friendships");
+    const friendsCollection = client.db(mongo_database).collection("friendships");
     const friends = await friendsCollection.find().toArray();
-    res.json(friends);
+
+    console.log("Begin mapping friends");
+    const friendsWithPfp = await Promise.all(friends.map(async (friend) => {
+      try {
+        const user = await userCollection.findOne(
+          { username: friend.username },
+          { projection: { pfp: 1 } }
+        );
+
+        //attach pfp to friend object (in friends array)
+        if (user && user.pfp) {
+          friend.pfp = user.pfp;
+          console.log(`Appended pfp for ${friend.username}: ${user.pfp}`);
+        } else {
+          console.log(`User not found or missing pfp for ${friend.username}`);
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+      return friend;
+    }));
+
+    console.log("Final friends list with pfp:", friendsWithPfp);
+    res.json(friendsWithPfp);
   } catch (error) {
     console.error("Error fetching friends:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }));
+
 
 app.get("/social", (req, res) => {
   res.render("social");
