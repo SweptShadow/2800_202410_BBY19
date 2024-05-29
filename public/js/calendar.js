@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("UserId:", userId);
   console.log("UserEmail:", userEmail);
 
-  // sets the game URLs based on the current environment
+  // sets the game URLs for production environment
   const gameUrls = {
     chess: "https://goldengaming.onrender.com/gamesSpecific/?game=chess",
     checkers: "https://goldengaming.onrender.com/gameCheckersPlay",
@@ -15,6 +15,15 @@ document.addEventListener("DOMContentLoaded", function () {
     bingo: "https://goldengaming.onrender.com/gameBingoPlay",
     sudoku: "https://goldengaming.onrender.com/gameSudokuPlay"
   };
+
+  // sets the game URLs for development environment
+  // const gameUrls = {
+  //   chess: "http://localhost:9001/gamesSpecific/?game=chess",
+  //   checkers: "http://localhost:9001/gameCheckersPlay",
+  //   jigsaw: "http://localhost:9001/gameJigsawPlay",
+  //   bingo: "http://localhost:9001/gameBingoPlay",
+  //   sudoku: "http://localhost:9001/gameSudokuPlay"
+  // };
 
   /**
    * Fetches events for the specified user and month.
