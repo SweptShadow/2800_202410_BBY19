@@ -19,6 +19,7 @@ const cloudinary = require("cloudinary").v2;
 const fileUpload = require("express-fileupload");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const eventRoutes = require('./routes/events');
 const path = require('path');
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
@@ -174,6 +175,7 @@ app.use((req, res, next) => {
 app.use("/api/chat", chatRoutes);
 app.use("/api/friends", friendRoutes);
 app.use("/api/password", passResetRoutes);
+app.use('/api/events', eventRoutes);
 
 //Middleware to make the user object available to all templates
 app.use((req, res, next) => {
@@ -236,12 +238,13 @@ app.post("/signupSubmit", catchAsync(async (req, res) => {
 
     const user = await userCollection.findOne(
       { email: email },
-      { projection: { _id: 1, username: 1, password: 1 } }
+      { projection: { _id: 1, username: 1, password: 1, email: 1 } }
     );
 
     req.session.authenticated = true;
     req.session.userId = user._id;
     req.session.username = user.username;
+    req.session.email = user.email;
     res.redirect("/");
   } catch (err) {
     console.error("Error inserting user:", err);
@@ -278,7 +281,7 @@ app.post("/loginSubmit", catchAsync(async (req, res) => {
 
   const user = await userCollection.findOne(
     { email: inputEmail },
-    { projection: { _id: 1, username: 1, password: 1, googleId: 1 } }
+    { projection: { _id: 1, username: 1, password: 1, email: 1, googleId: 1 } }
   );
 
   if (!user) {
@@ -293,6 +296,7 @@ app.post("/loginSubmit", catchAsync(async (req, res) => {
     req.session.authenticated = true;
     req.session.userId = user._id;
     req.session.username = user.username;
+    req.session.email = user.email; 
     return res.redirect("/");
   }
 
@@ -301,12 +305,14 @@ app.post("/loginSubmit", catchAsync(async (req, res) => {
     req.session.authenticated = true;
     req.session.userId = user._id;
     req.session.username = user.username;
+    req.session.email = user.email; 
     res.redirect("/");
   } else {
     console.log("Password incorrect");
     res.render("login", { error: "Password is incorrect." });
   }
 }));
+
 
 app.get(
   "/auth/google",
@@ -320,6 +326,10 @@ app.get(
     req.session.authenticated = true;
     req.session.userId = req.user._id;
     req.session.username = req.user.username;
+    req.session.email = req.user.email;
+
+    console.log("Session values after Google authentication:", req.session);
+
     res.redirect("/");
   }
 );
@@ -624,8 +634,9 @@ app.get("/gameCheckersPlay", (req, res) => {
 app.get("/gameBingoPlay", (req, res) => {
   res.render("gameBingoPlay");
 });
+
 app.get("/calendar", (req, res) => {
-  res.render("calendar");
+  res.render('calendar', { userId: req.session.userId, userEmail: req.session.email });
 });
 
 app.get("/videocall", (req, res) => {

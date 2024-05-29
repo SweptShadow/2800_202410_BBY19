@@ -1,40 +1,53 @@
 <%- include("template/header") %>
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Other libraries go here -->
-    <link rel="stylesheet" href="/css/calendar.css">
-    <script src="/js/calendar.js"></script>
-
-</head>
-
-<body>
-
-        <div id="calendar">
-            <div class="calendar-header">
-                <span class="month-year"></span>
-            </div>
-            <!-- where the calendar is dynamically created -->
-            <div class="calendar-body">
-                <div class="day-names">
-                    <div>Sun</div>
-                    <div>Mon</div>
-                    <div>Tue</div>
-                    <div>Wed</div>
-                    <div>Thu</div>
-                    <div>Fri</div>
-                    <div>Sat</div>
-                </div>
-                <div class="dates" id="dates"></div>
-            </div>
-        </div>
+<div id="calendar">
+    <div class="calendar-header">
+        <span class="month-year"></span>
+        <button id="prev-month">Previous</button>
+        <button id="next-month">Next</button>
+    </div>
+    <div id="event-modal" style="display:none;">
+        <form id="event-form">
+            <label for="event-date">Date:</label>
+            <input type="date" id="event-date" name="date" required>
             
-        </body>
+            <label for="event-game">Game:</label>
+            <select id="event-game" name="game" class="dropdown" required>
+                <option value="chess">Chess</option>
+                <option value="checkers">Checkers</option>
+                <option value="jigsaw">Jigsaw</option>
+                <option value="bingo">Bingo</option>
+                <option value="sudoku">Sudoku</option>
+            </select>
+            
+            <label for="event-participants">Participants:</label>
+            <select id="event-participants" name="participants" class="dropdown" multiple required></select>
+            
+            <button type="submit">Create Event</button>
+        </form>
     </div>
-
+    <div class="calendar-body">
+        <div class="day-names">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+        </div>
+        <div class="dates" id="dates"></div>
     </div>
+</div>
 
-</body>
+
+
+<script>
+  const userId = "<%= userId %>";
+  const userEmail = "<%= userEmail %>";
+  console.log("UserId:", userId);
+  console.log("UserEmail:", userEmail);
+</script>
+<script src="/js/calendar.js"></script>
+
 <%- include("template/footer") %>
