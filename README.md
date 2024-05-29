@@ -14,7 +14,11 @@ Golden Gaming
 Our Group, Golden Gamer’s, are developing a web app to help seniors by integrating a simple accessible social media application with senior oriented games which will help battle boredom and maintain cognitive functions.
 
 ## 2. Project Technologies
-
+List technologies (with version numbers), API's, icons, fonts, images, media or data sources, and other resources that were used.
+* Scoket.io
+* Font used:  Gilroy-ExtraBold
+* Adobe Stock images
+* Cloudinary
 
 ## 3. List of Files
 Contents of project folder:
@@ -46,7 +50,7 @@ Top level of project folder:
     /Gilroy-ExtraBold.otf     # font used
   ├── images                  # Folder for images
     ├── chessimg              # Folder for chess peice images (listing all chess peices)
-    ├── jigsaw                # Folder for jigsaw sample image (numbered from 0-24)
+    └── jigsaw                # Folder for jigsaw sample image (numbered from 0-24)
     /bingo.jpeg
     /bingo.jpg
     /cannon-shot-unscreen.gif
@@ -68,8 +72,8 @@ Top level of project folder:
     /stock.jpg
     /sudoku.png
     /undo.png
-  ├── js
-    ├── pieces                # Folder containing chess piece javascript for each piece
+  └── js
+    └── pieces                # Folder containing chess piece javascript for each piece
     /bingo.js                 # Bingo game script
     /bingoHubScript.js        # JS for bingo Hub page
     /calendar.js              # Calendar Javascript
@@ -104,7 +108,7 @@ Top level of project folder:
     /jigsawRules.ejs
   ├── games                   
     /chess.ejs                # Chess game main game page
-  ├── template                # Folder contaning templates used on all pages
+  └── template                # Folder contaning templates used on all pages
     /chatOverlay.ejs          # Chat Overlay which gets imported to every page when called
     /footer.ejs               # Footer which gets imported to every page
     /header.ejs               # Header which gets imported to every page
@@ -143,13 +147,37 @@ Top level of project folder:
 ├── index.js                  # main index js file that opens with node
 ├── package.json              # package dependencies
 ├── README.md                 # lots of writing to follow read me
-├── socket.js                 # javascript for using socket io
+└── socket.js                 # javascript for using socket io
 
 
 ## 4. Installation
 
 
 ## 5. Features
+Feature we currently have implemented:
+* Sign up, log in, log out and basic user functionailty
+* User profile with database handling information
+* Default picture options for user if they do not wish to upload image
+* Cloudinary used for image handling for uploaded picture
+* Google sign up, to sign in with google account
+* Theme modification for user prefrence (With colors oriented towards senior and elder's)
+* Chat socket functionality, allowing 2 users to chat with each other via text
+* Adding friends/ users via email address of users in database
+* Calender functionality to set up events
+* A games hub page which allows user to pick a game from 5 currently implemented ones
+* A functional Chess game
+* A functional Checkers game
+* A functional Jigsaw game
+* A functional Bingo game
+* A functional Sudoku game
+* A video call feature using socket io
 
+Feature's we would like to add in the future when we have more time:
+* Stat tracking for the games which saves user score into database
+* Leaderboard system for the games
+* Family group set up
+* Invite people to the app via their email or phone number
 
 ## 6. Credits
+* Adobe Stock images (Images used with student license)
+* 
