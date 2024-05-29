@@ -19,6 +19,11 @@ List technologies (with version numbers), API's, icons, fonts, images, media or 
 * Font used:  Gilroy-ExtraBold
 * Adobe Stock images
 * Cloudinary
+* EJS, JQuery, Bootstrap
+* dotenv, joi, passport
+* express-session
+* node.js
+* mongodb
 
 ## 3. List of Files
 Contents of project folder:
@@ -151,7 +156,11 @@ Top level of project folder:
 
 
 ## 4. Installation
+Instructions so a new developer can assemble a DEVELOPMENT ENVIRONMENT to contribute, including a list of tools, versions, and configuration instructions:
 
+* .env file containing mongodb uri and other secrets
+* mongodb used for back end database management
+* socket and cloudinary for chat and image handling respectively
 
 ## 5. Features
 Feature we currently have implemented:
@@ -180,4 +189,7 @@ Feature's we would like to add in the future when we have more time:
 
 ## 6. Credits
 * Adobe Stock images (Images used with student license)
-* 
+* Socket io documentation
+* https://socket.io/docs/v4/
+* Cloudinary: https://www.youtube.com/watch?v=rZrPVI5FN-w&embeds_referring_euri=https%3A%2F%2Flearn.bcit.ca%2F&source_ve_path=MjM4NTE&feature=emb_title
+
