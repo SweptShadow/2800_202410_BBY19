@@ -26,7 +26,7 @@
         <input type="date" id="event-date" name="date" required>
         
         <label for="event-game">Game:</label>
-        <select id="event-game" name="game" required>
+        <select id="event-game" name="game" class="dropdown" required>
             <option value="chess">Chess</option>
             <option value="checkers">Checkers</option>
             <option value="jigsaw">Jigsaw</option>
@@ -35,7 +35,7 @@
         </select>
         
         <label for="event-participants">Participants:</label>
-        <select id="event-participants" name="participants" multiple required></select>
+        <select id="event-participants" name="participants" class="dropdown" multiple required></select>
         
         <button type="submit">Create Event</button>
     </form>
@@ -45,7 +45,7 @@
   const userId = "<%= userId %>";
   const userEmail = "<%= userEmail %>";
   console.log("UserId:", userId);
-  console.log("UserEmail:", userEmail); 
+  console.log("UserEmail:", userEmail);
 </script>
 <script src="/js/calendar.js"></script>
 
