@@ -9,21 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // sets the game URLs based on the current environment
   const gameUrls = {
-    chess: process.env.NODE_ENV === "production"
-      ? "https://goldengaming.onrender.com/gamesSpecific/?game=chess"
-      : "http://localhost:9001/gamesSpecific/?game=chess",
-    checkers: process.env.NODE_ENV === "production"
-      ? "https://goldengaming.onrender.com/gameCheckersPlay"
-      : "http://localhost:9001/gameCheckersPlay",
-    jigsaw: process.env.NODE_ENV === "production"
-      ? "https://goldengaming.onrender.com/gameJigsawPlay"
-      : "http://localhost:9001/gameJigsawPlay",
-    bingo: process.env.NODE_ENV === "production"
-      ? "https://goldengaming.onrender.com/gameBingoPlay"
-      : "http://localhost:9001/gameBingoPlay",
-    sudoku: process.env.NODE_ENV === "production"
-      ? "https://goldengaming.onrender.com/gameSudokuPlay"
-      : "http://localhost:9001/gameSudokuPlay"
+    chess: "https://goldengaming.onrender.com/gamesSpecific/?game=chess",
+    checkers: "https://goldengaming.onrender.com/gameCheckersPlay",
+    jigsaw: "https://goldengaming.onrender.com/gameJigsawPlay",
+    bingo: "https://goldengaming.onrender.com/gameBingoPlay",
+    sudoku: "https://goldengaming.onrender.com/gameSudokuPlay"
   };
 
   /**
