@@ -11,24 +11,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const chatForm = document.getElementById("chat-form");
   const chatInput = document.getElementById("chat-input");
 
-  
-
   let currentChatRoomId = null;
+  let hasUnreadMessages = false;
 
   /**
    * Toggles the chat overlay by setting the display element.
    */
-toggleChatOverlayButton.addEventListener("click", () => {
-  if (friendsChatOverlay.classList.contains("show")) {
-    friendsChatOverlay.classList.remove("show");
-  } else {
-    friendsChatOverlay.classList.add("show");
-  }
-});
+  toggleChatOverlayButton.addEventListener("click", () => {
+    friendsChatOverlay.classList.toggle("show");
+  });
 
-
-
-  const closeChatModalButton = document.querySelector("#chat-modal button");
+  const closeChatModalButton = document.querySelector("#chat-modal button[data-button='close']");
   closeChatModalButton.addEventListener("click", () => {
     chatModal.classList.remove("show");
   });
@@ -40,17 +33,15 @@ toggleChatOverlayButton.addEventListener("click", () => {
       console.log("Raw response text:", text);
       const friends = JSON.parse(text);
       friendsList.innerHTML = '';
-      friends.forEach(async friend => {
+      hasUnreadMessages = false;
+
+      for (const friend of friends) {
         const listItem = document.createElement("li");
 
         try {
-          const unreadCountResponse = await fetch(
-            `/api/friends/unread-messages/${friend._id}`
-          );
+          const unreadCountResponse = await fetch(`/api/friends/unread-messages/${friend._id}`);
           const { unreadCount } = await unreadCountResponse.json();
-          listItem.textContent = `${friend.username} (${friend.email}) ${
-            unreadCount > 0 ? `(${unreadCount} unread)` : ""
-          }`;
+          listItem.textContent = `${friend.username} ${unreadCount > 0 ? `(${unreadCount} unread)` : ""}`;
 
           if (unreadCount > 0) {
             const unreadDot = document.createElement("span");
@@ -60,7 +51,8 @@ toggleChatOverlayButton.addEventListener("click", () => {
           }
         } catch (error) {
           console.error("Error fetching unread messages count:", error);
-          //add user pfp here maybe
+        }
+
         const img = document.createElement("img");
         img.src = friend.pfp || '/images/stock.jpg';
         img.style.height = '25px';
@@ -70,8 +62,7 @@ toggleChatOverlayButton.addEventListener("click", () => {
 
         listItem.appendChild(img);
         const textNode = document.createTextNode(` ${friend.username} (${friend.email})`);
-        listItem.appendChild(textNode);;
-        }
+        listItem.appendChild(textNode);
 
         listItem.addEventListener("click", () => openChat(friend._id));
         friendsList.appendChild(listItem);
@@ -93,7 +84,7 @@ toggleChatOverlayButton.addEventListener("click", () => {
     }
   }
 
-   /**
+  /**
    * Submits a request to add a new friend by email.
    * @param {Event} e - The form submission event.
    */
@@ -131,6 +122,9 @@ toggleChatOverlayButton.addEventListener("click", () => {
       chatModal.style.display = "block";
       scrollToBottom();
     });
+
+    socket.emit('mark-as-read', friendId);
+    fetchFriends();
   }
 
   /**
@@ -167,6 +161,7 @@ toggleChatOverlayButton.addEventListener("click", () => {
     newMessage.textContent = `${msg.username}: ${msg.message}`;
     chatRoomIdElement.appendChild(newMessage);
     scrollToBottom();
+    fetchFriends(); 
   });
 
   /**

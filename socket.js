@@ -80,7 +80,7 @@ function initializeSocket(server, sessionMiddleware) {
         
         // Emit an event to update the unread message indicator
         socket.emit('updateUnreadIndicator', { roomId });
-        console.log('updateUnreadIndicator event emitted', { roomId });
+        // console.log('updateUnreadIndicator event emitted', { roomId });
       } catch (error) {
         console.error('Error fetching chat history:', error);
       }
@@ -138,9 +138,9 @@ function initializeSocket(server, sessionMiddleware) {
       socket.to(chatRoomId).emit('stop typing');
     });
 
-    socket.on('disconnect', () => {
-      console.log(`User disconnected: ${socket.id}`);
-    });
+    // socket.on('disconnect', () => {
+    //   console.log(`User disconnected: ${socket.id}`);
+    // });
 
     socket.on('joinVideoCallRoom', (roomId, userId) => {
       socket.join(roomId);

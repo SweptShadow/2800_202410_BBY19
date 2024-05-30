@@ -87,13 +87,13 @@ router.get('/unread-messages/:friendId', async (req, res) => {
   const roomId = [userId.toString(), friendId.toString()].sort().join('_');
 
   try {
-    console.log(`Fetching unread messages for room: ${roomId}`);
+    // console.log(`Fetching unread messages for room: ${roomId}`);
     const unreadCount = await Message.countDocuments({
       chatRoomId: roomId,
       isRead: false,
       senderId: { $ne: userId },
     });
-    console.log(`Unread messages count: ${unreadCount}`);
+    // console.log(`Unread messages count: ${unreadCount}`);
     res.json({ unreadCount });
   } catch (error) {
     console.error("Error fetching unread messages count:", error);
@@ -113,6 +113,7 @@ router.post('/mark-as-read/:roomId', async (req, res) => {
     res.status(500).send('Failed to mark messages as read.');
   }
 });
+
 
 
 module.exports = router;
