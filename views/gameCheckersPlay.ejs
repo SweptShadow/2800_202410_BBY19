@@ -2,72 +2,99 @@
 
 <div class="game-play-box">
 
-  <h1>Checkers</h1>
-
-  <div class="checkerscontainer">
-
-    <!-- Next player indicator -->
-    <div class="next-player counter">
-      <div class="occupied redPiece" id="next-player"></div>
-      Player
+  <br>
+  <div class="d-inline-block text-center" id="checkcont">
+    <br>
+    <div class="container">
+      <h1>Checkers</h1>
     </div>
+    <br>
 
-    <!-- Game Board -->
-    <div class="game" id="game"></div>
+    <div class="checkerscontainer">
 
-    <!-- Piece counter -->
-    <div class="counter">
-      <div>
-        <div class="occupied redPiece"></div>
-        <span id="red-player-count-pieces">10</span>
-      </div>
-      <div>
-        <div class="occupied blackPiece"></div>
-        <span id="black-player-count-pieces">10</span>
-      </div>
-    </div>
-  </div>
+      <!-- Checkers Game Board Container-->
+      <div class="game" id="game"></div>
 
-  <!-- Modal for game end -->
-  <div id="easyModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-body">
-        <p>The <strong id="winner"></strong> player won the game !!</p>
-        <p> <span id="loser"></span>, whould you take your revenge ???</p>
-
-        <div class="btn-container">
-          <button class="btn" onclick="location.reload()">Yes </button>
-          <button class="btn" onclick="modalClose()">No</button>
+      <div class="d-sm-flex gap-3">
+        <!-- Player turn information box -->
+        <div class="next-player counter">
+          It's
+          <div class="occupied redPiece" id="next-player"></div>
+          turn
         </div>
+
+        <!-- Piece counter for checkers -->
+        <div class="counter">
+
+          <div>
+            <div class="occupied redPiece"></div>
+            <span id="red-player-count-pieces">10</span>
+          </div>
+
+          <div>
+            <div class="occupied blackPiece"></div>
+            <span id="black-player-count-pieces">10</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Game end modal only -->
+    <div id="easyModal" class="modal">
+
+      <div class="modal-content">
+
+        <div class="modal-body">
+
+          <h7><strong id="winner"></strong> player won. </h7>
+          <h7><span id="loser"></span> Play again? </h7>
+
+          <div class="btn-container">
+
+            <button class="btn" onclick="location.reload()">Yes </button>
+            <button class="btn" onclick="modalClose()">No</button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <br>
+    <!-- Help button with rules -->
+    <div id="helpOverlay" class="overlay">
+      <div class="overlay-content">
+        <span class="close" onclick="closeHelpOverlay()">&times;</span>
+        <p><%- include("gameRules/checkersRules.ejs") %></p>
       </div>
     </div>
-  </div>
 
+    <button class="helpButton" style="width: auto; margin: 0 auto;">Help</button>
+
+    <br>
+
+  </div>
 
 </div>
 
-<br>
-<!-- Help button with rules -->
-<div id="helpOverlay" class="overlay">
-  <div class="overlay-content">
-      <span class="close" onclick="closeHelpOverlay()">&times;</span>
-      <p><%- include("gameRules/checkersRules.ejs") %></p>
-  </div>
-</div>
-
-<button class="helpButton" style="width: auto; margin: 0 auto;">Help</button>
 
 <br>
 <br>
 <br>
+
+
 
 <head>
-<!-- Link to CSS file -->
-<link rel="stylesheet" href="/css/checkersStyle.css">
+  <!-- Link to CSS file -->
+  <link rel="stylesheet" href="/css/checkersStyle.css">
 
-<!-- Link to game logic JS -->
-<script src="/js/gamesSpecific.js"></script>
-<script src="/js/checkersGameScript.js"></script>
+  <!-- Link to game logic JS -->
+  <script src="/js/gamesSpecific.js"></script>
+  <script src="/js/checkersGameScript.js"></script>
 </head>
 
 <%- include("template/footer") %>
