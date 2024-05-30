@@ -158,9 +158,13 @@ Top level of project folder:
 ## 4. Installation
 Instructions so a new developer can assemble a DEVELOPMENT ENVIRONMENT to contribute, including a list of tools, versions, and configuration instructions:
 
-* .env file containing mongodb uri and other secrets
+* .env file containing mongodb uri, google api key (production url), session secret hashing key and cloudinary secret (in accordance with notion the information is contained within the submitted file)
 * mongodb used for back end database management
 * socket and cloudinary for chat and image handling respectively
+* set up environment:
+  ->  Unpack the zip folder
+  ->  Create a .env file in root folder and paste the secrets from the submitted file
+  ->  open command line and npm i (should install all dependencies)
 
 ## 5. Features
 Feature we currently have implemented:
@@ -192,4 +196,11 @@ Feature's we would like to add in the future when we have more time:
 * Socket io documentation
 * https://socket.io/docs/v4/
 * Cloudinary: https://www.youtube.com/watch?v=rZrPVI5FN-w&embeds_referring_euri=https%3A%2F%2Flearn.bcit.ca%2F&source_ve_path=MjM4NTE&feature=emb_title
+* Microsoft Co-pilot for helping refactor some code https://copilot.microsoft.com/
+* ChatGPT for helping code https://chat.openai.com/
 
+## 7. Deliverable questions
+* The main thing we used AI to help us in the app was for debugging and helping find broken code and help us with some coding
+* We did not use Ai to create data sets or clean data sets
+* We don't use any ai in our app (We planned to implement computer player logic but did not have time to figure it out)
+* The main limitations we found in this project was the time we had to code as learning new things and trying to implement them took up more time than actually implementing all the features we wanted within the limited time
