@@ -433,13 +433,17 @@ app.post("/pfpSubmit", catchAsync(async (req, res) => {
   //get file from the request object (file that user chose and submitted on profile.ejs)
   const file = req.files.pfp;
 
-  //upload the file from the temporary filepath to the cloudinary server
+  //upload the file from the temporary filepath to the cloudinary server, automatically cropping the img to square aspect ratio
   cloudinary.uploader.upload(
     file.tempFilePath,
     {
       folder: "profile_pictures",
       public_id: `${req.session.username}_pfp`,
       overwrite: true,
+      crop: 'auto',
+      gravity: 'auto',
+      width: 500,
+      height: 500,
     },
     (err, result) => {
       if (err) {
@@ -452,19 +456,11 @@ app.post("/pfpSubmit", catchAsync(async (req, res) => {
 
       const pfpUrl = result.secure_url;
 
-      //automatically crop the submitted image
-      const autoCropUrl = cloudinary.url(pfpUrl, {
-        crop: 'auto',
-        gravity: 'auto',
-        width: 500,
-        height: 500,
-      });
-
       //send photo url to database stored as a string
       userCollection
         .updateOne(
           { username: req.session.username },
-          { $set: { pfp: autoCropUrl } }
+          { $set: { pfp: pfpUrl } }
         )
         .then(() => {
           res.redirect("/profile");
