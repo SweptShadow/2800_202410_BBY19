@@ -11,15 +11,22 @@ document.addEventListener("DOMContentLoaded", function () {
   const chatForm = document.getElementById("chat-form");
   const chatInput = document.getElementById("chat-input");
 
+  
+
   let currentChatRoomId = null;
 
-  toggleChatOverlayButton.addEventListener("click", () => {
-    if (friendsChatOverlay.classList.contains("show")) {
-      friendsChatOverlay.classList.remove("show");
-    } else {
-      friendsChatOverlay.classList.add("show");
-    }
-  });
+  /**
+   * Toggles the chat overlay by setting the display element.
+   */
+toggleChatOverlayButton.addEventListener("click", () => {
+  if (friendsChatOverlay.classList.contains("show")) {
+    friendsChatOverlay.classList.remove("show");
+  } else {
+    friendsChatOverlay.classList.add("show");
+  }
+});
+
+
 
   const closeChatModalButton = document.querySelector("#chat-modal button");
   closeChatModalButton.addEventListener("click", () => {
@@ -29,11 +36,11 @@ document.addEventListener("DOMContentLoaded", function () {
   async function fetchFriends() {
     try {
       const response = await fetch("/api/friends");
-      const friends = await response.json();
-      friendsList.innerHTML = "";
-      let hasUnreadMessages = false;
-
-      for (const friend of friends) {
+      const text = await response.text();
+      console.log("Raw response text:", text);
+      const friends = JSON.parse(text);
+      friendsList.innerHTML = '';
+      friends.forEach(async friend => {
         const listItem = document.createElement("li");
 
         try {
@@ -53,7 +60,17 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         } catch (error) {
           console.error("Error fetching unread messages count:", error);
-          listItem.textContent = `${friend.username} (${friend.email})`;
+          //add user pfp here maybe
+        const img = document.createElement("img");
+        img.src = friend.pfp || '/images/stock.jpg';
+        img.style.height = '25px';
+        img.style.width = '25px';
+        img.style.borderRadius = '50%';
+        img.style.border = "1px solid white";
+
+        listItem.appendChild(img);
+        const textNode = document.createTextNode(` ${friend.username} (${friend.email})`);
+        listItem.appendChild(textNode);;
         }
 
         listItem.addEventListener("click", () => openChat(friend._id));
@@ -76,6 +93,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+   /**
+   * Submits a request to add a new friend by email.
+   * @param {Event} e - The form submission event.
+   */
   addFriendForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = addFriendForm.elements["friend-email"].value;
@@ -93,56 +114,29 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  /**
+   * Opens a chat with the specified friend.
+   * @param {string} friendId - The ID of the friend to chat with.
+   */
   async function openChat(friendId) {
     socket.emit("joinChatRoom", friendId);
     socket.once("setChatRoomId", async (roomId) => {
       currentChatRoomId = roomId;
-      try {
-        const response = await fetch(`/api/chat/chat-history/${roomId}`);
-        const messages = await response.json();
-        chatRoomIdElement.innerHTML = messages
-          .map(
-            (msg) => `
-          <li class="${msg.senderId === userId ? "sent" : "received"}">
-            ${msg.username}: ${msg.message}
-          </li>`
-          )
-          .join("");
-        chatModal.style.display = "block";
-        scrollToBottom();
-
-        // Check if there are any unread messages in the current room
-        const hasUnreadMessages = messages.some(msg => !msg.isRead && msg.senderId !== userId);
-
-        // Remove red dot next to user's name in friends list if there are no unread messages
-        if (!hasUnreadMessages) {
-          const friendListItem = [...friendsList.children].find((li) =>
-            li.textContent.includes(friendId)
-          );
-          if (friendListItem) {
-            const unreadDot = friendListItem.querySelector(".unread-dot");
-            if (unreadDot) {
-              friendListItem.removeChild(unreadDot);
-            }
-          }
-
-          // Remove red dot on chat icon if no other unread messages
-          const chatIconDot = document
-            .getElementById("toggle-chat-overlay")
-            .querySelector(".unread-dot");
-          if (chatIconDot) {
-            chatIconDot.remove();
-          }
-        }
-
-        // Emit event to notify that messages are read
-        socket.emit('messages read', { roomId });
-      } catch (error) {
-        console.error("Error fetching chat history:", error);
-      }
+    });
+    socket.on("chatHistory", (messages) => {
+      chatRoomIdElement.innerHTML = messages.map(msg => `
+        <li class="${msg.senderId === userId ? 'sent' : 'received'}">
+          ${msg.username}: ${msg.message}
+        </li>`).join('');
+      chatModal.style.display = "block";
+      scrollToBottom();
     });
   }
 
+  /**
+   * Handles the submission of a new chat message.
+   * @param {Event} e - The form submission event.
+   */
   chatForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (chatInput.value && currentChatRoomId) {
@@ -154,96 +148,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  /**
+   * Emits a typing event when the user starts typing a message.
+   */
   chatInput.addEventListener("keypress", () => {
     if (chatInput.value && currentChatRoomId) {
       socket.emit("typing", currentChatRoomId);
     }
   });
 
+  /**
+   * Handles receiving a new chat message and appends it to the chat window.
+   * @param {Object} msg - The message object containing sender details and message content.
+   */
   socket.on("chat message", (msg) => {
     const newMessage = document.createElement("li");
     newMessage.className = msg.senderId === userId ? "sent" : "received";
     newMessage.textContent = `${msg.username}: ${msg.message}`;
     chatRoomIdElement.appendChild(newMessage);
     scrollToBottom();
-
-    // If the message is not in the current chat room, update the unread indicator
-    if (msg.chatRoomId !== currentChatRoomId) {
-      const friendListItem = [...friendsList.children].find((li) =>
-        li.textContent.includes(msg.username)
-      );
-      if (friendListItem) {
-        let unreadDot = friendListItem.querySelector(".unread-dot");
-        if (!unreadDot) {
-          unreadDot = document.createElement("span");
-          unreadDot.classList.add("unread-dot");
-          friendListItem.appendChild(unreadDot);
-        }
-      }
-
-      // Update the chat icon with a red dot if there are unread messages
-      const chatIcon = document.getElementById("toggle-chat-overlay");
-      let chatIconDot = chatIcon.querySelector(".unread-dot");
-      if (!chatIconDot) {
-        chatIconDot = document.createElement("span");
-        chatIconDot.classList.add("unread-dot");
-        chatIcon.appendChild(chatIconDot);
-      }
-    }
   });
 
-  socket.on("unread message", (msg) => {
-    if (msg.senderId !== userId) {
-      const friendListItem = [...friendsList.children].find((li) =>
-        li.textContent.includes(msg.username)
-      );
-      if (friendListItem) {
-        let unreadDot = friendListItem.querySelector(".unread-dot");
-        if (!unreadDot) {
-          unreadDot = document.createElement("span");
-          unreadDot.classList.add("unread-dot");
-          friendListItem.appendChild(unreadDot);
-        }
-      }
-
-      const chatIcon = document.getElementById("toggle-chat-overlay");
-      let chatIconDot = chatIcon.querySelector(".unread-dot");
-      if (!chatIconDot) {
-        chatIconDot = document.createElement("span");
-        chatIconDot.classList.add("unread-dot");
-        chatIcon.appendChild(chatIconDot);
-      }
-    }
-  });
-
-  socket.on("messages read", (data) => {
-    console.log("messages read event received", data);
-    const { roomId } = data;
-
-    // Remove the red dot next to the friend's name in the friends list
-    const friendListItem = [...friendsList.children].find((li) =>
-      li.textContent.includes(roomId.split('_').find(id => id !== userId))
-    );
-    if (friendListItem) {
-      const unreadDot = friendListItem.querySelector(".unread-dot");
-      if (unreadDot) {
-        console.log("Removing unread dot from friend's list item", friendListItem);
-        friendListItem.removeChild(unreadDot);
-      }
-    }
-
-    // Remove the red dot on the chat icon if no other unread messages
-    const chatIcon = document.getElementById("toggle-chat-overlay");
-    const unreadDots = chatIcon.querySelectorAll(".unread-dot");
-    if (unreadDots.length === 0) {
-      const chatIconDot = chatIcon.querySelector(".unread-dot");
-      if (chatIconDot) {
-        console.log("Removing unread dot from chat icon");
-        chatIconDot.remove();
-      }
-    }
-  });
-
+  /**
+   * Displays a typing indicator when another user is typing.
+   * @param {string} username - The username of the user who is typing.
+   */
   socket.on("typing", (username) => {
     typingIndicator.textContent = `${username} is typing...`;
 

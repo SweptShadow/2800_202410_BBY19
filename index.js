@@ -19,6 +19,8 @@ const cloudinary = require("cloudinary").v2;
 const fileUpload = require("express-fileupload");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const eventRoutes = require('./routes/events');
+const path = require('path');
 
 const mongo_secret = process.env.MONGODB_SESSION_SECRET;
 const node_secret = process.env.NODE_SESSION_SECRET;
@@ -35,6 +37,12 @@ mongoose.connect(mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+function catchAsync(fn) {
+  return function (req, res, next) {
+    fn(req, res, next).catch(next);
+  };
+}
 
 const client = new MongoClient(mongo_uri, {
   useNewUrlParser: true,
@@ -95,22 +103,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  // console.log('Serializing User:', user);
   done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
-  // console.log('Deserializing User ID:', id);
   try {
     const user = await User.findById(id);
     if (!user) {
       console.log("User not found");
       return done(null, false, { message: "User not found" });
     }
-    // console.log('Deserialized User:', user);
     done(null, user);
   } catch (err) {
-    // console.log('Error deserializing user:', err);
     done(err, null);
   }
 });
@@ -124,7 +128,6 @@ passport.use(
     },
     async (token, tokenSecret, profile, done) => {
       try {
-        // console.log('Google profile:', profile);
         let user = await userCollection.findOne({ googleId: profile.id });
         if (!user) {
           const newUser = {
@@ -137,7 +140,6 @@ passport.use(
           const result = await userCollection.insertOne(newUser);
           user = result.ops[0];
         }
-        // console.log('User found or created:', user);
         done(null, user);
       } catch (err) {
         done(err, null);
@@ -173,11 +175,20 @@ app.use((req, res, next) => {
 app.use("/api/chat", chatRoutes);
 app.use("/api/friends", friendRoutes);
 app.use("/api/password", passResetRoutes);
+app.use('/api/events', eventRoutes);
+
+//Middleware to make the user object available to all templates
+app.use((req, res, next) => {
+  //User object is stored in session
+  res.locals.user = req.session.user; 
+  next();
+});
 
 app.get("/", (req, res) => {
   res.render("root", {
     session: req.session,
     userId: req.session.userId || null,
+    userName: req.session.username,
   });
 });
 
@@ -191,7 +202,7 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-app.post("/signupSubmit", async (req, res) => {
+app.post("/signupSubmit", catchAsync(async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
@@ -227,24 +238,25 @@ app.post("/signupSubmit", async (req, res) => {
 
     const user = await userCollection.findOne(
       { email: email },
-      { projection: { _id: 1, username: 1, password: 1 } }
+      { projection: { _id: 1, username: 1, password: 1, email: 1 } }
     );
 
     req.session.authenticated = true;
     req.session.userId = user._id;
     req.session.username = user.username;
+    req.session.email = user.email;
     res.redirect("/");
   } catch (err) {
     console.error("Error inserting user:", err);
     res.render("signup", { error: "An error occurred while creating your account. Please try again." });
   }
-});
+}));
 
 app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.post("/loginSubmit", async (req, res) => {
+app.post("/loginSubmit", catchAsync(async (req, res) => {
   const inputEmail = req.body.email;
   const inputPass = req.body.password;
 
@@ -269,7 +281,7 @@ app.post("/loginSubmit", async (req, res) => {
 
   const user = await userCollection.findOne(
     { email: inputEmail },
-    { projection: { _id: 1, username: 1, password: 1, googleId: 1 } }
+    { projection: { _id: 1, username: 1, password: 1, email: 1, googleId: 1 } }
   );
 
   if (!user) {
@@ -284,6 +296,7 @@ app.post("/loginSubmit", async (req, res) => {
     req.session.authenticated = true;
     req.session.userId = user._id;
     req.session.username = user.username;
+    req.session.email = user.email; 
     return res.redirect("/");
   }
 
@@ -292,13 +305,13 @@ app.post("/loginSubmit", async (req, res) => {
     req.session.authenticated = true;
     req.session.userId = user._id;
     req.session.username = user.username;
+    req.session.email = user.email; 
     res.redirect("/");
   } else {
     console.log("Password incorrect");
     res.render("login", { error: "Password is incorrect." });
   }
-});
-
+}));
 
 
 app.get(
@@ -313,6 +326,10 @@ app.get(
     req.session.authenticated = true;
     req.session.userId = req.user._id;
     req.session.username = req.user.username;
+    req.session.email = req.user.email;
+
+    console.log("Session values after Google authentication:", req.session);
+
     res.redirect("/");
   }
 );
@@ -323,25 +340,24 @@ app.get("/logout", (req, res) => {
   res.render("logout");
 });
 
-app.get("/signup", (req, res) => {
-  res.render("signup");
-});
-
-app.get("/profile", async (req, res) => {
+app.get("/profile", catchAsync(async (req, res) => {
   if (req.session.authenticated) {
     let username = req.session.username;
 
+    //get user info from database
     const userInfo = await userCollection
       .find({ username: username })
       .project({ name: 1, email: 1, favGame: 1, bio: 1, pfp: 1 })
       .toArray();
     console.log(userInfo);
+
     //check bio and if empty/whitespace, send example message. Else, send user's bio from database
     let bio = userInfo[0].bio;
     if (bio === "" || /^\s*$/.test(bio)) {
       bio = "Add bio here...";
     }
 
+    //if profile picture is blank, send a stock profile photo image
     let pfp = userInfo[0].pfp;
     if (!pfp || pfp === "") {
       pfp =
@@ -359,54 +375,115 @@ app.get("/profile", async (req, res) => {
   } else {
     res.redirect("/login");
   }
-});
+}));
 
-app.post("/bioSubmit", async (req, res) => {
+app.post("/bioSubmit", catchAsync(async (req, res) => {
   let bio = req.body.bio;
+
+  //submit new bio to database using $set
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { bio: bio } }
   );
   res.redirect("/profile");
-});
+}));
 
-app.post("/usernameSubmit", async (req, res) => {
+app.post("/usernameSubmit", catchAsync(async (req, res) => {
   let name = req.body.username;
+
+  //submit new username to the database
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { username: name } }
   );
   req.session.username = name;
   res.redirect("/profile");
-});
+}));
 
-app.post("/emailSubmit", async (req, res) => {
+app.post("/emailSubmit", catchAsync(async (req, res) => {
   let newEmail = req.body.email;
+
+  //submit new email to the database
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { email: newEmail } }
   );
   res.redirect("/profile");
-});
+}));
 
-app.post("/favGameSubmit", async (req, res) => {
+app.post("/favGameSubmit", catchAsync(async (req, res) => {
   let newFavGame = req.body.favGame;
+
+  //submit new favourite game to the database
   await userCollection.updateOne(
     { username: req.session.username },
     { $set: { favGame: newFavGame } }
   );
   res.redirect("/profile");
-});
+}));
 
-app.post("/pfpSubmit", async (req, res) => {
+//from "change profile picture" button on profile.ejs"
+app.post("/pfpSubmit", catchAsync(async (req, res) => {
+
+  //check if file submitted
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send("No files were uploaded.");
   }
 
+  //get file from the request object (file that user chose and submitted on profile.ejs)
   const file = req.files.pfp;
 
+  //upload the file from the temporary filepath to the cloudinary server, automatically cropping the img to square aspect ratio
   cloudinary.uploader.upload(
     file.tempFilePath,
+    {
+      folder: "profile_pictures",
+      public_id: `${req.session.username}_pfp`,
+      overwrite: true,
+      crop: 'auto',
+      gravity: 'auto',
+      width: 500,
+      height: 500,
+    },
+    (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .send({ message: "Upload failed", error: err.message });  
+      }
+
+      
+
+      const pfpUrl = result.secure_url;
+
+      //send photo url to database stored as a string
+      userCollection
+        .updateOne(
+          { username: req.session.username },
+          { $set: { pfp: pfpUrl } }
+        )
+        .then(() => {
+          res.redirect("/profile");
+        })
+        .catch((err) => {
+          res
+            .status(500)
+            .send({ message: "Database update failed", error: err.message });
+        });
+    }
+  );
+}));
+
+//route for submitting one of the default profile pictures on profile.ejs change picture modal"
+app.get("/defaultSubmit", async (req, res) => {
+
+  //find the default photo using query params
+  let image = req.query.image + ".jpg";
+  const file = path.join(__dirname, 'public/images', image);
+
+  //similarily to /pfpsubmit, upload the default photo to the cloudinary server
+  cloudinary.uploader.upload(
+    file,
     {
       folder: "profile_pictures",
       public_id: `${req.session.username}_pfp`,
@@ -435,7 +512,7 @@ app.post("/pfpSubmit", async (req, res) => {
             .send({ message: "Database update failed", error: err.message });
         });
     }
-  );
+  )
 });
 
 app.get("/games", (req, res) => {
@@ -454,16 +531,23 @@ app.get("/gameSudokuPlay", (req, res) => {
   res.render("gameSudokuPlay");
 });
 
-app.get("/gamesSpecific", async (req, res) => {
+app.get("/gamesSpecific", catchAsync(async (req, res) => {
+  //get game name from query params
   let gamename = req.query.game;
   gamename = gamename.charAt(0).toUpperCase() + gamename.slice(1);
+  
+  //game title is the capitlized name for displaying on gamesSpecific.ejs
   let gameTitle = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
+  //find gameInfo using capitalized gamename
   const gameInfo = await gameCollection
     .find({ name: gamename })
     .project({ name: 1, desc: 1, _id: 1, link: 1, rules: 1 })
     .toArray();
+
+  //gamename goes back to lowercase so it can be used to reference files
   gamename = req.query.game;
+
 
   res.render("gamesSpecific", {
     gameTitle: gameTitle,
@@ -472,26 +556,48 @@ app.get("/gamesSpecific", async (req, res) => {
     link: gameInfo[0].link,
     rules: gameInfo[0].rules,
   });
-});
+}));
 
-app.get("/api/friends", async (req, res) => {
+app.get("/api/friends", catchAsync(async (req, res) => {
   try {
-    const friendsCollection = client
-      .db(mongo_database)
-      .collection("friendships");
+    const friendsCollection = client.db(mongo_database).collection("friendships");
     const friends = await friendsCollection.find().toArray();
-    res.json(friends);
+
+    console.log("Begin mapping friends");
+    const friendsWithPfp = await Promise.all(friends.map(async (friend) => {
+      try {
+        const user = await userCollection.findOne(
+          { username: friend.username },
+          { projection: { pfp: 1 } }
+        );
+
+        //attach pfp to friend object (in friends array)
+        if (user && user.pfp) {
+          friend.pfp = user.pfp;
+          console.log(`Appended pfp for ${friend.username}: ${user.pfp}`);
+        } else {
+          console.log(`User not found or missing pfp for ${friend.username}`);
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+      return friend;
+    }));
+
+    console.log("Final friends list with pfp:", friendsWithPfp);
+    res.json(friendsWithPfp);
   } catch (error) {
     console.error("Error fetching friends:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});
+}));
 
-app.get("/social", async (req, res) => {
+
+app.get("/social", (req, res) => {
   res.render("social");
 });
 
-app.get("/chat", async (req, res) => {
+app.get("/chat", catchAsync(async (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
   }
@@ -512,7 +618,7 @@ app.get("/chat", async (req, res) => {
     console.error("Error accessing chat:", error);
     res.status(500).send("Internal Server Error");
   }
-});
+}));
 
 app.get("/gameCheckersHub", (req, res) => {
   res.render("gameCheckersHub");
@@ -533,8 +639,9 @@ app.get("/gameCheckersPlay", (req, res) => {
 app.get("/gameBingoPlay", (req, res) => {
   res.render("gameBingoPlay");
 });
+
 app.get("/calendar", (req, res) => {
-  res.render("calendar");
+  res.render('calendar', { userId: req.session.userId, userEmail: req.session.email });
 });
 
 app.get("/videocall", (req, res) => {

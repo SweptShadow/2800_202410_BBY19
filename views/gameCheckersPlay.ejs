@@ -46,10 +46,28 @@
 
 </div>
 
+<br>
+<!-- Help button with rules -->
+<div id="helpOverlay" class="overlay">
+  <div class="overlay-content">
+      <span class="close" onclick="closeHelpOverlay()">&times;</span>
+      <p><%- include("gameRules/checkersRules.ejs") %></p>
+  </div>
+</div>
+
+<button class="helpButton" style="width: auto; margin: 0 auto;">Help</button>
+
+<br>
+<br>
+<br>
+
+<head>
 <!-- Link to CSS file -->
 <link rel="stylesheet" href="/css/checkersStyle.css">
 
 <!-- Link to game logic JS -->
+<script src="/js/gamesSpecific.js"></script>
 <script src="/js/checkersGameScript.js"></script>
+</head>
 
 <%- include("template/footer") %>

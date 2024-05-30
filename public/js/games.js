@@ -1,3 +1,4 @@
+//Each game card is hardcoded to route to a specific page
 document.getElementById("game1").addEventListener('click', function() {
     window.location.href = "/gamesSpecific/?game=chess";
 });

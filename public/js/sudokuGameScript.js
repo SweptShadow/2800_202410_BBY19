@@ -1,15 +1,16 @@
 import Stack from './stack.js';
 
 var numSelected = null;
-var tileSelecter = null;
 var undoMoves = new Stack();
 var redoMoves = new Stack();
 
+// Add click events to undo and redo buttons
 const undoButton = document.getElementById("undo-button");
 undoButton.addEventListener("click", undoMove);
 const redoButton = document.getElementById("redo-button");
 redoButton.addEventListener("click", redoMove);
 
+// Sudoku board
 let sudoku = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -29,13 +30,15 @@ let fields = [];
 let counter = 0;
 let sudoku3;
 
+// When page loads up generate a sudoku board and set up the game
 window.onload = function () {
     generateRandomSudoku(25);
     setGame();
 }
 
+// Set up the game
 function setGame() {
-    // Digits 1-9
+    // Set up digits 1-9 buttons
     for (let i = 1; i <= 9; i++) {
         let number = document.createElement("div");
         number.id = i;
@@ -45,7 +48,7 @@ function setGame() {
         document.getElementById("digits").appendChild(number);
     }
 
-    // Eraser
+    // Set up eraser button
     let eraser = document.createElement("div");
     eraser.id = "";
     eraser.addEventListener("click", selectNumber);
@@ -57,7 +60,7 @@ function setGame() {
     eraser.appendChild(img);
     document.getElementById("digits").appendChild(eraser);
 
-    // Hint
+    // Set up hint button
     let hint = document.createElement("div");
     hint.id = "H";
     hint.innerText = "H";
@@ -65,7 +68,7 @@ function setGame() {
     hint.classList.add("number");
     document.getElementById("digits").appendChild(hint);
 
-    // Board
+    // Set up board
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
             let tile = document.createElement("div");
@@ -87,6 +90,7 @@ function setGame() {
     }
 }
 
+// Select a digit
 function selectNumber() {
     if (numSelected != null) {
         numSelected.classList.remove("number-selected");
@@ -95,8 +99,7 @@ function selectNumber() {
     numSelected.classList.add("number-selected");
 }
 
-
-
+// Select a board tile and write the selected digit to it
 function selectTile() {
     if (numSelected.id === "H") {
         if (this.classList.contains("tile-start")) {
@@ -135,6 +138,7 @@ function selectTile() {
     }
 }
 
+// Check if the board is complete and if it is correct or not
 function evaluateBoard() {
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
@@ -158,6 +162,7 @@ function evaluateBoard() {
     alert("You win!");
 }
 
+// Undo the last move the player made
 function undoMove() {
     if (undoMoves.isEmpty()) {
         return;
@@ -175,6 +180,7 @@ function undoMove() {
     document.getElementById(r + "-" + c).innerText = prev;
 }
 
+// Redo the last move the player undid
 function redoMove() {
     if (redoMoves.isEmpty()) {
         return;
@@ -193,6 +199,7 @@ function redoMove() {
     evaluateBoard();
 }
 
+// Solve the sudoku board
 function solveSudoku() {
     fill_possible_fields();
 
@@ -215,6 +222,7 @@ function solveSudoku() {
     }
 }
 
+// Check if there are duplicate numbers in a row
 function duplicateNumberInRow(s, fieldY) {
     let numbers = new Array();
     for (var i = 0; i < 9; i++) {
@@ -229,6 +237,7 @@ function duplicateNumberInRow(s, fieldY) {
     return false;
 }
 
+// Check if there are duplicate numbers in a column
 function duplicateNumberInCol(s, fieldX) {
     let numbers = new Array();
     for (var i = 0; i < 9; i++) {
@@ -243,6 +252,7 @@ function duplicateNumberInCol(s, fieldX) {
     return false;
 }
 
+// Check if there are duplicate numbers in a box
 function duplicateNumberInBox(s, fieldX, fieldY) {
     let boxX = Math.floor(fieldX / 3);
     let boxY = Math.floor(fieldY / 3);
@@ -263,6 +273,7 @@ function duplicateNumberInBox(s, fieldX, fieldY) {
     return false;
 }
 
+// Check if there are duplicate numbers on the board
 function duplicateNumberExists(s, fieldX, fieldY) {
     if (duplicateNumberInRow(s, fieldY)) {
         return true;
@@ -276,6 +287,7 @@ function duplicateNumberExists(s, fieldX, fieldY) {
     return false;
 }
 
+// Generate a random sudoku board
 function generateRandomSudoku(numbers) {
     while (!sudoku_complete() || sudoku_invalid(sudoku)) {
         // new empty sudoku
@@ -314,6 +326,7 @@ function generateRandomSudoku(numbers) {
     }
 }
 
+// Fill in the possible fields of a sudoku board
 function fill_possible_fields() {
     for (var i = 0; i < 9; i++) {
         fields[i] = [];
@@ -333,6 +346,7 @@ function fill_possible_fields() {
     }
 }
 
+// Test the possible fields of a sudoku board
 function test_possible_fields() {
     for (var i = 0; i < 9; i++) {
         for (var j = 0; j < 9; j++) {
@@ -354,6 +368,7 @@ function test_possible_fields() {
     }
 }
 
+// Test the rows and columns of a sudoku board
 function test_rows_and_cols() {
     for (var i = 0; i < 9; i++) {
         for (var j = 0; j < 9; j++) {
@@ -381,6 +396,7 @@ function test_rows_and_cols() {
     }
 }
 
+// Test the boxes of a sudoku board
 function test_blocks() {
     for (var k = 0; k < 3; k++) {
         for (var l = 0; l < 3; l++) {
@@ -405,6 +421,7 @@ function test_blocks() {
     }
 }
 
+// Check that a sudoku board is complete
 function sudoku_complete() {
     for (var i = 0; i < 9; i++) {
         for (var j = 0; j < 9; j++) {
@@ -416,6 +433,7 @@ function sudoku_complete() {
     return true;
 }
 
+// Check if a sudoku board is invalid
 function sudoku_invalid(s) {
     for (var i = 0; i < 9; i++) {
         for (var j = 0; j < 9; j++) {

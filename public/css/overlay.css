@@ -54,6 +54,7 @@
   
   #friends-list-container h2 {
     margin-top: 0;
+    font-weight: 700;
   }
   
   #friends-list {
@@ -72,21 +73,27 @@
   #friends-list li:hover {
     background: #f0f0f0;
   }
+
+  #add-friend-form input {
+    border-radius: 8px;
+  }
   
   #chat-modal {
     position: fixed;
     bottom: 0;
     right: 0;
     width: 300px;
-    background: linear-gradient(290deg, #e7e7e7, #87CEEB);
+    background: linear-gradient(290deg, #e7e7e7, var(--background-color-default));
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     padding: 20px;
     display: none; 
+    border-radius: 15px 15px 0 0;
   }
   
   #chat-modal h2 {
     margin-top: 0;
+    font-weight: 700;
   }
   
   #chat-room-id {

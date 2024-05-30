@@ -65,7 +65,7 @@ router.get("/", async (req, res) => {
   try {
     const user = await User.findById(userId).populate(
       "friends",
-      "username email"
+      "username email pfp"
     );
     res.status(200).json(user.friends);
   } catch (error) {
