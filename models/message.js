@@ -6,6 +6,7 @@ const messageSchema = new Schema({
   senderId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
+  isRead: { type: Boolean, default: false },
 });
 
 /**

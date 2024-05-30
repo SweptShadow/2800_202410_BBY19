@@ -1,12 +1,19 @@
-/* General styles */
 .game-play-box {
   height: 100%;
   margin: 0;
   padding: 0;
   justify-content: center;
-  font-family: Arial, sans-serif;
+  font-family: 'Times New Roman', Times, sans-serif;
   margin: 0;
   padding: 0;
+  background-color: rgba(235, 235, 235, 0.62);
+}
+
+#checkcont {
+  background-color: rgba(192, 196, 200, 0.682);
+  padding: 30px 20px;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 
 .checkerscontainer {
@@ -24,9 +31,9 @@
 .counter {
   display: flex;
   gap: 20px;
-  background-color: #ecc59a;
+  background-color: skyblue;
   padding: 10px 20px;
-  border: 1px solid #ecc59a;
+  border: 1px solid black;
   border-radius: 5px;
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
 }
@@ -61,12 +68,12 @@
 
 
 .game {
-  background-color: #4c382e;
+  background-color: black;
   width: 500px;
   height: 500px;
   display: flex;
   flex-direction: column;
-  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.85);
 }
 
 .game .row {
@@ -99,18 +106,17 @@
 }
 
 .game .row .column.redCase {
-  background-color: #4c382e;
+  background-color: black;
 }
 
 .game .row .column.blackCase {
-  background-color: #ecc59a;
+  background-color: rgb(219, 219, 219);
 }
 
 .readyToMove {
-  background-color: green;
+  background-color: rgb(255, 0, 255);
 }
 
-/* modal style */
 * {
   margin: 0;
   padding: 0;
@@ -148,7 +154,7 @@ button {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background-color: #ecc59a;
+  background-color: black;
   border-radius: 20px;
 }
 
@@ -181,7 +187,7 @@ button {
   left: 0;
   right: 0;
   height: 4px;
-  background: #ecc59a;
+  background: black;
   border-radius: 4px;
 }
 
@@ -202,16 +208,22 @@ button {
 }
 
 .modal .btn {
-  background-color: #4c382e;
+  background-color: black;
   color: red;
   padding: 10px 40px;
-  border: 1px solid #4c382e;
+  border: 1px solid black;
   border-radius: 5px;
 }
 
 h1 {
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
   max-width: fit-content;
+  display: flex;
+  gap: 20px;
+  padding: 10px 20px;
+  border: 1px solid black;
+  border-radius: 5px;
   margin: 0 auto;
   margin-bottom: 30px;
+  background-color: rgba(135, 207, 235, 0.411);
 }

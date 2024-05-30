@@ -5,7 +5,14 @@ let capturedPosition = [];
 const modal = document.getElementById("easyModal");
 let game = document.getElementById("game");
 
-//Defining inital state of the board with 0s, 1s, and -1s representing empty, player 1, and player 2 pieces
+/**
+ * Defining inital state of the board with 0s, 1s, and -1s representing empty, player 1, and player 2 pieces
+ * 
+ * Refactored original board code which stopped functioning, suggestion to 'use this board to avoid unknown issue with code' 
+ * Microsoft Co-pilot
+ * 
+ * @author https://copilot.microsoft.com/
+ */
 let board = [
   [0, -1, 0, -1, 0, -1, 0, -1, 0, -1],
   [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0],
@@ -169,14 +176,21 @@ function markPossiblePosition(p, player = 0, direction = 0) {
   position = document.querySelector("[data-position='" + attribute + "']");
   if (position) {
 
-    position.style.background = "green";
+    position.style.background = "gray";
 
     //save where it can move
     posNewPosition.push(new Piece(p.row + player, p.column + direction));
   }
 }
 
-//Function to build or rebuild the board
+/**
+ * Function to build or rebuild the board
+ * 
+ * Original code was given to co pilot to refactor and it gave this way to build the board along with the let board code snippet
+ * Microsoft Co-pilot
+ * 
+ * @author https://copilot.microsoft.com/
+ */
 function builBoard() {
 
   game.innerHTML = "";

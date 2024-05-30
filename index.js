@@ -166,7 +166,7 @@ const navLinks = [
 app.locals.navLinks = navLinks;
 
 app.use((req, res, next) => {
-  console.log(`Received request for ${req.url}`);
+  // console.log(`Received request for ${req.url}`);
   app.locals.currentUrl = url.parse(req.url).pathname;
   res.locals.userId = req.session.userId;
   next();
@@ -179,7 +179,6 @@ app.use('/api/events', eventRoutes);
 
 //Middleware to make the user object available to all templates
 app.use((req, res, next) => {
-  //User object is stored in session
   res.locals.user = req.session.user; 
   next();
 });

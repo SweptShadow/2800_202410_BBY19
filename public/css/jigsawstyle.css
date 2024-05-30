@@ -20,6 +20,21 @@
   height: 250px;
 }
 
+.game-play-box {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  font-family: 'Times New Roman', Times, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: rgba(235, 235, 235, 0.62);
+}
+
+#checkcont {
+  padding: 30px 20px;
+}
+
 #controls {
   position: absolute;
   top: 640px;
@@ -29,33 +44,50 @@
 
 input {
   margin: 0 20px;
-  padding: 1em;
-  background: #dbae58;
+  padding: 10px;
+  background: #cf0000;
   border: none;
   text-decoration: none;
-  font-weight: 700;
+  font-size: x-large;
+  font-weight: 1000;
   color: white;
+  border: 3px solid black;
+  border-radius: 5px;
 }
 
 .jigsaw-box {
-  height: 800px;
+  height: 575px;
 }
 
-div.grid {
+div.grid, div.pieces {
   position: absolute;
   width: 60px;
   height: 60px;
-  border: 1px solid rgb(212, 212, 212);
+  border: 1px solid rgb(0, 0, 0);
   background-color: white;
+  border: 2px solid black;
+  border-radius: 3px;
 }
 
-div.pieces {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  border: 1px solid rgb(212, 212, 212);
+h1 {
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+  max-width: fit-content;
+  display: flex;
+  gap: 20px;
+  padding: 10px 20px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  background-color: rgba(135, 207, 235, 0.411);
 }
 
+/**
+ *  Co-pilot suggested I use css hard coding to solve grid coding and placement issue as it could not find any issue with code but code was not functioning.
+ *  Microsoft Co-pilot
+ * 
+ *  @author https://copilot.microsoft.com/
+*/
 #grid0, #grid1, #grid2, #grid3, #grid4,
 #piece0, #piece1, #piece2, #piece3, #piece4 {
   top: 320px

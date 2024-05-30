@@ -1,4 +1,4 @@
-//Array of elements belonging to the grid class and piece class
+//Array of elements on the grid class and piece class
 var grids = new Array();
 var pieces = new Array();
 
@@ -14,14 +14,12 @@ var selectMode = true;
 
 //Horizontal distance in pixels between the left edge of mousePiece and the mouse pointer
 var diffX = null;
-
 //Vertical distance in pixels between the top edge of mousePiece and the mouse pointer
 var diffY = null;
 
 //Int representing the highest z-index value on the page
 var maxZ = 1;
 var hoverGrid = null;
-
 window.onload = init;
 
 //Reloads current page, re-arranging the puzzle
@@ -113,7 +111,7 @@ function highlightGrid(object) {
   }
 }
 
-//Function that "Grabs" a puzzle piece using the mouse. Sets the value of mousePiece. Calculates the value of diffX and diffY
+//Function that grabs a puzzle piece using mouse and sets the value of mousePiece.
 function mouseGrab(e) {
   var evt = e || window.event;
   mousePiece = evt.target || evt.srcElement;
@@ -149,7 +147,7 @@ function mouseMove(e) {
   highlightGrid(mousePiece);
 }
 
-//Drops mousePiece on the page. Aligns the piece with the grid. Turns off event handlers for the mousemove and mouseup events
+//Drop mousePiece on the page, then aligns the piece with the grid
 function mouseDrop(e) {
 
   if (dropValid(mousePiece)) {

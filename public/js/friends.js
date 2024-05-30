@@ -11,33 +11,21 @@ document.addEventListener("DOMContentLoaded", function () {
   const chatForm = document.getElementById("chat-form");
   const chatInput = document.getElementById("chat-input");
 
-  
-
   let currentChatRoomId = null;
+  let hasUnreadMessages = false;
 
   /**
    * Toggles the chat overlay by setting the display element.
    */
-toggleChatOverlayButton.addEventListener("click", () => {
-  if (friendsChatOverlay.classList.contains("show")) {
-    friendsChatOverlay.classList.remove("show");
-  } else {
-    friendsChatOverlay.classList.add("show");
-  }
-});
+  toggleChatOverlayButton.addEventListener("click", () => {
+    friendsChatOverlay.classList.toggle("show");
+  });
 
+  const closeChatModalButton = document.querySelector("#chat-modal button[data-button='close']");
+  closeChatModalButton.addEventListener("click", () => {
+    chatModal.classList.remove("show");
+  });
 
-
-const closeChatModalButton = document.querySelector("#chat-modal button");
-closeChatModalButton.addEventListener("click", () => {
-  chatModal.classList.remove("show");
-});
-
-  /**
-   * GETs the friends list from the server and loads it into the UI.
-   * Each friend that gets loaded is displayed as a clickable list item
-   * that opens a chat with that friends when clicked.
-   */
   async function fetchFriends() {
     try {
       const response = await fetch("/api/friends");
@@ -45,9 +33,26 @@ closeChatModalButton.addEventListener("click", () => {
       console.log("Raw response text:", text);
       const friends = JSON.parse(text);
       friendsList.innerHTML = '';
-      friends.forEach(async friend => {
+      hasUnreadMessages = false;
+
+      for (const friend of friends) {
         const listItem = document.createElement("li");
-        //add user pfp here maybe
+
+        try {
+          const unreadCountResponse = await fetch(`/api/friends/unread-messages/${friend._id}`);
+          const { unreadCount } = await unreadCountResponse.json();
+          listItem.textContent = `${friend.username} ${unreadCount > 0 ? `(${unreadCount} unread)` : ""}`;
+
+          if (unreadCount > 0) {
+            const unreadDot = document.createElement("span");
+            unreadDot.classList.add("unread-dot");
+            listItem.appendChild(unreadDot);
+            hasUnreadMessages = true;
+          }
+        } catch (error) {
+          console.error("Error fetching unread messages count:", error);
+        }
+
         const img = document.createElement("img");
         img.src = friend.pfp || '/images/stock.jpg';
         img.style.height = '25px';
@@ -57,16 +62,29 @@ closeChatModalButton.addEventListener("click", () => {
 
         listItem.appendChild(img);
         const textNode = document.createTextNode(` ${friend.username} (${friend.email})`);
-        listItem.appendChild(textNode);;
+        listItem.appendChild(textNode);
+
         listItem.addEventListener("click", () => openChat(friend._id));
         friendsList.appendChild(listItem);
-      });
+      }
+
+      const chatIcon = document.getElementById("toggle-chat-overlay");
+      if (hasUnreadMessages) {
+        const unreadDot = document.createElement("span");
+        unreadDot.classList.add("unread-dot");
+        chatIcon.appendChild(unreadDot);
+      } else {
+        const existingDot = chatIcon.querySelector(".unread-dot");
+        if (existingDot) {
+          chatIcon.removeChild(existingDot);
+        }
+      }
     } catch (error) {
       console.error("Error fetching friends:", error);
     }
   }
 
-   /**
+  /**
    * Submits a request to add a new friend by email.
    * @param {Event} e - The form submission event.
    */
@@ -93,7 +111,7 @@ closeChatModalButton.addEventListener("click", () => {
    */
   async function openChat(friendId) {
     socket.emit("joinChatRoom", friendId);
-    socket.on("setChatRoomId", (roomId) => {
+    socket.once("setChatRoomId", async (roomId) => {
       currentChatRoomId = roomId;
     });
     socket.on("chatHistory", (messages) => {
@@ -104,6 +122,9 @@ closeChatModalButton.addEventListener("click", () => {
       chatModal.style.display = "block";
       scrollToBottom();
     });
+
+    socket.emit('mark-as-read', friendId);
+    fetchFriends();
   }
 
   /**
@@ -115,8 +136,8 @@ closeChatModalButton.addEventListener("click", () => {
     if (chatInput.value && currentChatRoomId) {
       const message = chatInput.value;
       socket.emit("chat message", { chatRoomId: currentChatRoomId, message });
-      chatInput.value = '';
-      socket.emit("stop typing", currentChatRoomId); 
+      chatInput.value = "";
+      socket.emit("stop typing", currentChatRoomId);
       scrollToBottom();
     }
   });
@@ -136,10 +157,11 @@ closeChatModalButton.addEventListener("click", () => {
    */
   socket.on("chat message", (msg) => {
     const newMessage = document.createElement("li");
-    newMessage.className = msg.senderId === userId ? 'sent' : 'received';
+    newMessage.className = msg.senderId === userId ? "sent" : "received";
     newMessage.textContent = `${msg.username}: ${msg.message}`;
     chatRoomIdElement.appendChild(newMessage);
     scrollToBottom();
+    fetchFriends(); 
   });
 
   /**
@@ -151,17 +173,14 @@ closeChatModalButton.addEventListener("click", () => {
 
     clearTimeout(typingIndicator.timer);
     typingIndicator.timer = setTimeout(() => {
-      typingIndicator.textContent = '';
+      typingIndicator.textContent = "";
     }, 3000);
   });
 
   socket.on("stop typing", () => {
-    typingIndicator.textContent = '';
+    typingIndicator.textContent = "";
   });
 
-  /**
-   * Scrolls the chat window to the bottom.
-   */
   function scrollToBottom() {
     chatRoomIdElement.scrollTop = chatRoomIdElement.scrollHeight;
   }

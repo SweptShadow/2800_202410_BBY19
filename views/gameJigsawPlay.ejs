@@ -1,110 +1,123 @@
 <%- include("template/header") %>
 
 <head>
-<!-- Link to CSS file -->
-<link rel="stylesheet" href="/css/jigsawStyle.css">
+  <!-- Link to CSS file -->
+  <link rel="stylesheet" href="/css/jigsawstyle.css">
 </head>
 
-<!-- Container for Jigsaw game -->
-<div class="jigsaw-box">
-  <h1 style="text-align: center;">Jigsaw Puzzle Game</h1>
+<div class="game-play-box">
 
-  <div class="Hub-box">
-    <form id="jigsaw" action="">
+  <div class="d-inline-block text-center" id="checkcont">
 
-      <!-- Grid for placement of tiles -->
-      <div id="puzzleGrid">
-        <div id="grid0" class="grid"></div>
-        <div id="grid1" class="grid"></div>
-        <div id="grid2" class="grid"></div>
-        <div id="grid3" class="grid"></div>
-        <div id="grid4" class="grid"></div>
-        <div id="grid5" class="grid"></div>
-        <div id="grid6" class="grid"></div>
-        <div id="grid7" class="grid"></div>
-        <div id="grid8" class="grid"></div>
-        <div id="grid9" class="grid"></div>
-        <div id="grid10" class="grid"></div>
-        <div id="grid11" class="grid"></div>
-        <div id="grid12" class="grid"></div>
-        <div id="grid13" class="grid"></div>
-        <div id="grid14" class="grid"></div>
-        <div id="grid15" class="grid"></div>
-        <div id="grid16" class="grid"></div>
-        <div id="grid17" class="grid"></div>
-        <div id="grid18" class="grid"></div>
-        <div id="grid19" class="grid"></div>
-        <div id="grid20" class="grid"></div>
-        <div id="grid21" class="grid"></div>
-        <div id="grid22" class="grid"></div>
-        <div id="grid23" class="grid"></div>
-        <div id="grid24" class="grid"></div>
+    <!-- Container for Jigsaw game -->
+    <div class="jigsaw-box">
+      <h1 style="text-align: center;">Jigsaw Puzzle Game</h1>
+
+      <br>
+      <!-- Help button with rules -->
+      <div id="helpOverlay" class="overlay">
+        <div class="overlay-content">
+          <span class="close" onclick="closeHelpOverlay()">&times;</span>
+          <p><%- include("gameRules/jigsawRules.ejs") %></p>
+        </div>
       </div>
 
-      <!-- Grid where jumbled puzzle pieces go -->
-      <div id="puzzlePieces">
-        <div id="piece0" class="pieces"></div>
-        <div id="piece1" class="pieces"></div>
-        <div id="piece2" class="pieces"></div>
-        <div id="piece3" class="pieces"></div>
-        <div id="piece4" class="pieces"></div>
-        <div id="piece5" class="pieces"></div>
-        <div id="piece6" class="pieces"></div>
-        <div id="piece7" class="pieces"></div>
-        <div id="piece8" class="pieces"></div>
-        <div id="piece9" class="pieces"></div>
-        <div id="piece10" class="pieces"></div>
-        <div id="piece11" class="pieces"></div>
-        <div id="piece12" class="pieces"></div>
-        <div id="piece13" class="pieces"></div>
-        <div id="piece14" class="pieces"></div>
-        <div id="piece15" class="pieces"></div>
-        <div id="piece16" class="pieces"></div>
-        <div id="piece17" class="pieces"></div>
-        <div id="piece18" class="pieces"></div>
-        <div id="piece19" class="pieces"></div>
-        <div id="piece20" class="pieces"></div>
-        <div id="piece21" class="pieces"></div>
-        <div id="piece22" class="pieces"></div>
-        <div id="piece23" class="pieces"></div>
-        <div id="piece24" class="pieces"></div>
+      <button class="helpButton" style="width: auto; margin: 0 auto;">Help</button>
+
+      <br>
+      <div class="Hub-box">
+        
+        <!-- The grid naming convention and the idea to use form in conjunction with the grid ids was suggested by Microsoft Co-pilot,
+          @author https://copilot.microsoft.com/ -->
+        <form id="jigsaw" action="">
+
+          <!-- Grid for placement of tiles -->
+          <div id="puzzleGrid">
+            <div id="grid0" class="grid"></div>
+            <div id="grid1" class="grid"></div>
+            <div id="grid2" class="grid"></div>
+            <div id="grid3" class="grid"></div>
+            <div id="grid4" class="grid"></div>
+            <div id="grid5" class="grid"></div>
+            <div id="grid6" class="grid"></div>
+            <div id="grid7" class="grid"></div>
+            <div id="grid8" class="grid"></div>
+            <div id="grid9" class="grid"></div>
+            <div id="grid10" class="grid"></div>
+            <div id="grid11" class="grid"></div>
+            <div id="grid12" class="grid"></div>
+            <div id="grid13" class="grid"></div>
+            <div id="grid14" class="grid"></div>
+            <div id="grid15" class="grid"></div>
+            <div id="grid16" class="grid"></div>
+            <div id="grid17" class="grid"></div>
+            <div id="grid18" class="grid"></div>
+            <div id="grid19" class="grid"></div>
+            <div id="grid20" class="grid"></div>
+            <div id="grid21" class="grid"></div>
+            <div id="grid22" class="grid"></div>
+            <div id="grid23" class="grid"></div>
+            <div id="grid24" class="grid"></div>
+          </div>
+
+          <!-- Grid where jumbled puzzle pieces go -->
+          <div id="puzzlePieces">
+            <div id="piece0" class="pieces"></div>
+            <div id="piece1" class="pieces"></div>
+            <div id="piece2" class="pieces"></div>
+            <div id="piece3" class="pieces"></div>
+            <div id="piece4" class="pieces"></div>
+            <div id="piece5" class="pieces"></div>
+            <div id="piece6" class="pieces"></div>
+            <div id="piece7" class="pieces"></div>
+            <div id="piece8" class="pieces"></div>
+            <div id="piece9" class="pieces"></div>
+            <div id="piece10" class="pieces"></div>
+            <div id="piece11" class="pieces"></div>
+            <div id="piece12" class="pieces"></div>
+            <div id="piece13" class="pieces"></div>
+            <div id="piece14" class="pieces"></div>
+            <div id="piece15" class="pieces"></div>
+            <div id="piece16" class="pieces"></div>
+            <div id="piece17" class="pieces"></div>
+            <div id="piece18" class="pieces"></div>
+            <div id="piece19" class="pieces"></div>
+            <div id="piece20" class="pieces"></div>
+            <div id="piece21" class="pieces"></div>
+            <div id="piece22" class="pieces"></div>
+            <div id="piece23" class="pieces"></div>
+            <div id="piece24" class="pieces"></div>
+          </div>
+
+          <!-- Buttons to jumble and solve puzzle -->
+          <div id="controls" class="aligncenter">
+            <p>
+              <input id="solve" type="button" value="Solve the puzzle" />
+              <input id="jumble" type="button" value="Jumble the puzzle" />
+            </p>
+
+          </div>
+
+        </form>
+
       </div>
 
-      <!-- Buttons to jumble and solve puzzle -->
-      <div id="controls" class="aligncenter">
-        <p>
-          <input id="solve" type="button" value="Solve It" />
-          <input id="jumble" type="button" value="Jumble It" />
-        </p>
-
-      </div>
-
-    </form>
+    </div>
 
   </div>
-</div>
 
-<br>
-<!-- Help button with rules -->
-<div id="helpOverlay" class="overlay">
-  <div class="overlay-content">
-      <span class="close" onclick="closeHelpOverlay()">&times;</span>
-      <p><%- include("gameRules/jigsawRules.ejs") %></p>
-  </div>
 </div>
-
-<button class="helpButton" style="width: auto; margin: 0 auto;">Help</button>
 
 <br>
 <br>
 <br>
 
 <head>
-<!-- Link to JS files/scripts for page -->
-<script src="/js/jigsawGameScript.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
-<script src="/js/gamesSpecific.js"></script>
+  <!-- Link to JS files/scripts for page -->
+  <script src="/js/jigsawGameScript.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
+  <script src="/js/gamesSpecific.js"></script>
 </head>
 
 <%- include("template/footer") %>
