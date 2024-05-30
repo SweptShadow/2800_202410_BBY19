@@ -1,15 +1,25 @@
 <%- include("template/header") %>
 
 <div class="container" id="button-container">
+
+  <br>
+  <div style="max-width: fit-content; box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5); border: 2px solid black; border-radius: 4px;" class="container">
     <h1>Sudoku</h1>
-    <img id="sudoku-img" src="/images/sudoku.png" alt="sudoku">
-    <br>
-    <br>
-    <button class="submit-button" onclick="window.location.href='/gameSudokuPlay'" type="submit"><h1 class="login-text"><i class="bi bi-play-fill"></i> Play</h1></button>
-    <br>
-    <br>
-    <button class="submit-button" type="submit"><h1 class="login-text"><i class="bi bi-people-fill"></i> Group Play</h1></button>
-    <br>
+  </div>
+  <br>
+
+  <img style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5); border: 2px solid black; border-radius: 4px;"  id="sudoku-img" src="/images/sudoku.png" alt="sudoku">
+  <br>
+  <br>
+  <button class="submit-button" onclick="window.location.href='/gameSudokuPlay'" type="submit">
+    <h1 class="login-text"><i class="bi bi-play-fill"></i> Play</h1>
+  </button>
+  <br>
+  <br>
+  <button class="submit-button" type="submit">
+    <h1 class="login-text"><i class="bi bi-people-fill"></i> Group Play</h1>
+  </button>
+  <br>
 </div>
 
 <!-- Link to game logic JS -->

@@ -169,7 +169,7 @@ function markPossiblePosition(p, player = 0, direction = 0) {
   position = document.querySelector("[data-position='" + attribute + "']");
   if (position) {
 
-    position.style.background = "green";
+    position.style.background = "gray";
 
     //save where it can move
     posNewPosition.push(new Piece(p.row + player, p.column + direction));
