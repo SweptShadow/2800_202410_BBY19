@@ -2,69 +2,94 @@
 
 <head>
 
-<link rel="stylesheet" type="text/css" href="/css/bingo.css" />
-<script type="text/javascript" src="/js/bingo.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/bingo.css" />
+  <script type="text/javascript" src="/js/bingo.js"></script>
+  <script src="/js/gamesSpecific.js"></script>
+
 </head>
 
 <div class="game-play-box">
 
-  <h1>BINGO</h1>
-    </div>
-	<div id="content">
-		<table id="bingotable">
-			<tr>
-				<th class="orange">B</th>
-				<th class="orange">I</th>
-				<th class="orange">N</th>
-				<th class="orange">G</th>
-				<th class="orange">O</th>
-			</tr>
-			<tr>
-				<!-- represents '' in unicode as a space holder -->
-				<td id="square0"> &nbsp;</td> 
-				<td id="square1"> &nbsp;</td>
-				<td id="square2"> &nbsp;</td>
-				<td id="square3"> &nbsp;</td>
-				<td id="square4"> &nbsp;</td>
-			</tr>
-			<tr>
-				<td id="square5"> &nbsp;</td>
-				<td id="square6"> &nbsp;</td>
-				<td id="square7"> &nbsp;</td>
-				<td id="square8"> &nbsp;</td>
-				<td id="square9"> &nbsp;</td>
-			</tr>
-			<tr>
-				<td id="square10"> &nbsp;</td>
-				<td id="square11"> &nbsp;</td>
-				<td id="squarefree"> FREE</td>
-				<td id="square12"> &nbsp;</td>
-				<td id="square13"> &nbsp;</td>
-			</tr>
-			<tr>
-				<td id="square14"> &nbsp;</td>
-				<td id="square15"> &nbsp;</td>
-				<td id="square16"> &nbsp;</td>
-				<td id="square17"> &nbsp;</td>
-				<td id="square18"> &nbsp;</td>
-			</tr>
-			<tr>
-				<td id="square19"> &nbsp;</td>
-				<td id="square20"> &nbsp;</td>
-				<td id="square21"> &nbsp;</td>
-				<td id="square22"> &nbsp;</td>
-				<td id="square23"> &nbsp;</td>
-			</tr>
-		</table>
-	</div>
-	
-<p><a href="#" onclick="anotherCard()">Click here</a> to create a new card</p>
+  <br>
+  <div style="max-width: fit-content; box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5); border: 2px solid black; border-radius: 4px;" class="container">
+    <h1>BINGO</h1>
+  </div>
+  <br>
+
+</div>
+
+<div id="content">
+  <table id="bingotable">
+    <tr>
+      <th class="orange">B</th>
+      <th class="orange">I</th>
+      <th class="orange">N</th>
+      <th class="orange">G</th>
+      <th class="orange">O</th>
+    </tr>
+    <tr>
+      <!-- represents '' in unicode as a space holder -->
+      <td id="square0"> &nbsp;</td>
+      <td id="square1"> &nbsp;</td>
+      <td id="square2"> &nbsp;</td>
+      <td id="square3"> &nbsp;</td>
+      <td id="square4"> &nbsp;</td>
+    </tr>
+    <tr>
+      <td id="square5"> &nbsp;</td>
+      <td id="square6"> &nbsp;</td>
+      <td id="square7"> &nbsp;</td>
+      <td id="square8"> &nbsp;</td>
+      <td id="square9"> &nbsp;</td>
+    </tr>
+    <tr>
+      <td id="square10"> &nbsp;</td>
+      <td id="square11"> &nbsp;</td>
+      <td id="squarefree"> FREE</td>
+      <td id="square12"> &nbsp;</td>
+      <td id="square13"> &nbsp;</td>
+    </tr>
+    <tr>
+      <td id="square14"> &nbsp;</td>
+      <td id="square15"> &nbsp;</td>
+      <td id="square16"> &nbsp;</td>
+      <td id="square17"> &nbsp;</td>
+      <td id="square18"> &nbsp;</td>
+    </tr>
+    <tr>
+      <td id="square19"> &nbsp;</td>
+      <td id="square20"> &nbsp;</td>
+      <td id="square21"> &nbsp;</td>
+      <td id="square22"> &nbsp;</td>
+      <td id="square23"> &nbsp;</td>
+    </tr>
+  </table>
+</div>
+
+<br>
+<!-- Create another card button -->
+<p style="max-width: fit-content; box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5); border: 2px solid black; border-radius: 4px; background-color: gray; " class="container"><a href="#" onclick="anotherCard()">Click here</a> to create a new card</p>
 
 <h3>The current number: <a href="#" onclick="getBingoNum('currentNumber')">Drop Ball</a></h3>
 <h3><span id="currentNumber">&nbsp;</span></h3> <!-- Element to display the current number -->
 
+<!-- the help button with the overlay -->
+<div id="helpOverlay" class="overlay">
+  <div class="overlay-content">
+    <span class="close" onclick="closeHelpOverlay()">&times;</span>
+    <p><%- include("gameRules/bingoRules.ejs") %></p>
+  </div>
+</div>
+
 <h3>Previous Numbers:</h3>
-<div id="lastNumbers"></div> 
+<div id="lastNumbers"></div>
+
+<button class="helpButton" style="width: auto; margin: 0 auto;">Help</button>
+
+<br>
+<br>
+<br>
+<br>
+
 
 <%- include("template/footer") %>
-  

@@ -54,6 +54,7 @@
   
   #friends-list-container h2 {
     margin-top: 0;
+    font-weight: 700;
   }
   
   #friends-list {
@@ -72,21 +73,27 @@
   #friends-list li:hover {
     background: #f0f0f0;
   }
+
+  #add-friend-form input {
+    border-radius: 8px;
+  }
   
   #chat-modal {
     position: fixed;
     bottom: 0;
     right: 0;
     width: 300px;
-    background: linear-gradient(290deg, #e7e7e7, #87CEEB);
+    background: linear-gradient(290deg, #e7e7e7, var(--background-color-default));
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     padding: 20px;
     display: none; 
+    border-radius: 15px 15px 0 0;
   }
   
   #chat-modal h2 {
     margin-top: 0;
+    font-weight: 700;
   }
   
   #chat-room-id {
@@ -99,6 +106,26 @@
   #chat-room-id li {
     padding: 5px;
     border-bottom: 1px solid #ddd;
+  }
+
+  .sent {
+    text-align: right;
+    background-color: #d1f7c4; 
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px 0;
+    float: right;
+    clear: both;
+  }
+  
+  .received {
+    text-align: left;
+    background-color: #f1f0f0; 
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px 0;
+    float: left;
+    clear: both;
   }
   
   #friends-list-container button, #chat-modal button {
@@ -167,5 +194,22 @@
 .settings-modal-content button:hover {
   background-color: #f1f1f1;
 }
+
+.unread-dot {
+  height: 10px;
+  width: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+#toggle-chat-overlay .unread-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+
 
   

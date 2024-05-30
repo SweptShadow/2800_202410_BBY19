@@ -1,20 +1,38 @@
 <%- include("template/header") %>
+
+<head>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+</head>
+
 <body>
+  <br>
 <div class="container">
+
   <div class="row justify-content-center">
+
     <div class="col-12 col-sm-8 col-lg-6">
-      <div class="section_heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+
+      <div class="section_heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp; box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5); border: 2px solid black; border-radius: 4px;">
         <h3>Friends <span> & Family</span></h3>
         <div class="line"></div>
       </div>
+
     </div>
+
   </div>
+
+  <br>
+
   <div class="row" id="friends-cards">
     <!-- Friend cards will be appended here by JavaScript -->
   </div>
+
 </div>
 
+<head>
 <script src="/js/social.js" ></script>
+</head>
+
 </body>
+
 <%- include("template/footer") %>

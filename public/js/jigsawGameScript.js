@@ -1,27 +1,25 @@
-//Array of elements belonging to the grid class and piece class
+//Array of elements on the grid class and piece class
 var grids = new Array();
 var pieces = new Array();
 
-//The puzzle piece currently selected by the user's mouse and keyboard
+//Puzzle piece currently selected by the user's mouse and keyboard
 var mousePiece = null;
 var keyPiece = null;
 
-//The index number of keyPiece
+//Index number of keyPiece
 var keyIndex = null;
 
 //Boolean value, true = keyboard use is in Select Piece mode, false = keyboard use is in Move Piece mode
 var selectMode = true;
 
-/* Horizontal distance in pixels between the left edge of mousePiece and the mouse pointer */
+//Horizontal distance in pixels between the left edge of mousePiece and the mouse pointer
 var diffX = null;
-
-/* Vertical distance in pixels between the top edge of mousePiece and the mouse pointer */
+//Vertical distance in pixels between the top edge of mousePiece and the mouse pointer
 var diffY = null;
 
 //Int representing the highest z-index value on the page
 var maxZ = 1;
 var hoverGrid = null;
-
 window.onload = init;
 
 //Reloads current page, re-arranging the puzzle
@@ -38,7 +36,7 @@ function solveIt() {
 }
 
 
-/* Set up and initialize the page, define grid and pieces array, and appy event handlers to mouse and keyboard */
+//Set up and initialize the page, define grid and pieces array, and apply event handlers to mouse and keyboard
 function init() {
 
   var allElem = document.getElementsByTagName("*");
@@ -75,13 +73,13 @@ function init() {
   document.getElementById("solve").onclick = solveIt;
 }
 
-
+//Function for keyboard 
 function keyGrab(e) {
   var evt = e || window.event;
   if (evt.keyCode == 32) { toggleMode(); return false }
 }
 
-/* Returns Boolean value indicating whether valid to drop the object. */
+//Function returns Boolean value indicating whether valid to drop the object
 function dropValid(object) {
   for (var i = 0; i < pieces.length; i++) {
     if (withinIt(object, pieces[i])) return false;
@@ -89,7 +87,7 @@ function dropValid(object) {
   return true;
 }
 
-/* If object is over a grid square, aligns object with the top-left corner of the square */
+//If object is over a grid square, aligns object with the top-left corner of the square
 function alignPiece(object) {
   for (var i = 0; i < grids.length; i++) {
     if (withinIt(object, grids[i])) {
@@ -100,7 +98,7 @@ function alignPiece(object) {
   }
 }
 
-/* If object is over a grid square, sets background color of square to light green */
+//Function if object is over a grid square, sets background color of square to light green
 function highlightGrid(object) {
   if (hoverGrid) hoverGrid.style.backgroundColor = "";
 
@@ -113,7 +111,7 @@ function highlightGrid(object) {
   }
 }
 
-/* "Grabs" a puzzle piece using the mouse. Sets the value of mousePiece. Calculates the value of diffX and diffY. */
+//Function that grabs a puzzle piece using mouse and sets the value of mousePiece.
 function mouseGrab(e) {
   var evt = e || window.event;
   mousePiece = evt.target || evt.srcElement;
@@ -128,16 +126,16 @@ function mouseGrab(e) {
   //y-coordinate  of  pointer
   var mouseY = evt.clientY;
 
-  /*  Calculate  the  distance  from  the  pointer  to  the  piece  */
+  //Calculate  the  distance  from  the  pointer  to  the  piece
   diffX = parseInt(mousePiece.style.left) - mouseX;
   diffY = parseInt(mousePiece.style.top) - mouseY;
 
-  /*  Add  event  handlers  for  mousemove  and  mouseup  events  */
+  //Add  event  handlers  for  mousemove  and  mouseup  events
   addEvent(document, "mousemove", mouseMove, false);
   addEvent(document, "mouseup", mouseDrop, false);
 }
 
-/* Move mousePiece across the Web page, keeping a constant distance from the mouse pointer */
+//Move mousePiece across the Web page, keeping a constant distance from the mouse pointer
 function mouseMove(e) {
   var evt = e || window.event;
 
@@ -149,7 +147,7 @@ function mouseMove(e) {
   highlightGrid(mousePiece);
 }
 
-/* Drops mousePiece on the page. Aligns the piece with the grid. Turns off event handlers for the mousemove and mouseup events. */
+//Drop mousePiece on the page, then aligns the piece with the grid
 function mouseDrop(e) {
 
   if (dropValid(mousePiece)) {
@@ -164,9 +162,9 @@ function mouseDrop(e) {
 //Returns the computed style value for a specified styleName applied to an object.
 function getStyle(object, styleName) {
   if (window.getComputedStyle) {
-     return document.defaultView.getComputedStyle(object, null).getPropertyValue(styleName);
+    return document.defaultView.getComputedStyle(object, null).getPropertyValue(styleName);
   } else if (object.currentStyle) {
-     return object.currentStyle[styleName]
+    return object.currentStyle[styleName]
   }
 }
 
@@ -204,15 +202,15 @@ function randOrder() {
 //Assigns an event handers to object
 function addEvent(object, evName, fnName, cap) {
   if (object.attachEvent)
-     object.attachEvent("on" + evName, fnName);
+    object.attachEvent("on" + evName, fnName);
   else if (object.addEventListener)
-     object.addEventListener(evName, fnName, cap);
+    object.addEventListener(evName, fnName, cap);
 }
 
 //Removes an event handers from object
 function removeEvent(object, evName, fnName, cap) {
   if (object.detachEvent)
-     object.detachEvent("on" + evName, fnName);
+    object.detachEvent("on" + evName, fnName);
   else if (object.removeEventListener)
-     object.removeEventListener(evName, fnName, cap);
+    object.removeEventListener(evName, fnName, cap);
 }

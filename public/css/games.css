@@ -1,8 +1,7 @@
 /* * {transition: all 0.2s linear !important;} */
 /* #region gamesRegion */
 body{
-    background: #87CEEB;
-    background: radial-gradient(at center, #87CEEB, #FFFFFF);
+    background: var(--background);
 }
 
 .height{
@@ -158,8 +157,8 @@ body{
 
 #gamesSpecificContent {
     height: 1080px;
-    background: #87CEEB;
-    background: radial-gradient(at center, #87CEEB, #FFFFFF);
+    background: var(--background);
+    
 }
 
 .gameContainer {
@@ -184,7 +183,7 @@ body{
 .gameView {
     grid-row: 1 / 9;
     grid-column: 1 /span 10;
-    background-color: rgba(185, 185, 185, 0.527);
+    background-color: rgba(211, 209, 209, 0.527);
     border-radius: 15px 15px 0 0;
     border: 2px solid white;
 }
@@ -336,7 +335,7 @@ body{
 }
 @media screen and (max-width: 700px) {
     #gamesSpecificContent {
-        height: 950px;
+        height: 1220px;
     }
     .gameDesc {
         grid-row: 8 /span 9;
@@ -347,3 +346,5 @@ body{
     }
 }
 /* #endregion */
+
+

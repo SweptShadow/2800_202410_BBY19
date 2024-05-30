@@ -2,7 +2,17 @@
   --background-color-default: #87CEEB;
   --background-color-orange: #f7a54c;
   --background-color-purple: #9370DB;
-  --background-color-green: #98FB98; 
+  --background-color-green: #98FB98;
+
+  --background-default: radial-gradient(at center, #87CEEB, #FFFFFF);
+  --background-orange: radial-gradient(at center, #f7a54c, #FFFFFF);
+  --background-purple: radial-gradient(at center, #9370DB, #FFFFFF);
+  --background-green: radial-gradient(at center, #98FB98, #FFFFFF);
+  
+  --overlay-background-default: linear-gradient(135deg, #004080, #0073e6);
+  --overlay-background-orange: linear-gradient(135deg, #c45d1d, #f57d42);
+  --overlay-background-purple: linear-gradient(135deg, #6a5acd, #9370db);
+  --overlay-background-green: linear-gradient(135deg, #6ab06a, #98fb98);
 }
 
 html, body {
@@ -10,7 +20,7 @@ html, body {
 }
 
 #bottom-Navbar {
-    background-color: peachpuff;
+    background-color: white;
 }
 
 #header {
@@ -18,15 +28,77 @@ html, body {
 }
 
 /* #region fontRegion */
-@font-face {
-    font-family: 'Gilroy-ExtraBold';
+/* @font-face {
+    font-family: 'Gilroy ExtraBold';
     src: url('fonts/Gilroy-ExtraBold.otf"') format('otf');
-  }
+  } */
   
   body {
-    font-family: 'Gilroy-ExtraBold', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
   }
+.nunito-sans-nunitoFont {
+  font-family: "Nunito Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100,
+    "YTLC" 500;
+}
+  
 /* #endregion */
+
+
+/* #region indexRegion */
+  .d-block {
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  }
+  #tutorialButton {
+    background-color: var(--background-color-default);
+    border: 2px solid grey;
+    margin: 0px 5px;
+    border-radius: 15px;
+    height: 50px;
+    color: black;
+    font-weight: 600;
+    font-size: 25px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    transition: all 0.4s ease;
+  }
+  #tutorialButton:hover {
+    color: white;
+    background-color: rgb(105, 105, 105);
+  }
+  #prevButton, #nextButton {
+    background: var(--background-color-default);
+    border: none;
+    border-radius: 50px; 
+  }
+  #tutorialBody p {
+    font-size: 22px;
+  }
+  #tutorialModal .modal-dialog {
+    height: 100%;
+  }
+  #tutorialModal {
+    align-items: center;
+  }
+  #tutorialModal .modal-content {
+    position: fixed;
+    width: 80%;
+    height: 75%;
+    top: 15%;
+    right: 10%;
+    overflow-y: scroll;
+  }
+  
+
+/* #endRegion */
+
 
 /* #region socialRegion*/
 
@@ -72,10 +144,21 @@ body{margin-top:20px;
         -webkit-transform: rotate(-15deg);
         transform: rotate(-15deg);
     }
+    .advisor_thumb img {
+      height: 170px;
+      width: 100%;
+    }
+    .col-12 span {
+      font-size: 1.75rem;
+      font-weight: normal;
+    }
     @media only screen and (max-width: 575px) {
         .single_advisor_profile .advisor_thumb::after {
             height: 160px;
             bottom: -90px;
+        }
+        .advisor_thumb img {
+          height: 300px;
         }
     }
     .single_advisor_profile .advisor_thumb .social-info {
@@ -128,6 +211,10 @@ body{margin-top:20px;
     @media only screen and (min-width: 768px) and (max-width: 991px) {
         .single_advisor_profile .single_advisor_details_info h6 {
             font-size: 14px;
+            
+        }
+        .advisor_thumb img {
+          height: 200px;
         }
     }
     .single_advisor_profile .single_advisor_details_info p {
@@ -171,6 +258,8 @@ body{margin-top:20px;
     .single_advisor_profile:focus .single_advisor_details_info p {
         color: #ffffff;
     }
+
+    
 /* #endregion */
 
 
@@ -315,7 +404,45 @@ body{margin-top:20px;
     margin-bottom: 10px;
     /* Ensure it stays above other content */
     z-index: 1000;
-    border-radius: 10px;
+    border-radius: 15px;
+    border: 1px solid #adadad;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  }
+  .text-secondary {
+    color: black !important;
+    font-size: 18px;
+  }
+  @media screen and (max-width: 455px) {
+    #bottom-Navbar .text-secondary {
+      font-size: 14px !important;
+      
+    }
+    #bottom-Navbar a.nav-link.text-secondary::after {
+      display: none;
+    }
+    #bottom-Navbar .nav li:nth-of-type(1) a {
+      font-size: 0 !important; /* Hide text by setting font-size to 0 */
+    }
+  
+    /* Target the "Games" text */
+    #bottom-Navbar .nav li:nth-of-type(2) a {
+      font-size: 0 !important; /* Hide text by setting font-size to 0 */
+    }
+  
+    /* Target the "Social" text */
+    #bottom-Navbar .nav li:nth-of-type(3) a {
+      font-size: 0 !important; /* Hide text by setting font-size to 0 */
+    } 
+    #bottom-Navbar .nav li a i {
+      font-size: 25px; /* Set a size for the icons */
+      
+    }
+    #bottom-Navbar .nav > li{
+      margin: 0 auto;
+    }
+    
   }
 
   /* the tradmark footer*/
@@ -487,7 +614,7 @@ header .nav__logo {
   color: var(--title-color);
   font-weight: var(--font-semi-bold);
   transition: color 0.4s;
-  height: auto;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -495,7 +622,7 @@ header .nav__logo {
 
 /* Responsive logo image styling */
 .nav__logo img {
-  height: auto;
+  height: 100%;
   width: 100%;
   max-width: 150px; /* Set a max-width to ensure it doesn't get too large */
   object-fit: contain; /* Ensures the image scales properly */
@@ -559,7 +686,7 @@ header .nav__logo {
 /* Show menu */
 header .show-menu {
   top: 0;
-  transition: all 2s ease;
+  transition: all 0.5s ease;
 }
 
 /* For medium devices */
