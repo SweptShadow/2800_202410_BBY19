@@ -55,6 +55,14 @@ input {
   border-radius: 5px;
 }
 
+.overlay {
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .jigsaw-box {
   height: 575px;
 }
