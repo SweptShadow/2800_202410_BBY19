@@ -20,3 +20,7 @@ document.getElementById("game5").addEventListener('click', function() {
 
     window.location.href = "/gameSudokuHub";
 })
+
+document.getElementById("game6").addEventListener('click', function() {
+    window.location.href = "/gamesSpecific/?game=wordle";
+})

@@ -415,31 +415,31 @@ body{margin-top:20px;
     font-size: 18px;
   }
   @media screen and (max-width: 455px) {
-    .text-secondary {
+    #bottom-Navbar .text-secondary {
       font-size: 14px !important;
       
     }
-    a.nav-link.text-secondary::after {
+    #bottom-Navbar a.nav-link.text-secondary::after {
       display: none;
     }
-    .nav li:nth-of-type(1) a {
+    #bottom-Navbar .nav li:nth-of-type(1) a {
       font-size: 0 !important; /* Hide text by setting font-size to 0 */
     }
   
     /* Target the "Games" text */
-    .nav li:nth-of-type(2) a {
+    #bottom-Navbar .nav li:nth-of-type(2) a {
       font-size: 0 !important; /* Hide text by setting font-size to 0 */
     }
   
     /* Target the "Social" text */
-    .nav li:nth-of-type(3) a {
+    #bottom-Navbar .nav li:nth-of-type(3) a {
       font-size: 0 !important; /* Hide text by setting font-size to 0 */
     } 
-    .nav li a i {
+    #bottom-Navbar .nav li a i {
       font-size: 25px; /* Set a size for the icons */
       
     }
-    .nav > li{
+    #bottom-Navbar .nav > li{
       margin: 0 auto;
     }
     
