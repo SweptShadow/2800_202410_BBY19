@@ -1,3 +1,10 @@
+/**
+ * Implementation of a Stack class.
+ * I found this code on geeksforgeeks.org.
+ *
+ * @author contribute@geeksforgeeks.org 
+ * @see https://www.geeksforgeeks.org/implementation-stack-javascript/
+ */
 export default class Stack {
 
     constructor() {
@@ -9,9 +16,6 @@ export default class Stack {
     }
 
     pop() {
-        // return top most element in the stack
-        // and removes it from the stack
-        // Underflow if stack is empty
         if (this.items.length == 0)
             return;
         return this.items.pop();
@@ -26,7 +30,7 @@ export default class Stack {
     }
 
     clear() {
-        this.items = []; // Clears the stack
+        this.items = [];
     }
 
     printStack() {
