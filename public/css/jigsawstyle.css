@@ -82,6 +82,12 @@ h1 {
   background-color: rgba(135, 207, 235, 0.411);
 }
 
+/**
+ *  Co-pilot suggested I use css hard coding to solve grid coding and placement issue as it could not find any issue with code but code was not functioning.
+ *  Microsoft Co-pilot
+ * 
+ *  @author https://copilot.microsoft.com/
+*/
 #grid0, #grid1, #grid2, #grid3, #grid4,
 #piece0, #piece1, #piece2, #piece3, #piece4 {
   top: 320px
